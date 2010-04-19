@@ -10,11 +10,26 @@ class Website_Controller extends Template_Controller {
 		(
 		'Home' => 'home',
 		'Exercises' => 'exercises',
+        'Programs' => 'programs',
 		'Days' => 'days',
         'Sessions' => 'sessions',
+        'Settings' => 'settings',
+        'Logout' => 'user/logout',
 		);
 
 		$this->db = Database::instance();
+        $this->session= Session::instance();
+
+        $authentic = new Auth;
+
+        $user = $authentic->get_user(); //now you have access to user information stored in the database
+
+        if($user){
+            $settings = new Setting_Model($user->id);
+            $userSettings = $settings->getSettings();
+            $this->template->timeFormat = $userSettings->time_format;
+            $this->template->timeZone = $userSettings->time_zone;
+        }
 
 	}
 

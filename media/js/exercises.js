@@ -36,6 +36,14 @@ $(function() {
 		return false;
 	});
 
+    $('#exercise-edit form select[name="ex_type"]').change(function(){
+        if($(this).val() == 1){
+            $('#exercise-edit form p#max-weight').show();
+        }else{
+            $('#exercise-edit form p#max-weight').hide();
+        }
+    });
+
 	fillExercises();
 
 	$('table#exercise-list tbody tr a.edit').live('click', function(){
@@ -143,6 +151,8 @@ function fillExercises(){
 
 		$.getJSON('json/exercisesbygroup', {id : groupId}, function(json){
 
+                // remove if already appended
+                $('ul#group-list li.selected div').remove();
 				$('ul#group-list li.selected').append('<div class = "edit-group-box"><a class = "edit" href="#">Edit</a><a class = "delete" href="#">Delete</a></div>');
 			 	$('table#exercise-list tbody').remove();
 				$('table#exercise-list').append($('<tbody>'));
@@ -154,7 +164,7 @@ function fillExercises(){
 					tr.data('id', jsonrow.id);
 					tr.append('<td>' + jsonrow.title + '</td><td>'
 						  + jsonrow.desc + '</td><td>' 
-						  + jsonrow.ex_type + '</td>' 
+						  + getExerciseTypeName(jsonrow.ex_type) + '</td>' 
 						  + '<td><a class = "delete" href="#">Delete</a></td><td><a class = "edit" href="#">Edit</a></td>');
 					$('table#exercise-list tbody').append(tr);
 				});
@@ -173,7 +183,7 @@ function fillExercises(){
 					tr.data('id', jsonrow.id);
 					tr.append('<td>' + jsonrow.exercise_title + '</td><td>' 
 						  + jsonrow.desc +'</td><td>'
-						  + jsonrow.ex_type +'</td><td>'
+						  + getExerciseTypeName(jsonrow.ex_type) +'</td><td>'
 						  + jsonrow.group_title 
 						  + '</td><td><a class = "delete" href="#">Delete</a></td><td><a class = "edit" href="#">Edit</a></td>');
 					$('table#exercise-list tbody').append(tr);

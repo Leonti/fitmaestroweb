@@ -1,22 +1,16 @@
 var setId = 0;
+var exType = 0;
 
 $(function() {
 
-	$('#accordion').accordion( { autoHeight: false } );
-	$('#select-exercise').dialog({autoOpen:false});
 	$('#set-edit').dialog({autoOpen:false});
 	$('#reps-edit').dialog({autoOpen:false});
     $('#start-session-popup').dialog({autoOpen:false});
     
 	$('#exercise-link').click(function(){
 
-		$('#select-exercise').dialog('open');
-	});
-
-	$('#accordion li').click(function(){
-
-		var metadata = $(this).metadata();
-		addExerciseToSet(metadata.id);
+        exerciseChooser(addExerciseToSet);
+        return false;
 	});
 
 	$('#add-set').click(function(){
@@ -53,7 +47,7 @@ $(function() {
 
 		fancyConfirm('Confirm delete', 'Are you sure you want to delete this day?', function(){
 
-			$.post('ajaxpost/deleteset', {id : setId}, function(json){
+			$.post(baseUrl + 'ajaxpost/deleteset', {id : setId}, function(json){
 
 				if(json.result == 'OK'){
 			
@@ -64,7 +58,7 @@ $(function() {
 		});
 		return false;
 	});
-
+/*
 	$('#set-edit form input[type="submit"]').click(function(){
 
 		if($.trim(($('#set-edit form input[name = "title"]').val())) != ''){
@@ -82,12 +76,18 @@ $(function() {
 		}
 
 		return false;
-	});
+	}); */
 
 	$('.reps').live('click', function(){
 
-		 $('#reps-edit form input[name="connector_id"]').val($(this).parent().data('connector_id'));
-		 $('#reps-table tbody tr').remove();
+		$('#reps-edit form input[name="connector_id"]').val($(this).parent().data('connector_id'));
+		$('#reps-table tbody tr').remove();
+        exType = $(this).parent().data('ex_type');
+        if(exType == 1){
+            $('.to-hide').show();
+        }else if (exType == 0){
+            $('.to-hide').hide();
+        }
 
 		 var details = $(this).data('details');
 		 $.each(details, function(i, detailrow){
@@ -111,7 +111,7 @@ $(function() {
 
 			var dataString = $('#reps-edit form').serialize();
 
-			$.post('ajaxpost/savereps', dataString, function(json){
+			$.post(baseUrl + 'ajaxpost/savereps', dataString, function(json){
 
 				if(json.result == 'OK'){
 
@@ -150,7 +150,12 @@ $(function() {
         var year = currentTime.getFullYear()
         $('#start-session-popup form input[name="title"]').val(month + "/" + day + "/" + year);
 
+        if(programsConnectorId){
+            $('#start-session-popup form input[name="programs_connector_id"]').val(programsConnectorId);
+        }
+
         $('#start-session-popup').dialog('open');
+        return false;
     });
 
     $('#start-session-popup form input[type="submit"]').click(function(){
@@ -163,7 +168,7 @@ $(function() {
 
 function fillSets(){
 
-	$.getJSON('json/sets', function(json){
+	$.getJSON(baseUrl + 'json/sets', function(json){
 
 		$('ul#set-list li').remove();
 
@@ -186,8 +191,7 @@ function fillSets(){
 function fillSetExercises(){
 
 	$('#set-exercises').show();
-    $('#start-session-link').show();
-	$.getJSON('json/setexercises', {id : setId}, function(json){
+	$.getJSON(baseUrl + 'json/setexercises', {id : setId}, function(json){
 
 			$('table#set-exercise-list tbody').remove();
 			$('table#set-exercise-list').append($('<tbody>'));
@@ -198,9 +202,10 @@ function fillSetExercises(){
 				tr.data('id', jsonrow.id);
                 tr.data('maxWeight', jsonrow.max_weight);
 				tr.data('connector_id', jsonrow.connector_id);
+                tr.data('ex_type', jsonrow.ex_type);
 				tr.append('<td>' + jsonrow.title + '</td><td>' 
 					  + jsonrow.desc + '</td><td>'
-					  + jsonrow.ex_type + '</td><td>' 
+					  + getExerciseTypeName(jsonrow.ex_type) + '</td><td>' 
 					  + jsonrow.group_title + '</td>' );
 
 				var repsTd = $('<td>');
@@ -209,7 +214,13 @@ function fillSetExercises(){
 
 				$.each(jsonrow.details, function(i, detailrow){
 
-					repsTd.append('<div>' + detailrow.reps + 'x' + detailrow.percentage + '%</div>');
+                    var toAppend = '';
+                    if(jsonrow.ex_type == 1){
+                        toAppend = detailrow.reps + 'x' + detailrow.percentage + '%';
+                    }else{
+                        toAppend = detailrow.reps;
+                    }
+					repsTd.append('<div>' + toAppend + '</div>');
 				});
 				tr.append(repsTd);
 				
@@ -223,7 +234,7 @@ function fillSetExercises(){
 
 function showEditSetPopup(){
 
-	$.getJSON('json/setinfo', {id : setId}, function(json){
+	$.getJSON(baseUrl + 'json/setinfo', {id : setId}, function(json){
 
 		$('#set-edit form')[0].reset();
 		$('#set-edit form').populate(json[0]);
@@ -234,36 +245,42 @@ function showEditSetPopup(){
 
 function addExerciseToSet(exerciseId){
 
-	$.post('ajaxpost/setaddexercise', {set_id : setId, exercise_id : exerciseId}, function(json){
+	$.post(baseUrl + 'ajaxpost/setaddexercise', {set_id : setId, exercise_id : exerciseId}, function(json){
 		if(json.result == 'OK'){
 
 			fillSetExercises();
 		}
 	},"json");
-
-	$('#select-exercise').dialog('close');
 }
 
 function appendRepsRow(reps, percentage, id){
 
 	if(typeof(reps) == 'undefined'){
-      
+
 		reps = '';
 		percentage = '';
 		id = '';
 	}
 
-	$('#reps-table').append('<tr><td><input type = "text" name = "reps[]" value = "' + reps + '" /></td><td>x</td>'
-		+ '<td><input type = "text" name = "percentage[]" value = "' + percentage + '" />'
-		+ '<input type = "hidden" name = "rep_id[]" value = "' + id + '" /></td>'
-		+ '<td><a href = "#" class = "rep-remove" tabindex = "-1">x</a></td></tr>');
+    // draw different rows for different exercise types
+    if(exType == 1){
+        $('#reps-table').append('<tr><td><input type = "text" name = "reps[]" value = "' + reps + '" /></td><td>x</td>'
+            + '<td><input type = "text" name = "percentage[]" value = "' + percentage + '" />'
+            + '<input type = "hidden" name = "rep_id[]" value = "' + id + '" /></td>'
+            + '<td><a href = "#" class = "rep-remove" tabindex = "-1">x</a></td></tr>');
+    }else if(exType == 0){
+        $('#reps-table').append('<tr><td><input type = "text" name = "reps[]" value = "' + reps + '" />'
+            + '<input type = "hidden" name = "percentage[]" value = "0" />'
+            + '<input type = "hidden" name = "rep_id[]" value = "' + id + '" /></td>'
+            + '<td><a href = "#" class = "rep-remove" tabindex = "-1">x</a></td></tr>');
+    }
 }
 
 function removeExerciseFromSet(connectorId){
 
 		fancyConfirm('Confirm delete', 'Are you sure you want to remove exercise from this day?', function(){
 
-			$.post('ajaxpost/setdeleteexercise', {id : connectorId}, function(json){
+			$.post(baseUrl + 'ajaxpost/setdeleteexercise', {id : connectorId}, function(json){
 
 				if(json.result == 'OK'){
 			
@@ -277,7 +294,7 @@ function removeExerciseFromSet(connectorId){
 function addSession(){
     var dataString = $('#start-session-popup form').serialize() + '&set_id=' + setId;
 
-    $.post('ajaxpost/addsession', dataString, function(json){
+    $.post(baseUrl + 'ajaxpost/addsession', dataString, function(json){
 
         if(json.result == 'OK'){
 

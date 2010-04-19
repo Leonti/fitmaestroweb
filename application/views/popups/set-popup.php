@@ -8,6 +8,8 @@
 	    Description:<br />
 	    <textarea name = "desc" ></textarea>
 	</p>
+    <input type = "hidden" name = "program_id" value = "" />
+    <input type = "hidden" name = "day_number" value = "" />
 	<input type = "hidden" name = "id" value = "" />
 	<input type="submit" value="Save" />
     </form>

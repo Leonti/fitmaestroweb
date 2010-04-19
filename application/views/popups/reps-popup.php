@@ -5,8 +5,8 @@
 		<thead>
 		    <tr>
 			<th>Reps</th>
-			<th></th>
-			<th>Percentage</th>
+			<th class = "to-hide"></th>
+			<th class = "to-hide">Percentage</th>
 		    </tr>
 		</thead>
 		<tbody>

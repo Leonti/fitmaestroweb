@@ -1,45 +1,68 @@
 var sessionId = 0;
+var exType = 0;
+var time24h = true;
 
 $(function() {
+
     $('#reps-edit').dialog({autoOpen:false});
+    $('#session-edit').dialog({autoOpen:false});
     fillSessions();
+
+    if(timeFormat == "ampm"){
+        time24h = false;
+    }
+
+    $('#start-session').click(function(){
+        $('#session-edit form')[0].reset();
+        $('#session-edit form input[type="hidden"]').val('');
+        $('#session-edit').dialog('option','title', 'Start session'); 
+        $('#session-edit').dialog('open');
+        return false;
+    });
 
     $('ul#session-list li').live('click', function(){
 
-    $('ul#session-list li div.edit-set-box').remove();
-    sessionId = $(this).data('id');;
+        $('ul#session-list li div.edit-session-box').remove();
+        sessionId = $(this).data('id');;
 
-    $('ul#session-list li').removeClass('selected');
+        $('ul#session-list li').removeClass('selected');
 
-    $(this).addClass('selected');
-    $('div#session-description').html($(this).data('notes'));
-    $(this).append('<div class = "edit-set-box"><a class = "edit" href="#">Edit</a><a class = "delete" href="#">Delete</a></div>');
+        $(this).addClass('selected');
+        $('div#session-description').html($(this).data('notes'));
 
-    fillSessionExercises();
+        $(this).append('<div class = "edit-session-box">'
+                        + '<a class = "edit" href="#">Edit</a>'
+                        + '<a class = "delete" href="#">Delete</a></div>');
+
+        fillSessionExercises();
+    });
+
+    $('#exercise-link').click(function(){
+
+        exerciseChooser(addExerciseToSession);
+    });
+
+    $('#session-edit form input[type="submit"]').click(function(){
+
+        saveSession();
+        return false;
     });
 
     $('.reps').live('click', function(){
 
-        $('#reps-edit form input[name="session_id"]').val(sessionId);
-        $('#reps-table tbody tr').remove();
-        var maxWeight = parseFloat($(this).parent().data('maxWeight'));
-
-        var details = $(this).data('details');
-        $.each(details, function(i, detailrow){
-
-            appendRepsRow(detailrow, maxWeight);
-        });
-
-        if(details.length == 0){
-
-            appendRepsRow();
-        }
-        $('#reps-edit').dialog('open');
+        openRepsDialog($(this));
     });
 
     $('#reps-table tbody tr:last input[type="text"]').live('click', function(){
 
         appendRepsRow();
+    });
+
+    // check chackbox when clicking onthe row
+    $('#reps-table tbody tr input[type="text"]').live('click', function(){
+
+        $(this).parent().parent().find('input[type="checkbox"]').attr('checked', 'checked');
+        $(this).parent().parent().find('input[type="checkbox"]').trigger('change');
     });
 
     $('#reps-table tbody tr input[type="checkbox"]').live('change', function(){
@@ -55,7 +78,7 @@ $(function() {
 
             var dataString = $('#reps-edit form').serialize();
 
-            $.post('ajaxpost/savesessionreps', dataString, function(json){
+            $.post(baseUrl + 'ajaxpost/savesessionreps', dataString, function(json){
 
                 if(json.result == 'OK'){
 
@@ -69,11 +92,29 @@ $(function() {
         return false;
     });
 
+    $('ul#session-list li div.edit-session-box a.edit').live('click', function(){
+
+        showEditSessionPopup();
+        return false;
+    });
+
+    $('#session-done').click(function(){
+        var saveData = {id: sessionId, status: 'DONE'};
+        sendSaveSession(saveData);
+        return false;
+    });
+
+    $('#print-plan').click(function(){
+
+        $('#session-exercise-list').jqprint();
+        return false;
+    });
+
 });
 
 function fillSessions(){
 
-    $.getJSON('json/sessions', function(json){
+    $.getJSON(baseUrl + 'json/sessions', function(json){
 
         $('ul#session-list li').remove();
 
@@ -81,10 +122,20 @@ function fillSessions(){
 
             var li = $('<li>');
             li.data('id', jsonrow.id);
-            li.data('setId', jsonrow.set_id);
+            li.data('status', jsonrow.status);
             li.data('notes', jsonrow.notes);
             li.append(jsonrow.title);
+            li.append(jsonrow.status);
             $('ul#session-list').append(li);
+
+            // if we are loading the page with id predefined - expand that session
+            if(startSessionId == jsonrow.id){
+                sessionId = startSessionId;
+
+                // we needed it only once
+                startSessionId = 0;
+            }
+
             if(sessionId == jsonrow.id){
                 li.addClass('selected');
                 li.trigger('click');
@@ -98,7 +149,7 @@ function fillSessionExercises(){
 
     $('#session-exercises').show();
 
-    $.getJSON('json/sessionexercises', {id : sessionId}, function(json){
+    $.getJSON(baseUrl + 'json/sessionexercises', {id : sessionId}, function(json){
 
             $('table#session-exercise-list tbody').remove();
             $('table#session-exercise-list').append($('<tbody>'));
@@ -109,25 +160,56 @@ function fillSessionExercises(){
                 tr.data('id', jsonrow.id);
                 tr.data('maxWeight', jsonrow.max_weight);
                 tr.data('connector_id', jsonrow.connector_id);
+                tr.data('ex_type', jsonrow.ex_type);
+                tr.data('details', jsonrow.details);
                 tr.append('<td>' + jsonrow.title + '</td><td>'
                       + jsonrow.desc + '</td><td>'
-                      + jsonrow.ex_type + '</td><td>'
+                      + getExerciseTypeName(jsonrow.ex_type) + '</td><td>'
                       + jsonrow.group_title + '</td>' );
 
                 var repsTd = $('<td>');
                 repsTd.addClass('reps');
-                repsTd.data('details', jsonrow.details);
+
+                var doneTd = $('<td>');
+                doneTd.addClass('reps');
 
                 $.each(jsonrow.details, function(i, detailrow){
-                    var done = '';
-                    if(detailrow.log_data){
-                        done = detailrow.log_data.id;
+
+                    var done = 'not done';
+
+                    var toAppend = '';
+                    var toAppendDone = 'not done';
+
+                    if(jsonrow.ex_type == 1){
+                        toAppend = detailrow.reps + 'x' + detailrow.percentage + '%';
+
+                        if(detailrow.log_data){
+                            toAppendDone = detailrow.log_data.reps + 'x' + detailrow.log_data.weight + ' kg';
+                        }
+                    }else{
+                        toAppend = detailrow.reps;
+
+                        if(detailrow.log_data){
+                            toAppendDone = detailrow.log_data.reps;
+                        }
                     }
-                    repsTd.append('<div>' + detailrow.reps + 'x' + detailrow.percentage + '% ' + done + '</div>');
+
+                    if(detailrow.log_data){
+                        done = detailrow.log_data.reps + 'x' + detailrow.log_data.weight + ' kg';
+                    }
+                    if(detailrow.id != 0){
+                        repsTd.append('<div>' + toAppend + '</div>');
+                    }else{
+                        repsTd.append('<div>extra</div>');
+                    }
+
+                    doneTd.append('<div>' + toAppendDone + '</div>');
+
                 });
                 tr.append(repsTd);
+                tr.append(doneTd);
 
-                tr.append('<td><a href = "#" class = "remove-from-set">Remove</a></td>');
+                tr.append('<td class = "non-printable"><a href = "#" class = "remove-from-set">Remove</a></td>');
 
                 $('table#session-exercise-list tbody').append(tr);
             });
@@ -135,12 +217,31 @@ function fillSessionExercises(){
 
 }
 
+function showEditSessionPopup(){
+
+    $.getJSON(baseUrl + 'json/sessioninfo', {id : sessionId}, function(json){
+
+        $('#session-edit form')[0].reset();
+        $('#session-edit form').populate(json[0]);
+        $('#session-edit').dialog('option','title', 'Edit session'); 
+        $('#session-edit').dialog('open');
+    });
+}
+
 function appendRepsRow(details, maxWeight){
+
+    var lastDate = $('#reps-table tbody tr:last input[name="done[]"]').val(); 
+    if(typeof(lastDate) == 'undefined'){
+        lastDate = $('#reps-edit').data('formatted_time');
+    }else{
+        lastDate = addDiff(lastDate, $('#reps-edit select[name="autostep"]').val());
+    }
 
     var reps = '';
     var weight = '';
     var repId = '';
     var logId = '';
+    var done = '';
 
 
     if(typeof(details) != 'undefined'){
@@ -149,11 +250,14 @@ function appendRepsRow(details, maxWeight){
         if(details.log_data){
             reps = details.log_data.reps;
             weight = details.log_data.weight;
+            done = details.log_data.done;
             logId = details.log_data.id;
         }else{
             reps = details.reps;
             weight = (parseFloat(details.percentage) * maxWeight)/100;
         }
+    }else{
+        done = lastDate;
     }
 
     var grayed = '';
@@ -165,9 +269,115 @@ function appendRepsRow(details, maxWeight){
         // make checkbox checked
         checkAttr = 'checked = "checked"';
     }
-    $('#reps-table').append('<tr ' + grayed + '><td><input type = "text" name = "reps[]" value = "' + reps + '" /></td><td>x</td>'
-        + '<td><input type = "text" name = "weight[]" value = "' + weight + '" />'
-        + '<input type = "hidden" name = "rep_id[]" value = "' + repId + '" /></td>'
-        + '<input type = "hidden" name = "log_id[]" value = "' + logId + '" /></td>'
-        + '<td><input type = "checkbox" name = done[] ' + checkAttr + ' /></td></tr>');
+
+    if(exType == 1){
+        $('#reps-table tbody').append('<tr ' + grayed + '><td><input type = "text" name = "reps[]" value = "' + reps + '" /></td><td>x</td>'
+            + '<td><input type = "text" name = "weight[]" value = "' + weight + '" /></td>'
+            + '<td><input class = "time" type = "text" name = "done[]" value = "' + done + '" />'
+            + '<input type = "hidden" name = "rep_id[]" value = "' + repId + '" />'
+            + '<input type = "hidden" name = "log_id[]" value = "' + logId + '" /></td>'
+            + '<td><input type = "checkbox" name = isDone[] ' + checkAttr + ' /></td></tr>');
+    }else if(exType == 0){
+        $('#reps-table tbody').append('<tr ' + grayed + '><td><input type = "text" name = "reps[]" value = "' + reps + '" /></td>'
+            + '<td><input type = "hidden" name = "weight[]" value = "0" />'
+            + '<input class = "time" type = "text" name = "done[]" value = "' + done + '" />'
+            + '<input type = "hidden" name = "rep_id[]" value = "' + repId + '" />'
+            + '<input type = "hidden" name = "log_id[]" value = "' + logId + '" /></td>'
+            + '<td><input type = "checkbox" name = isDone[] ' + checkAttr + ' /></td></tr>');
+    }
+
+
+    $('.time').datepicker({  
+         duration: '',  
+         showTime: true,  
+         constrainInput: false,  
+         stepMinutes: 1,  
+         stepHours: 1,  
+         altTimeField: '',  
+         time24h: time24h  
+      });  
+}
+
+function addExerciseToSession(exerciseId){
+
+
+    $.post(baseUrl + 'ajaxpost/sessionaddexercise', {session_id : sessionId, exercise_id : exerciseId}, function(json){
+        if(json.result == 'OK'){
+
+            fillSessionExercises();
+        }
+    },"json");
+
+}
+
+function saveSession(){
+
+    if($.trim(($('#session-edit form input[name = "title"]').val())) != ''){
+        var dataString = $('#session-edit form').serialize();
+        sendSaveSession(dataString);
+
+        $('#session-edit').dialog('close');
+    }
+}
+
+function sendSaveSession(data){
+
+        $.post(baseUrl + 'ajaxpost/savesession', data, function(json){
+
+            if(json.result == 'OK'){
+
+                fillSessions();
+            }
+        },"json");
+}
+
+function openRepsDialog(repsTd){
+    $('#reps-edit form input[name="session_id"]').val(sessionId);
+    $('#reps-edit form input[name="exercise_id"]').val(repsTd.parent().data('id'));
+    $('#reps-table tbody tr').remove();
+
+    exType = repsTd.parent().data('ex_type');
+    var maxWeight = parseFloat(repsTd.parent().data('maxWeight'));
+
+    var details = repsTd.parent().data('details');
+
+    $.getJSON(baseUrl + 'json/getdatetime', function(json){
+
+        $('#reps-edit').data('formatted_time', json.formatted_time);
+
+        $.each(details, function(i, detailrow){
+
+            appendRepsRow(detailrow, maxWeight);
+        });
+
+        if(details.length == 0){
+
+            appendRepsRow();
+        }
+
+        if(exType == 1){
+            $('.to-hide').show();
+        }else if (exType == 0){
+            $('.to-hide').hide();
+        }
+
+        $('#reps-edit').dialog('open');
+
+    });
+}
+
+function addDiff(time, diff){
+
+    formattedTime = 'error';
+    $.ajax({
+        url: baseUrl + 'json/getdatetime',
+        async: false,
+        dataType: 'json',
+        data: {time: time, diff: diff},
+        success: function(json){
+            formattedTime = json.formatted_time;
+        }
+    });
+
+    return formattedTime;
 }

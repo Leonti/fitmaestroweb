@@ -12,3 +12,12 @@ ul li.selected{
 .grayed input[type="text"]{
   color: gray;
 }
+
+table#days tbody tr td div{
+    border: dashed;
+    width: 5em;
+    height: 5em;
+}
+table tbody tr td{
+    border: dashed;
+}

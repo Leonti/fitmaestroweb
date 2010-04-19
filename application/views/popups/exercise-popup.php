@@ -7,10 +7,14 @@
 	<p>
 	    Type:<br />
 	    <select name = "ex_type">
-		<option value = "0">0</option>
-		<option value = "1">1</option>
+		<option value = "0">Own Weight</option>
+		<option value = "1">With Weight</option>
 	    </select>
 	</p>
+    <p id = "max-weight" style = "display: none;">
+        Max Weight:<br />
+        <input type="text" name = "max_weight" />
+    </p>
 	<p>
 	    Description:<br />
 	    <textarea name = "desc" ></textarea>

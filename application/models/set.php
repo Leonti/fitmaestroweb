@@ -2,15 +2,19 @@
 
 class Set_Model extends Model {
 
-	public function __construct(){
+    public $userId;
 
-		parent::__construct(); // assigns database object to $this->db
-	}
+    public function __construct($userId){
+
+        parent::__construct(); // assigns database object to $this->db
+        $this->userId = $userId;
+    }
 
 	public function getAll(){
 
 		return $this->db->select() // selects all fields by default
 			    ->where('deleted', 0)
+                ->where('user_id', $this->userId)
 			    ->from('sets')
 			    ->orderby('id', 'ASC')
 			    ->get();
@@ -21,6 +25,7 @@ class Set_Model extends Model {
 		return $this->db->select() // selects all fields by default
 			    ->where('deleted', 0)
 			    ->where('id', $setId)
+                ->where('user_id', $this->userId)
 			    ->from('sets')
 			    ->get();
 	}
@@ -45,35 +50,41 @@ class Set_Model extends Model {
 			    ->where('exercises.deleted', 0)
 			    ->where('sets_connector.deleted', 0)
 			    ->where('sets_connector.set_id', $setId)
+                ->where('sets_connector.user_id', $this->userId)
 			    ->orderby('sets_connector.id','ASC')
 			    ->get();
 	}
 
 	public function addToSet($setId, $exerciseId){
 
-		$query = $this->db->insert('sets_connector', array('set_id' => $setId, 'exercise_id' => $exerciseId)); 
-		return $query->insert_id(); 
+		$query = $this->db->insert('sets_connector', array(
+                                                            'set_id' => $setId,
+                                                            'exercise_id' => $exerciseId,
+                                                            'user_id' => $this->userId,
+                                                            ));
+		return $query->insert_id();
 	}
 
 	public function addItem($data){
 
+        $data['user_id'] = $this->userId;
 		$query = $this->db->insert('sets', $data); 
 		return $query->insert_id(); 
 	}
 
 	public function updateItem($data, $id){
 
-		return $this->db->update('sets', $data, array('id' => $id));  
+		return $this->db->update('sets', $data, array('id' => $id, 'user_id' => $this->userId));  
 	}
 
 	public function deleteItem($id){
 
-		return $this->db->delete('sets', array('id' => $id));
+		return $this->db->update('sets', array('deleted' => 1), array('id' => $id, 'user_id' => $this->userId));
 	}
 
 	public function deleteExercise($id){
 
-		return $this->db->update('sets_connector', array('deleted' => 1), array('id' => $id));
+		return $this->db->update('sets_connector', array('deleted' => 1), array('id' => $id, 'user_id' => $this->userId));
 	}
 
 	public function getReps($connectorId){
@@ -81,24 +92,26 @@ class Set_Model extends Model {
 		return $this->db->select() // selects all fields by default
 			    ->where('deleted', 0)
 			    ->where('set_connector_id', $connectorId)
+                ->where('user_id', $this->userId)
 			    ->from('sets_detail')
 			    ->get();
 	}
 
 	public function addReps($data){
 
+        $data['user_id'] = $this->userId;
 		$query = $this->db->insert('sets_detail', $data); 
 		return $query->insert_id();
 	}
 
 	public function updateReps($data, $id){
 
-		return $this->db->update('sets_detail', $data, array('id' => $id));
+		return $this->db->update('sets_detail', $data, array('id' => $id, 'user_id' => $this->userId));
 	}
 
 	public function deleteRep($id){
 
-		return $this->db->update('sets_detail', array('deleted' => 1), array('id' => $id));
+		return $this->db->update('sets_detail', array('deleted' => 1), array('id' => $id, 'user_id' => $this->userId));
 	}
 }
  
