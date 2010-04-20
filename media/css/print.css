@@ -1,0 +1,6 @@
+.non-printable {
+    display: none;
+}
+table, tr, td, th {
+    border: solid;
+}
