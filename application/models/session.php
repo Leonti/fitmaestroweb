@@ -110,5 +110,12 @@ class Session_Model extends Model {
                 ->get();
     }
 
+    public function deleteItem($id){
+
+        // first remove all connector references
+        $this->db->update('sessions_connector', array('deleted' => 1), array('session_id' => $id, 'user_id' => $this->userId));
+        return $this->db->update('sessions', array('deleted' => 1), array('id' => $id, 'user_id' => $this->userId));
+    }
+
 }
  

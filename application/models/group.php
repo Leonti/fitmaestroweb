@@ -40,12 +40,12 @@ class Group_Model extends Model {
 			    ->get();
 	}
 
-    // get group using original id of imported group
-    public function getByImportId($importId){
+    // get group using original id of public group
+    public function getByPublicId($publicId){
 
         return $this->db->select() // selects all fields by default
                 ->where('deleted', 0)
-                ->where('import_id', $importId)
+                ->where('import_id', $publicId)
                 ->where('user_id', $this->userId)
                 ->from('groups')
                 ->get();
@@ -68,6 +68,13 @@ class Group_Model extends Model {
 		$query = $this->db->insert('groups', $data); 
 		return $query->insert_id(); 
 	}
+
+    public function addPublicItem($data){
+
+        $data['user_id'] = 0;
+        $query = $this->db->insert('groups', $data); 
+        return $query->insert_id(); 
+    }
 
 	public function updateItem($data, $id){
 

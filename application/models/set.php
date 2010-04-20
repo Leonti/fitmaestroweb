@@ -30,6 +30,16 @@ class Set_Model extends Model {
 			    ->get();
 	}
 
+    public function getPublicItem($setId){
+
+        return $this->db->select() // selects all fields by default
+                ->where('deleted', 0)
+                ->where('id', $setId)
+                ->where('user_id', 0)
+                ->from('sets')
+                ->get();
+    }
+
 
 //SELECT sets_connector.exercise_id, exercises.title FROM `sets_connector` JOIN exercises on sets_connector.exercise_id = exercises.id WHERE set_id=25
 	public function getExercises($setId){
@@ -55,6 +65,30 @@ class Set_Model extends Model {
 			    ->get();
 	}
 
+    // list of exercises for public set
+    public function getPublicExercises($setId){
+
+        return $this->db->select
+                (
+                'exercises.id',
+                'exercises.title',
+                'exercises.desc',
+                'exercises.max_weight',
+                'exercises.ex_type',
+                'groups.title AS group_title',
+                'sets_connector.id AS connector_id'
+                )
+                ->from('sets_connector')
+                ->join('exercises', array('sets_connector.exercise_id' => 'exercises.id'))
+                ->join('groups', array('exercises.group_id' => 'groups.id'))
+                ->where('exercises.deleted', 0)
+                ->where('sets_connector.deleted', 0)
+                ->where('sets_connector.set_id', $setId)
+                ->where('sets_connector.user_id', 0)
+                ->orderby('sets_connector.id','ASC')
+                ->get();
+    }
+
 	public function addToSet($setId, $exerciseId){
 
 		$query = $this->db->insert('sets_connector', array(
@@ -65,12 +99,30 @@ class Set_Model extends Model {
 		return $query->insert_id();
 	}
 
+    // add public exercise to public set
+    public function addPublicToSet($setId, $exerciseId){
+
+        $query = $this->db->insert('sets_connector', array(
+                                                            'set_id' => $setId,
+                                                            'exercise_id' => $exerciseId,
+                                                            'user_id' => 0,
+                                                            ));
+        return $query->insert_id();
+    }
+
 	public function addItem($data){
 
         $data['user_id'] = $this->userId;
 		$query = $this->db->insert('sets', $data); 
 		return $query->insert_id(); 
 	}
+
+    public function addPublicItem($data){
+
+        $data['user_id'] = 0;
+        $query = $this->db->insert('sets', $data); 
+        return $query->insert_id(); 
+    }
 
 	public function updateItem($data, $id){
 
@@ -79,6 +131,8 @@ class Set_Model extends Model {
 
 	public function deleteItem($id){
 
+        // first remove all connector references
+        $this->db->update('sets_connector', array('deleted' => 1), array('set_id' => $id, 'user_id' => $this->userId));
 		return $this->db->update('sets', array('deleted' => 1), array('id' => $id, 'user_id' => $this->userId));
 	}
 

@@ -20,13 +20,6 @@ $(function() {
 
     $('#import-exercises-link').click(function(){
 
-        // disable checkbox if group is not selected
-        if(groupId){
-            $('div#import-exercises form input[name="noimport[]"]').attr('disabled', '');
-        }else{
-            $('div#import-exercises form input[name="noimport[]"]').attr('disabled', 'disabled');
-        }
-
         $('div#import-exercises').show();
         return false;
     });
@@ -67,6 +60,12 @@ $(function() {
 		showEditExercisePopup($(this).parent().parent().data('id'));
 		return false;
 	});
+
+    $('table#exercise-list tbody tr a.export').live('click', function(){
+
+        showExportExercisePopup($(this).parent().parent().data('id'));
+        return false;
+    });
 
 	$('table#exercise-list tbody tr a.delete').live('click', function(){
 
@@ -142,12 +141,19 @@ $(function() {
 		$('ul#group-list li div.edit-group-box').remove();	
 		groupId = $(this).data('id');
 
+
 		if(groupId){
 
 			$('ul#group-list li').removeClass('selected');
+
+            // enable no import checkbox
+            $('div#import-exercises form input[name="noimport_id[]"]').attr('disabled', '');
 		}else{
 			$('ul#group-list li:not(#all-groups)').removeClass('selected');
 			$('ul#group-list li#all-groups').addClass('selected');
+
+            // disable no import checkbox if no group is selected
+            $('div#import-exercises form input[name="noimport_id[]"]').attr('disabled', 'disabled');
 		}
 		if(groupId = $(this).data('id')){
 
@@ -189,10 +195,17 @@ function fillExercises(){
 
 					var tr = $('<tr>');
 					tr.data('id', jsonrow.id);
+                    var exportLink = '';
+
+                    // it means it doesn't have a copy in public exercises
+                    if(jsonrow.import_id == 0){
+                        exportLink = '<td><a class = "export" href="#">Export</a></td>';
+                    }
+
 					tr.append('<td>' + jsonrow.title + '</td><td>'
 						  + jsonrow.desc + '</td><td>' 
 						  + getExerciseTypeName(jsonrow.ex_type) + '</td>' 
-						  + '<td><a class = "delete" href="#">Delete</a></td><td><a class = "edit" href="#">Edit</a></td>');
+						  + '<td><a class = "delete" href="#">Delete</a></td><td><a class = "edit" href="#">Edit</a></td>' + exportLink);
 					$('table#exercise-list tbody').append(tr);
 				});
 		});
@@ -208,11 +221,18 @@ function fillExercises(){
 
 					var tr = $('<tr>');
 					tr.data('id', jsonrow.id);
+                    var exportLink = '';
+
+                    // it means it doesn't have a copy in public exercises
+                    if(jsonrow.import_id == 0){
+                        exportLink = '<td><a class = "export" href="#">Export</a></td>';
+                    }
+
 					tr.append('<td>' + jsonrow.exercise_title + '</td><td>' 
 						  + jsonrow.desc +'</td><td>'
 						  + getExerciseTypeName(jsonrow.ex_type) +'</td><td>'
 						  + jsonrow.group_title 
-						  + '</td><td><a class = "delete" href="#">Delete</a></td><td><a class = "edit" href="#">Edit</a></td>');
+						  + '</td><td><a class = "delete" href="#">Delete</a></td><td><a class = "edit" href="#">Edit</a></td>' + exportLink);
 					$('table#exercise-list tbody').append(tr);
 				});
 		});
@@ -292,4 +312,21 @@ function importExercises(){
         }
     },"json");
 
+}
+
+function showExportExercisePopup(id){
+
+    $.getJSON(baseUrl + 'json/exerciseinfo', {id : id}, function(json){
+
+        fancyConfirm('Confirm export', 'Are you sure you want to export this exercise - "' + json[0].title + '"?', function(){
+
+            $.post(baseUrl + 'ajaxpost/exportexercise', {id : id}, function(json){
+
+                if(json.result == 'OK'){
+
+                    fillExercises();
+                }
+            },"json");
+        });
+    });
 }

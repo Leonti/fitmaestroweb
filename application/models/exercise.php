@@ -17,6 +17,7 @@ class Exercise_Model extends Model {
 			    'exercises.title AS exercise_title',
 			    'exercises.desc',
 			    'exercises.ex_type',
+                'exercises.import_id',
 			    'groups.title AS group_title',
 			    'exercises.id',
 			    'groups.id AS group_id'
@@ -73,6 +74,16 @@ class Exercise_Model extends Model {
 			    ->get();
 	}
 
+    public function getByPublicId($publicId){
+
+        return $this->db->select() // selects all fields by default
+                ->where('deleted', 0)
+                ->where('import_id', $publicId)
+                ->where('user_id', $this->userId)
+                ->from('exercises')
+                ->get();
+    }
+
     public function getPublicItem($id){
 
         return $this->db->select() // selects all fields by default
@@ -89,6 +100,14 @@ class Exercise_Model extends Model {
 		$query = $this->db->insert('exercises', $data); 
 		return $query->insert_id(); 
 	}
+
+    public function addPublicItem($data){
+
+        $data['user_id'] = 0;
+        $query = $this->db->insert('exercises', $data); 
+        return $query->insert_id(); 
+    }
+
 
 	public function updateItem($data, $id){
 
