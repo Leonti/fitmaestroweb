@@ -20,6 +20,16 @@ class Group_Model extends Model {
 			    ->get();
 	}
 
+    public function getPublicAll(){
+
+        return $this->db->select() // selects all fields by default
+                ->where('deleted', 0)
+                ->where('user_id', 0)
+                ->from('groups')
+                ->orderby('id', 'ASC')
+                ->get();
+    }
+
 	public function getItem($groupId){
 
 		return $this->db->select() // selects all fields by default
@@ -29,6 +39,28 @@ class Group_Model extends Model {
 			    ->from('groups')
 			    ->get();
 	}
+
+    // get group using original id of imported group
+    public function getByImportId($importId){
+
+        return $this->db->select() // selects all fields by default
+                ->where('deleted', 0)
+                ->where('import_id', $importId)
+                ->where('user_id', $this->userId)
+                ->from('groups')
+                ->get();
+    }
+
+    // get public group
+    public function getPublicItem($groupId){
+
+        return $this->db->select() // selects all fields by default
+                ->where('deleted', 0)
+                ->where('id', $groupId)
+                ->where('user_id', 0)
+                ->from('groups')
+                ->get();
+    }
 
 	public function addItem($data){
 
@@ -44,7 +76,11 @@ class Group_Model extends Model {
 
 	public function deleteItem($id){
 
-		return $this->db->delete('groups', array('id' => $id, 'user_id' => $this->userId));
+		$result = $this->db->update('groups', array('deleted' => 1), array('id' => $id, 'user_id' => $this->userId));
+
+        // also delete all exercises with this group
+        $this->db->update('exercises', array('deleted' => 1), array('group_id' => $id, 'user_id' => $this->userId));
+        return $result; 
 	}
 }
  

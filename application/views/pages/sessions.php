@@ -1,5 +1,11 @@
 <style>td{border: dashed;}</style>
 
+<ul id = "sessions-filter">
+<li id = "sessions-inprogress">Current</li>
+<li id = "sessions-done">Done</li>
+<li id = "sessions-all">All</li>
+</ul>
+
 <a id = "start-session" href = "#">Start session</a>
 <ul id = "session-list">
 </ul>
@@ -11,7 +17,7 @@
   <a href="#" id = "exercise-link">Add exercise</a>
   <a href="#" id = "session-done">Done!</a>
   <a href="#" id = "print-plan">Print</a>
-  <table id = "session-exercise-list">
+  <table id = "session-exercise-list" cellspacing="0">
       <thead>
       <tr>
       <th>Title</th>

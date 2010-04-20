@@ -9,7 +9,16 @@
     All groups
 </div>
 <h2>Exercises</h2>
-<h3>Exercises</h3><a id = "add-exercise" href = "#">Add exercise</a>
+<a id = "add-exercise" href = "#">Add exercise</a>
+<a id = "import-exercises-link" href = "#">Import exercises</a>
+<?php
+
+    $importExercises = new View('pages_parts/import-exercises'); 
+    $importExercises->publicExercisesArray = $publicExercisesArray;
+    $importExercises->publicGroups = $publicGroups;
+    $importExercises->render(TRUE);
+
+?>
 <table id = "exercise-list">
     <thead>
     <tr>
@@ -38,6 +47,7 @@
 	$popup = new View('popups/exercise-popup'); 
 	$popup->groups = $groups;
 	$popup->render(TRUE);
+
 	echo View::factory('popups/group-popup');
 ?>
  

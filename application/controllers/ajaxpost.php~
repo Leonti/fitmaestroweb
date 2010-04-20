@@ -84,24 +84,24 @@ class Ajaxpost_Controller extends Controller {
 			$exercises = new Exercise_Model($this->user->id);
 
 			$result = null;
+
+            $exerciseData = array('title' => $post['title'], 
+                                  'desc' => $post['desc'], 
+                                  'ex_type' => $post['ex_type'],
+                                  'max_weight' => floatval($post['max_weight']),
+                                  'max_reps' => intval($post['max_reps']),
+                                  'group_id' => $post['group_id']);
+
 			// existing item
 			if($post['id']){
 
-				if($exercises -> updateItem(array('title' => $post['title'], 
-								  'desc' => $post['desc'], 
-								  'ex_type' => $post['ex_type'],
-                                  'max_weight' => floatval($post['max_weight']),
-								  'group_id' => $post['group_id']), $post['id'])){
+				if($exercises -> updateItem($exerciseData, $post['id'])){
 
 					$result = true;
 				}
 			}else{
 
-				if($exercises -> addItem(array('title' => $post['title'], 
-							    'desc' => $post['desc'],
-							    'ex_type' => $post['ex_type'],
-                                'max_weight' => floatval($post['max_weight']),
-							    'group_id' => $post['group_id']))){
+				if($exercises -> addItem($exerciseData)){
 
 					$result = true;
 				}
@@ -301,7 +301,7 @@ class Ajaxpost_Controller extends Controller {
     public function savesession(){
 
         $post = $this->input->post();
-        if(isset($post['title'])){
+        if(isset($post['title']) || isset($post['status'])){
 
             $sessions = new Session_Model($this->user->id);
 
@@ -309,10 +309,19 @@ class Ajaxpost_Controller extends Controller {
             // existing item
             if($post['id']){
 
-                if($sessions -> updateItem(array(
-                                                'title' => $post['title'], 
-                                                'notes' => $post['notes'],
-                                                ), $post['id'])){
+                $updateArray = array();
+
+                if(isset($post['status'])){
+                    $updateArray['status'] = $post['status'];
+                }
+
+
+                if(isset($post['title'])){
+                    $updateArray['title'] = $post['title'];
+                    $updateArray['notes'] = $post['notes'];
+                }
+
+                if($sessions -> updateItem($updateArray, $post['id'])){
 
                     $result = true;
                 }
@@ -583,5 +592,72 @@ class Ajaxpost_Controller extends Controller {
         }
 
     }
+
+    public function importexercises(){
+
+        $post = $this->input->post();
+        if(isset($post['current_group_id'])){
+
+            $exercises = new Exercise_Model($this->user->id);
+            $groups = new Group_Model($this->user->id);
+            $result = null;
+
+            foreach($post['exercise_id'] as $importExerciseId){
+
+                $groupId = 0;
+
+                // get public exercise from db
+                $importExercise = $exercises->getPublicItem($importExerciseId);
+
+                // test if this group is already imported
+                $testGroup = $groups->getByImportId($importExercise[0]->group_id);
+
+                // if this group already imported - we use that id (db id, not imported) in imported exercise
+                if(count($testGroup) > 0){
+                    $groupId = $testGroup[0]->id;
+                }else{
+
+                    // it's not in the system - 2 choices:
+                    // 1. import group
+                    // 2. add exercise to current group
+
+                    // if user doesn't want to import group we use current group id
+                    if(in_array($importExercise[0]->group_id, $post['noimport_id'])){
+                        $groupId = $post['current_group_id'];
+                    }else{
+                        $importGroup = $groups->getPublicItem($importExercise[0]->group_id);
+                        $importGroupData = $importGroup[0];
+
+                        $groupId = $groups->addItem(array(
+                                                        'title' => $importGroupData->title,
+                                                        'desc' => $importGroupData->desc,
+                                                        'import_id' => $importGroupData->id,
+                                                        ));
+                    }
+                }
+
+                // now we have groupId - lets add exercise itself
+                $result = $exercises->addItem(array(
+                                                    'title' => $importExercise[0]->title,
+                                                    'desc' => $importExercise[0]->desc,
+                                                    'group_id' => $groupId,
+                                                    'import_id' =>$importExercise[0]->id
+                                                    ));
+            }
+
+            if($result){
+
+                echo json_encode(array('result' => 'OK'));
+            }else{
+
+                echo json_encode(array('result' => 'FAILED'));
+            }
+
+        }else{
+
+            echo "No data provided";
+        }
+    }
+
 }
 

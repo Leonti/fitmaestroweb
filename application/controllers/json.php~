@@ -201,7 +201,8 @@ function getProgramSets($programId, $userId){
     foreach($sets as &$set){
 
         $sessionsArray = $sessions->getByProgramConnector($set->id)->result_array();
-        $set->session = $sessionsArray[0];
+        $sessionData = isset($sessionsArray[0]) ? $sessionsArray[0] : '';
+        $set->session = $sessionData;
     }
 
     return $sets;

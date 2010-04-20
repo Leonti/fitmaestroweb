@@ -15,6 +15,10 @@
         Max Weight:<br />
         <input type="text" name = "max_weight" />
     </p>
+    <p id = "max-reps">
+        Max Repetitions:<br />
+        <input type="text" name = "max_reps" />
+    </p>
 	<p>
 	    Description:<br />
 	    <textarea name = "desc" ></textarea>

@@ -1,11 +1,14 @@
 var sessionId = 0;
 var exType = 0;
 var time24h = true;
+var sessionsFilter = 'INPROGRESS';
 
 $(function() {
 
     $('#reps-edit').dialog({autoOpen:false});
     $('#session-edit').dialog({autoOpen:false});
+
+    $('#sessions-inprogress').addClass('selected');
     fillSessions();
 
     if(timeFormat == "ampm"){
@@ -110,11 +113,27 @@ $(function() {
         return false;
     });
 
+    $('#sessions-filter li').click(function(){
+
+        $(this).parent().find('li').removeClass('selected');
+        $(this).addClass('selected');
+
+        if($(this).attr('id') == 'sessions-inprogress'){
+            sessionsFilter = 'INPROGRESS';
+        }else if($(this).attr('id') == 'sessions-done'){
+            sessionsFilter = 'DONE';
+        }else if($(this).attr('id') == 'sessions-all'){
+            sessionsFilter = '';
+        }
+
+        fillSessions();
+    });
+
 });
 
 function fillSessions(){
 
-    $.getJSON(baseUrl + 'json/sessions', function(json){
+    $.getJSON(baseUrl + 'json/sessions', {status: sessionsFilter}, function(json){
 
         $('ul#session-list li').remove();
 

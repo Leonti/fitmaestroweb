@@ -79,6 +79,16 @@ class Session_Model extends Model {
                 ->get();
     }
 
+    public function getByProgramConnector($connectorId){
+
+        return $this->db->select() // selects all fields by default
+                ->where('deleted', 0)
+                ->where('programs_connector_id', $connectorId)
+                ->where('user_id', $this->userId)
+                ->from('sessions')
+                ->get();
+    }
+
     public function getAll(){
 
         return $this->db->select() // selects all fields by default

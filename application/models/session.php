@@ -98,5 +98,17 @@ class Session_Model extends Model {
                 ->orderby('id', 'ASC')
                 ->get();
     }
+
+    public function getFiltered($filters = null){
+
+        return $this->db->select() // selects all fields by default
+                ->where('deleted', 0)
+                ->where('user_id', $this->userId)
+                ->where($filters)
+                ->from('sessions')
+                ->orderby('id', 'ASC')
+                ->get();
+    }
+
 }
  

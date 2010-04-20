@@ -14,15 +14,29 @@ $(function() {
 		}
 		$('#exercise-edit form input[type="hidden"]').val('');
 		$('#exercise-edit').dialog('option','title', 'Add exercise');
+        $('#exercise-edit form select[name="ex_type"]').trigger('change');
 		$('#exercise-edit').dialog('open');
 	});
+
+    $('#import-exercises-link').click(function(){
+
+        // disable checkbox if group is not selected
+        if(groupId){
+            $('div#import-exercises form input[name="noimport[]"]').attr('disabled', '');
+        }else{
+            $('div#import-exercises form input[name="noimport[]"]').attr('disabled', 'disabled');
+        }
+
+        $('div#import-exercises').show();
+        return false;
+    });
 
 	$('#exercise-edit form input[type="submit"]').click(function(){
 
 		if($.trim(($('#exercise-edit form input[name = "title"]').val())) != ''){
 			var dataString = $('#exercise-edit form').serialize();
 
-			$.post('ajaxpost/saveexercise', dataString, function(json){
+			$.post(baseUrl + 'ajaxpost/saveexercise', dataString, function(json){
 
 				if(json.result == 'OK'){
 
@@ -39,8 +53,10 @@ $(function() {
     $('#exercise-edit form select[name="ex_type"]').change(function(){
         if($(this).val() == 1){
             $('#exercise-edit form p#max-weight').show();
+            $('#exercise-edit form p#max-reps').hide();
         }else{
             $('#exercise-edit form p#max-weight').hide();
+            $('#exercise-edit form p#max-reps').show();
         }
     });
 
@@ -58,7 +74,7 @@ $(function() {
 
 		fancyConfirm('Confirm delete', 'Are you sure you want to delete this exercise?', function(){
 
-			$.post('ajaxpost/deleteexercise', {id : id}, function(json){
+			$.post(baseUrl + 'ajaxpost/deleteexercise', {id : id}, function(json){
 
 				if(json.result == 'OK'){
 
@@ -81,7 +97,7 @@ $(function() {
 		if($.trim(($('#group-edit form input[name = "title"]').val())) != ''){
 			var dataString = $('#group-edit form').serialize();
 
-			$.post('ajaxpost/savegroup', dataString, function(json){
+			$.post(baseUrl + 'ajaxpost/savegroup', dataString, function(json){
 
 				if(json.result == 'OK'){
 
@@ -108,7 +124,7 @@ $(function() {
 
 		fancyConfirm('Confirm delete', 'Are you sure you want to delete this group?', function(){
 
-			$.post('ajaxpost/deletegroup', {id : groupId}, function(json){
+			$.post(baseUrl + 'ajaxpost/deletegroup', {id : groupId}, function(json){
 
 				if(json.result == 'OK'){
 			
@@ -143,13 +159,24 @@ $(function() {
 		fillExercises();
 	});
 
+    $('#import-exercises form input[type="submit"]').click(function(){
+
+        importExercises();
+        return false;
+    });
+
+    $('#close-import').click(function(){
+        $('div#import-exercises').hide();
+        return false;
+    });
+
 });
  
 function fillExercises(){
 
 	if(groupId){
 
-		$.getJSON('json/exercisesbygroup', {id : groupId}, function(json){
+		$.getJSON(baseUrl + 'json/exercisesbygroup', {id : groupId}, function(json){
 
                 // remove if already appended
                 $('ul#group-list li.selected div').remove();
@@ -171,7 +198,7 @@ function fillExercises(){
 		});
 	}else{
 
-		$.getJSON('json/exercises', function(json){
+		$.getJSON(baseUrl + 'json/exercises', function(json){
 
 			 	$('table#exercise-list tbody').remove();
 				$('table#exercise-list').append($('<tbody>'));
@@ -196,18 +223,19 @@ function fillExercises(){
 
 function showEditExercisePopup(id){
 
-	$.getJSON('json/exerciseinfo', {id : id}, function(json){
+	$.getJSON(baseUrl + 'json/exerciseinfo', {id : id}, function(json){
 
 		$('#exercise-edit form')[0].reset();
 		$('#exercise-edit form').populate(json[0]);
 		$('#exercise-edit').dialog('option','title', 'Edit exercise'); 
+        $('#exercise-edit form select[name="ex_type"]').trigger('change');
 		$('#exercise-edit').dialog('open');
 	});
 }
 
 function fillGroups(){
 
-	$.getJSON('json/groups', function(json){
+	$.getJSON(baseUrl + 'json/groups', function(json){
 
 		$('ul#group-list li:not(#all-groups)').remove();
 		$('#exercise-edit form select[name="group_id"] option').remove();
@@ -238,7 +266,7 @@ function fillGroups(){
 
 function showEditGroupPopup(){
 
-	$.getJSON('json/groupinfo', {id : groupId}, function(json){
+	$.getJSON(baseUrl + 'json/groupinfo', {id : groupId}, function(json){
 
 		$('#group-edit form')[0].reset();
 		$('#group-edit form').populate(json[0]);
@@ -246,4 +274,22 @@ function showEditGroupPopup(){
 		$('#group-edit').dialog('open');
 		//alert(json[0].title);
 	});
+}
+
+function importExercises(){
+
+    $('#import-exercises form input[name="current_group_id"]').val(groupId);
+    var dataString = $('#import-exercises form').serialize();
+
+    $.post(baseUrl + 'ajaxpost/importexercises', dataString, function(json){
+
+        if(json.result == 'OK'){
+
+            $('div#import-exercises').hide();
+            $('div#import-exercises form input[type="checkbox"]').attr('checked', '');
+            // exercises will be filled automatically
+            fillGroups();
+        }
+    },"json");
+
 }

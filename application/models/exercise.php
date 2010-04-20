@@ -40,6 +40,29 @@ class Exercise_Model extends Model {
 			    ->get();
 	}
 
+    public function getPublicByGroupId($groupId){
+
+        return $this->db->select() // selects all fields by default
+                ->where('deleted', 0)
+                ->where('group_id', $groupId)
+                ->where('user_id', 0)
+                ->from('exercises')
+                ->orderby('id','ASC')
+                ->get();
+    }
+
+    // get imported exercise usingoriginal id
+    public function getByImportId($importId){
+
+        return $this->db->select() // selects all fields by default
+                ->where('deleted', 0)
+                ->where('import_id', $importId)
+                ->where('user_id', $this->userId)
+                ->from('exercises')
+                ->orderby('id','ASC')
+                ->get();
+    }
+
 	public function getItem($id){
 
 		return $this->db->select() // selects all fields by default
@@ -49,6 +72,16 @@ class Exercise_Model extends Model {
 			    ->from('exercises')
 			    ->get();
 	}
+
+    public function getPublicItem($id){
+
+        return $this->db->select() // selects all fields by default
+                ->where('deleted', 0)
+                ->where('id', $id)
+                ->where('user_id', 0)
+                ->from('exercises')
+                ->get();
+    }
 
 	public function addItem($data){
 
@@ -64,7 +97,7 @@ class Exercise_Model extends Model {
 
 	public function deleteItem($id){
 
-		return $this->db->delete('exercises', array('id' => $id, 'user_id' => $this->userId));
+		return $this->db->update('exercises', array('deleted' => 1), array('id' => $id, 'user_id' => $this->userId));
 	}
 }
  

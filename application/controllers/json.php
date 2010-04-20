@@ -113,8 +113,13 @@ class Json_Controller extends Controller {
 
     public function sessions(){
 
+        $get = $this->input->get();
         $sessions = new Session_Model($this->user->id);
-        echo json_encode(getArray($sessions->getAll()));
+        $filters = array();
+        if(!empty($get['status'])){
+            $filters['status'] = $get['status'];
+        }
+        echo json_encode(getArray($sessions->getFiltered($filters)));
     }
 
     public function getdatetime(){

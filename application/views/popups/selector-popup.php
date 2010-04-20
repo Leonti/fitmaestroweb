@@ -1,5 +1,6 @@
 <div id="select-exercise" style="display:none;" title="Select exercise">
-    <div id="accordion">
+    <a href = "exercises">Edit Exercises</a>
+    <div class = "accordion">
 	<?php foreach ($groups as $item){ ?>
 	    <h3><a href="#"><?php echo html::specialchars($item->title) ?></a></h3>
 	    <div><?php echo html::specialchars($item->desc); ?> 

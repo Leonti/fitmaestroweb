@@ -21,8 +21,21 @@ class Exercises_Controller extends Website_Controller {
 
 		$exercises = new Exercise_Model($this->user->id);
 		$groups = new Group_Model($this->user->id);
-		$this->template->content->exercises = $exercises->getAll();
-		$this->template->content->groups = $groups->getAll();
+
+        $this->template->content->exercises = $exercises->getAll();
+        $this->template->content->groups = $groups->getAll();
+
+        // get list of public exercises and groups for import
+        $publicGroupList = $groups->getPublicAll();
+        $this->template->content->publicGroups = $publicGroupList;
+        $publicExercisesArray = array();
+        foreach($publicGroupList as $item){
+
+            $publicExercisesArray[$item->id] = $exercises->getPublicByGroupId($item->id);
+        }
+
+        $this->template->content->publicExercisesArray = $publicExercisesArray;
+
 	}
 
 }

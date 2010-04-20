@@ -1,10 +1,10 @@
 var addExcallback;
 $(function() {
 
-    $('#accordion').accordion( { autoHeight: false } );
+    $('.accordion').accordion( { autoHeight: false } );
     $('#select-exercise').dialog({autoOpen:false});
 
-    $('#accordion li').click(function(){
+    $('.accordion li').click(function(){
         var metadata = $(this).metadata();
         addExCallback(metadata.id);
         $('#select-exercise').dialog('close');
