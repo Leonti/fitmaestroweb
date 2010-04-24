@@ -14,19 +14,20 @@ class Days_Controller extends Website_Controller {
         }
     }
 
-	public function index($setId = null, $programId = null){
+	public function index(){
 
 		$this->template->title = 'Exercises::BodyB site';
 		$this->template->content = new View('pages/days');
-echo Kohana::debug($setId);
-echo Kohana::debug($programId);
 
 		$exercises = new Exercise_Model($this->user->id);
 		$groups = new Group_Model($this->user->id);
 		$sets = new Set_Model($this->user->id);
-		$groupList = $groups->getAll();
-		$this->template->content->groups = $groupList;
-		$this->template->content->sets = $sets->getAll();
+
+		$this->template->content->sets = $sets->getFreeSets();
+
+        // get data for exercises selector
+        $groupList = $groups->getAll();
+        $this->template->content->groups = $groupList;
 		
 		$exercisesArray = array();
 		foreach($groupList as $item){

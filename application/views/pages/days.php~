@@ -6,9 +6,6 @@
     <?php } ?>
 </ul>
 
-<script type = "text/javascript">
-    var freeSets = true;
-</script>
 <?php echo View::factory('pages_parts/set-exercises'); ?>
 <?php 
 	echo html::script(array

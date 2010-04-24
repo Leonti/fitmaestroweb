@@ -20,6 +20,24 @@ class Set_Model extends Model {
 			    ->get();
 	}
 
+    public function getFreeSets(){
+
+        $programSets = $this->db->select('set_id')
+                ->where('deleted', 0)
+                ->where('user_id', $this->userId)
+                ->from('programs_connector')
+                ->get()
+                ->result_array();
+
+        return $this->db->select() // selects all fields by default
+                ->where('deleted', 0)
+                ->where('user_id', $this->userId)
+                ->notin('id', $programSets)
+                ->from('sets')
+                ->orderby('id', 'ASC')
+                ->get();
+    }
+
 	public function getItem($setId){
 
 		return $this->db->select() // selects all fields by default
@@ -35,7 +53,7 @@ class Set_Model extends Model {
         return $this->db->select() // selects all fields by default
                 ->where('deleted', 0)
                 ->where('id', $setId)
-                ->where('user_id', $this->userId)
+                ->where('user_id', 0)
                 ->from('sets')
                 ->get();
     }

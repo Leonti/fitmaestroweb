@@ -228,7 +228,7 @@ class Ajaxpost_Controller extends Controller {
 				}
 			}
 
-            if(isset($post['program_id'])){
+            if(isset($post['program_id']) && !empty($post['program_id'])){
 
                 $programs = new Program_Model($this->user->id);
                 $programs->addSetToProgram(array(
@@ -318,7 +318,7 @@ class Ajaxpost_Controller extends Controller {
 
                 if(isset($post['title'])){
                     $updateArray['title'] = $post['title'];
-                    $updateArray['notes'] = $post['notes'];
+                    $updateArray['desc'] = $post['desc'];
                 }
 
                 if($sessions -> updateItem($updateArray, $post['id'])){
@@ -329,7 +329,7 @@ class Ajaxpost_Controller extends Controller {
 
                 if($sessions -> addSession(array(
                                                 'title' => $post['title'], 
-                                                'notes' => $post['notes'],
+                                                'desc' => $post['desc'],
                                                 ))){
 
                     $result = true;

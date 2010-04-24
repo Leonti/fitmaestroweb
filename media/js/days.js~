@@ -33,6 +33,8 @@ $(function() {
 		$('div#set-description').html($(this).data('desc'));
 		$(this).append('<div class = "edit-set-box"><a class = "edit" href="#">Edit</a><a class = "delete" href="#">Delete</a></div>');
 
+        $('#start-session-link').show();
+
 		fillSetExercises();
 	});
 
@@ -58,25 +60,30 @@ $(function() {
 		});
 		return false;
 	});
-/*
-	$('#set-edit form input[type="submit"]').click(function(){
 
-		if($.trim(($('#set-edit form input[name = "title"]').val())) != ''){
-			var dataString = $('#set-edit form').serialize();
+    // to prevent double sending in programs view
+    if(freeSets){
 
-			$.post('ajaxpost/saveset', dataString, function(json){
+        $('#set-edit form input[type="submit"]').click(function(){
 
-				if(json.result == 'OK'){
+            if($.trim(($('#set-edit form input[name = "title"]').val())) != ''){
+                var dataString = $('#set-edit form').serialize();
 
-					fillSets();
-				}
-			},"json");
+                $.post('ajaxpost/saveset', dataString, function(json){
 
-			$('#set-edit').dialog('close');
-		}
+                    if(json.result == 'OK'){
 
-		return false;
-	}); */
+                        fillSets();
+                    }
+                },"json");
+
+                $('#set-edit').dialog('close');
+            }
+
+            return false;
+        }); 
+    }
+
 
 	$('.reps').live('click', function(){
 
@@ -150,7 +157,7 @@ $(function() {
         var year = currentTime.getFullYear()
         $('#start-session-popup form input[name="title"]').val(month + "/" + day + "/" + year);
 
-        if(programsConnectorId){
+        if(typeof(programsConnectorId) != 'undefined'){
             $('#start-session-popup form input[name="programs_connector_id"]').val(programsConnectorId);
         }
 
@@ -191,7 +198,6 @@ function fillSets(){
 function fillSetExercises(){
 
 	$('#set-exercises').show();
-    $('#start-session-link').show();
 	$.getJSON(baseUrl + 'json/setexercises', {id : setId}, function(json){
 
 			$('table#set-exercise-list tbody').remove();

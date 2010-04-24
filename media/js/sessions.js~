@@ -126,7 +126,6 @@ $(function() {
             sessionsFilter = '';
         }
 
-        sessionsFilter = '';
         fillSessions();
     });
 

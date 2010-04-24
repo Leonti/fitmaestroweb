@@ -622,7 +622,7 @@ class Ajaxpost_Controller extends Controller {
 
     public function importprogram(){
 
-        $post = $this->input->get();
+        $post = $this->input->post();
 
         if(isset($post['id'])){
 
@@ -642,7 +642,7 @@ class Ajaxpost_Controller extends Controller {
 
     public function exportprogram(){
 
-        $post = $this->input->get();
+        $post = $this->input->post();
 
         if(isset($post['id'])){
 

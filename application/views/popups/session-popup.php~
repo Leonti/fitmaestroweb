@@ -9,7 +9,6 @@
 	    <textarea name = "notes" ></textarea>
 	</p>
 	<input type = "hidden" name = "id" value = "" />
-    <input type = "hidden" name = "program_id" value = "" />
 	<input type="submit" value="Save" />
     </form>
 </div> 

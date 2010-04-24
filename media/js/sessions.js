@@ -31,7 +31,7 @@ $(function() {
         $('ul#session-list li').removeClass('selected');
 
         $(this).addClass('selected');
-        $('div#session-description').html($(this).data('notes'));
+        $('div#session-description').html($(this).data('desc'));
 
         $(this).append('<div class = "edit-session-box">'
                         + '<a class = "edit" href="#">Edit</a>'
@@ -142,7 +142,7 @@ function fillSessions(){
             var li = $('<li>');
             li.data('id', jsonrow.id);
             li.data('status', jsonrow.status);
-            li.data('notes', jsonrow.notes);
+            li.data('desc', jsonrow.desc);
             li.append(jsonrow.title);
             li.append(jsonrow.status);
             $('ul#session-list').append(li);

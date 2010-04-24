@@ -6,7 +6,7 @@
 	</p>
 	<p>
 	    Notes:<br />
-	    <textarea name = "notes" ></textarea>
+	    <textarea name = "desc" ></textarea>
 	</p>
 	<input type = "hidden" name = "id" value = "" />
 	<input type="submit" value="Save" />

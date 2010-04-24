@@ -20,6 +20,29 @@ class Set_Model extends Model {
 			    ->get();
 	}
 
+    // will need query rework - too inefficient
+    public function getFreeSets(){
+
+        $programSets = $this->db->select('set_id')
+                ->where('deleted', 0)
+                ->where('user_id', $this->userId)
+                ->from('programs_connector')
+                ->get();
+
+        $toExclude = array();
+        foreach($programSets as $programSet){
+            $toExclude[] = $programSet->set_id;
+        }
+
+        return $this->db->select() // selects all fields by default
+                ->where('deleted', 0)
+                ->where('user_id', $this->userId)
+                ->notin('id', $toExclude)
+                ->from('sets')
+                ->orderby('id', 'ASC')
+                ->get();
+    }
+
 	public function getItem($setId){
 
 		return $this->db->select() // selects all fields by default

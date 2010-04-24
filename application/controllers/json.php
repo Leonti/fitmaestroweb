@@ -75,7 +75,7 @@ class Json_Controller extends Controller {
 	public function sets(){
 
 		$sets = new Set_Model($this->user->id);
-		echo json_encode($sets->getAll()->result_array());
+		echo json_encode($sets->getFreeSets()->result_array());
 	}
 
 	public function setexercises(){
