@@ -14,7 +14,7 @@ class User_Controller extends Website_Controller {
             $post->add_rules('username', 'required', array('valid','email'));
             $post->add_callbacks('username', array($this, '_unique_email'));
             $post->add_rules('password', 'required');
-            $post->add_rules('repeat_password', 'matches[password]');
+            $post->add_rules('repeat_password', 'matches', 'password');
 
             if($post->validate()){
                 echo 'No validation errors found ';

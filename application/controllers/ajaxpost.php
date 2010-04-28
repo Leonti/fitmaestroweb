@@ -448,7 +448,7 @@ class Ajaxpost_Controller extends Controller {
 
 					if($reps != ''){
 
-						$result = $sets -> addReps(array( 'set_connector_id' => $post['connector_id'],
+						$result = $sets -> addReps(array( 'sets_connector_id' => $post['connector_id'],
 										  'reps' => $reps,
 										  'percentage' => $percentage));
 					}

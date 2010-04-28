@@ -168,7 +168,7 @@ class Set_Model extends Model {
 
 		return $this->db->select() // selects all fields by default
 			    ->where('deleted', 0)
-			    ->where('set_connector_id', $connectorId)
+			    ->where('sets_connector_id', $connectorId)
                 ->where('user_id', $this->userId)
 			    ->from('sets_detail')
 			    ->get();

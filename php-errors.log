@@ -1,0 +1,6 @@
+ 
+[27-Apr-2010 22:11:01] PHP Fatal error:  Class 'User' not found in /home/leonti/public_html/koh/application/controllers/remote.php on line 52
+[27-Apr-2010 22:14:52] PHP Fatal error:  Class 'User' not found in /home/leonti/public_html/koh/application/controllers/remote.php on line 52
+[27-Apr-2010 22:17:17] PHP Fatal error:  Class 'User' not found in /home/leonti/public_html/koh/application/controllers/remote.php on line 52
+[27-Apr-2010 22:19:26] PHP Fatal error:  Class 'User' not found in /home/leonti/public_html/koh/application/controllers/remote.php on line 52
+[27-Apr-2010 22:20:34] PHP Fatal error:  Class 'Exercises' not found in /home/leonti/public_html/koh/application/controllers/remote.php on line 182

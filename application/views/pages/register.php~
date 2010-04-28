@@ -3,9 +3,9 @@
 <?php
 
     echo form::open(null, array('id' => 'register_form'));
-    echo 'Email: '. form::input('username') . '<br />';
-    echo 'Password: '. form::password('password') . '<br />';
-    echo 'Repeat password: '. form::password('repeat_password') . '<br /><br />';
+    echo form::input('username') . '<br />';
+    echo form::password('password') . '<br />';
+    echo form::password('repeat_password') . '<br /><br />';
     echo form::submit('submit', 'Register');
 
     echo '

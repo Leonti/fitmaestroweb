@@ -14,7 +14,9 @@ class Website_Controller extends Template_Controller {
 		'Days' => 'days',
         'Sessions' => 'sessions',
         'Settings' => 'settings',
+        'Login' => 'user/login',
         'Logout' => 'user/logout',
+        'Register' => 'user/register',
 		);
 
 		$this->db = Database::instance();
