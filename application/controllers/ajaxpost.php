@@ -583,6 +583,7 @@ class Ajaxpost_Controller extends Controller {
 
                 $reps = $post['reps'][$i];
                 $weight = $post['weight'][$i];
+                $done = date("Y-m-d H:i:s", strtotime($post['done'][$i]));
 
                 // updating existing
                 if($logId){
@@ -593,6 +594,7 @@ class Ajaxpost_Controller extends Controller {
                         $result = $log->updateItem(array(
                                             'reps' => $reps,
                                             'weight' => $weight,
+                                            'done' => $done,
                                               ), $logId);
                     }else{
 
@@ -607,7 +609,6 @@ class Ajaxpost_Controller extends Controller {
 
                         if($reps != '' || $weight != ''){
 
-                            $done = date("Y-m-d H:i:s", strtotime($post['done'][$i]));
                             $result = $log -> addReps(array( 
                                             'session_id' => $post['session_id'],
                                             'exercise_id' => $post['exercise_id'],
