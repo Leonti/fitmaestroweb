@@ -1,4 +1,9 @@
 var addExcallback;
+
+var statusesMap = new Array();
+statusesMap['INPROGRESS'] = 'In Progress';
+statusesMap['DONE'] = 'Done';
+
 $(function() {
 
     $('.accordion').accordion( { autoHeight: false } );
@@ -23,4 +28,18 @@ function exerciseChooser(callback){
 
     addExCallback = callback;
     $('#select-exercise').dialog('open');
+}
+
+function makeZebra(zebra){
+
+    var odd = true;
+    zebra.children().each(
+        function(){
+            if(odd){
+                $(this).addClass('odd');
+                odd = false;
+            }else{
+                odd = true;
+            }
+        });
 }

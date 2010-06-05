@@ -14,7 +14,7 @@ class Exercise_Model extends Model {
 
 		return $this->db->select
 			    (
-			    'exercises.title AS exercise_title',
+			    'exercises.title AS title',
 			    'exercises.desc',
 			    'exercises.ex_type',
                 'exercises.import_id',

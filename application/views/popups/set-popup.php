@@ -1,6 +1,6 @@
 <div id="set-edit" style="display:none;" title="Add set">
     <form>
-	<p>
+	<p id = "title-p">
 	    Title:<br />
 	    <input type="text" name = "title" />
 	</p>

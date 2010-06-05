@@ -27,22 +27,55 @@ class Session_Model extends Model {
         $setExercises = $sets->getExercises($setId);
 
         foreach($setExercises as $setExercise){
-            if(!$this->addExerciseToSession($sessionId, $setExercise->id, $setExercise->connector_id)){
-                return false;
+
+            $sessionsConnector = $this->addExerciseToSession($sessionId, $setExercise->id);
+
+            $exerciseReps = $sets->getReps($setExercise->connector_id);
+            foreach($exerciseReps as $exerciseRep){
+
+                
+                $this->addReps(array(
+                                    'sessions_connector_id' => $sessionsConnector,
+                                    'reps' => $exerciseRep->reps,
+                                    'percentage' => $exerciseRep->percentage,
+                                    ));
             }
+
         }
         return true;
     }
 
-    public function addExerciseToSession($sessionId, $exerciseId, $connectorId = 0){
+    public function addExerciseToSession($sessionId, $exerciseId){
 
         $query = $this->db->insert('sessions_connector', array(
                                                             'session_id' => $sessionId, 
                                                             'exercise_id' => $exerciseId,
-                                                            'sets_connector_id' => $connectorId,
                                                             'user_id' => $this->userId,
                                                             ));
+
         return $query->insert_id(); 
+    }
+
+    public function deleteExercise($id){
+
+        return $this->db->update('sessions_connector', array('deleted' => 1), array('id' => $id, 'user_id' => $this->userId));
+    }
+
+    public function getReps($connectorId){
+
+        return $this->db->select() // selects all fields by default
+                ->where('deleted', 0)
+                ->where('sessions_connector_id', $connectorId)
+                ->where('user_id', $this->userId)
+                ->from('sessions_detail')
+                ->get();
+    }
+
+    public function addReps($data){
+
+        $data['user_id'] = $this->userId;
+        $query = $this->db->insert('sessions_detail', $data); 
+        return $query->insert_id();
     }
 
     public function getExercises($sessionId){
@@ -55,8 +88,7 @@ class Session_Model extends Model {
                 'exercises.max_weight',
                 'exercises.ex_type',
                 'groups.title AS group_title',
-                'sessions_connector.id AS connector_id',
-                'sessions_connector.sets_connector_id'
+                'sessions_connector.id AS sessions_connector_id'
                 )
                 ->from('sessions_connector')
                 ->join('exercises', array('sessions_connector.exercise_id' => 'exercises.id'))

@@ -2,22 +2,42 @@
 
 stdClass Object
 (
+    [what] => STARTUPDATE
+    [authkey] => d8a33bb908d3c896cae9b3eabf13d8ce
     [data] => stdClass Object
         (
-            [localtime] => 1272413942
-            [programs] => Array
-                (
-                )
-
-            [sessions] => Array
-                (
-                )
-
-            [sets_connector] => Array
-                (
-                )
-
             [sets] => Array
+                (
+                )
+
+            [sessions_detail] => Array
+                (
+                )
+
+            [log] => Array
+                (
+                    [0] => stdClass Object
+                        (
+                            [exercise_id] => 1
+                            [done] => 2010-05-07 23:13:43
+                            [stamp] => 1273266847
+                            [site_id] => 132
+                            [session_id] => 2
+                            [reps] => 57
+                            [sessions_detail_id] => 0
+                            [weight] => 0
+                            [deleted] => 0
+                            [id] => 5
+                        )
+
+                )
+
+            [groups] => Array
+                (
+                )
+
+            [localtime] => 1273266860
+            [sessions_connector] => Array
                 (
                 )
 
@@ -25,11 +45,7 @@ stdClass Object
                 (
                 )
 
-            [sessions_connector] => Array
-                (
-                )
-
-            [log] => Array
+            [sessions] => Array
                 (
                 )
 
@@ -37,21 +53,23 @@ stdClass Object
                 (
                 )
 
+            [programs] => Array
+                (
+                )
+
             [sets_detail] => Array
                 (
                 )
 
-            [groups] => Array
+            [sets_connector] => Array
                 (
                 )
 
         )
 
-    [authkey] => b2a086dffd677fdf4d4894fc5594b17d
-    [what] => STARTUPDATE
 )
 
-User id is: 10
+User id is: 32
 -----------TO PHONE-------------
 
 stdClass Object
@@ -65,40 +83,6 @@ stdClass Object
 
             [exercises] => Array
                 (
-                    [0] => stdClass Object
-                        (
-                            [id] => 99
-                            [title] => fishka
-                            [desc] => dyg
-                            [ex_type] => 0
-                            [max_weight] => 0
-                            [max_reps] => 35
-                            [group_id] => 3
-                            [import_id] => 84
-                            [phone_id] => 3
-                            [user_id] => 10
-                            [updated] => 2010-04-28 02:18:55
-                            [deleted] => 0
-                            [stamp] => 1272413935
-                        )
-
-                    [1] => stdClass Object
-                        (
-                            [id] => 100
-                            [title] => dyg
-                            [desc] => prekol'nyj description
-                            [ex_type] => 1
-                            [max_weight] => 123
-                            [max_reps] => 0
-                            [group_id] => 3
-                            [import_id] => 85
-                            [phone_id] => 4
-                            [user_id] => 10
-                            [updated] => 2010-04-28 02:18:43
-                            [deleted] => 0
-                            [stamp] => 1272413923
-                        )
-
                 )
 
             [sets] => Array
@@ -126,6 +110,10 @@ stdClass Object
                 )
 
             [sessions_connector] => Array
+                (
+                )
+
+            [sessions_detail] => Array
                 (
                 )
 
@@ -141,29 +129,15 @@ stdClass Object
 
 stdClass Object
 (
+    [what] => FINISHUPDATE
+    [authkey] => d8a33bb908d3c896cae9b3eabf13d8ce
     [data] => stdClass Object
         (
-            [programs] => Array
-                (
-                )
-
-            [sessions] => Array
-                (
-                )
-
-            [sets_connector] => Array
-                (
-                )
-
             [sets] => Array
                 (
                 )
 
-            [exercises] => Array
-                (
-                )
-
-            [sessions_connector] => Array
+            [sessions_detail] => Array
                 (
                 )
 
@@ -171,7 +145,27 @@ stdClass Object
                 (
                 )
 
+            [groups] => Array
+                (
+                )
+
+            [sessions_connector] => Array
+                (
+                )
+
+            [exercises] => Array
+                (
+                )
+
+            [sessions] => Array
+                (
+                )
+
             [programs_connector] => Array
+                (
+                )
+
+            [programs] => Array
                 (
                 )
 
@@ -179,17 +173,15 @@ stdClass Object
                 (
                 )
 
-            [groups] => Array
+            [sets_connector] => Array
                 (
                 )
 
         )
 
-    [authkey] => b2a086dffd677fdf4d4894fc5594b17d
-    [what] => FINISHUPDATE
 )
 
-User id is: 10
+User id is: 32
 -----------TO PHONE-------------
 
 stdClass Object
@@ -230,6 +222,10 @@ stdClass Object
                 )
 
             [sessions_connector] => Array
+                (
+                )
+
+            [sessions_detail] => Array
                 (
                 )
 

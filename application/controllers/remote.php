@@ -74,8 +74,9 @@ function prepareUpdate($userId, $phoneData = null){
                 'programs' =>   array('title', 'desc'),
                 'programs_connector' => array('program_id', 'set_id', 'day_number'),
                 'sessions' => array('programs_connector_id', 'title', 'desc', 'status'),
-                'sessions_connector' => array('session_id', 'sets_connector_id', 'exercise_id'),
-                'log' => array('exercise_id', 'weight', 'reps', 'done', 'session_id', 'sets_detail_id'),
+                'sessions_connector' => array('session_id', 'exercise_id'),
+                'sessions_detail' => array('sessions_connector_id', 'reps', 'percentage'),
+                'log' => array('exercise_id', 'weight', 'reps', 'done', 'session_id', 'sessions_detail_id'),
 
                 );
 
@@ -86,9 +87,11 @@ function prepareUpdate($userId, $phoneData = null){
                 'exercise_id' => 'exercises',
                 'session_id' => 'sessions',
                 'sets_detail_id' => 'sets_detail',
+                'sessions_detail_id' => 'sessions_detail',
                 'program_id' => 'programs',
                 'programs_connector_id' => 'programs_connector',
                 'sets_connector_id' => 'sets_connector',
+                'sessions_connector_id' => 'sessions_connector',
 
                 );
 
@@ -171,7 +174,7 @@ error_log("User id is: " . $userId . "\n", 3, "log");
     return $data;
 }
 
-// we got new stuff from the phone, gave new site stuff back, no it's time to update phone_id's in site's database
+// we got new stuff from the phone, gave new site stuff back, now it's time to update phone_id's in site's database
 function finishUpdate($userId, $phoneData){
 
     $exercisesObj = new exercises();
@@ -187,6 +190,7 @@ function finishUpdate($userId, $phoneData){
                         'programs_connector',
                         'sessions',
                         'sessions_connector',
+                        'sessions_detail',
                         'log',
 
                         );

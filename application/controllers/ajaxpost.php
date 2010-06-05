@@ -527,6 +527,47 @@ class Ajaxpost_Controller extends Controller {
         }
     }
 
+    public function sessiondeleteexercise(){
+
+        $post = $this->input->post();
+        if(isset($post['id'])){
+
+            $sessions = new Session_Model($this->user->id);
+
+            if($sessions -> deleteExercise($post['id'])){
+
+                echo json_encode(array('result' => 'OK'));
+            }else{
+
+                echo json_encode(array('result' => 'FAILED'));
+            }
+
+        }else{
+            echo "No data provided";
+        }
+    }
+
+    public function deletesession(){
+
+        $post = $this->input->post();
+        if(isset($post['id'])){
+
+            $sessions = new Session_Model($this->user->id);
+
+            if($sessions -> deleteItem($post['id'])){
+
+                echo json_encode(array('result' => 'OK'));
+            }else{
+
+                echo json_encode(array('result' => 'FAILED'));
+            }
+
+        }else{
+            echo "No data provided";
+        }
+    }
+
+    // adding extra reps before doing planned result in adding first planned reps
     public function savesessionreps(){
 
         $post = $this->input->post();
@@ -569,7 +610,7 @@ class Ajaxpost_Controller extends Controller {
                             $result = $log -> addReps(array( 
                                             'session_id' => $post['session_id'],
                                             'exercise_id' => $post['exercise_id'],
-                                            'sets_detail_id' => $repsId,
+                                            'sessions_detail_id' => $repsId,
                                             'reps' => $reps,
                                             'weight' => $weight));
                         }

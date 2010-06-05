@@ -1,9 +1,11 @@
 var programId = 0;
+var programTitle = '';
 var programsConnectorId = 0;
 var clearTable = false;
 
 $(function() {
 
+    $('#set-edit #title-p').hide();
 	$('#program-edit').dialog({autoOpen:false});
     $('#set-edit').dialog({autoOpen:false});
 
@@ -100,25 +102,31 @@ $(function() {
             clearTable = false;
         }
 		programId = $(this).data('id');
+        programTitle = $(this).data('title');
 
 		$('ul#program-list li').removeClass('selected');
 
         $(this).addClass('selected');
         $('div#program-description').html($(this).data('desc'));
-        $('ul#program-list li.selected div').remove();
+        $('ul#program-list li.selected div.edit-box').remove();
 
         exportLink = '';
         // it means it doesn't have a copy in public programs
         if($(this).data('import_id') == 0){
-            exportLink = '<a class = "export" href="#">Export</a>';
+            exportLink = '<a class = "export" href="#"></a>';
         }
-        $('ul#program-list li.selected').append('<div class = "edit-program-box"><a class = "edit" href="#">Edit</a><a class = "delete" href="#">Delete</a>' + exportLink + '</div>');
+        var editBox = '<div class = "edit-program-box edit-box">' 
+        + '<a class = "edit" href="#"></a>'
+        + '<a class = "delete" href="#"></a>'
+        + exportLink + '</div>';
+
+        $('ul#program-list li.selected').append(editBox);
 
         fillDays();
         return false;
     });
 
-    $('a.set-details').live('click', function(){
+    $('div.set-details').live('click', function(){
 
         setId = $(this).parent().data('set_id');
         programsConnectorId = $(this).parent().data('connector_id');
@@ -130,13 +138,14 @@ $(function() {
             $('#start-session-link').show();
         }
 
+        $('#program-workout').show();
         fillSetExercises();
         return false;
     });
 
     $('a.remove-set').live('click', function(){
 
-        removeSet($(this).parent().data('connector_id'));
+        removeSet($(this).parent().parent().data('connector_id'));
         return false;
     });
 
@@ -152,6 +161,9 @@ $(function() {
             if($(this).data('set_id')){
                 showEditSetDialog($(this).data('set_id'));
             }else{
+                
+                //since it's a new one - hide workout table
+                $('#program-workout').hide();
                 showAddSetDialog($(this).data('day_number'));
             }
         }
@@ -162,7 +174,8 @@ $(function() {
         return false;
     });
 
-$('table#days tbody tr td div a').live('mouseover', function() { 
+$('table#days tbody tr td div div.set-details').live('mouseover', function() {
+
     if (!$(this).data('init')) {
         $(this).data('init', true);
         $(this).draggable({
@@ -181,11 +194,10 @@ $('table#days tbody tr td div a').live('mouseover', function() {
 
 function makeDroppable(){
  
-    $('table#days tbody tr td div').droppable({
-        accept: 'table#days tbody tr td div a',
+    $('div.workout').droppable({
+        accept: 'div.set-details',
         activeClass: 'ui-state-highlight',
         drop: function(ev, ui) {
-
             moveSet(ui.draggable.parent().data('connector_id'), $(this).data('day_number'))
         }
     });
@@ -213,9 +225,10 @@ function fillPrograms(){
 
 			var li = $('<li>');
 			li.data('id', jsonrow.id);
+            li.data('title', jsonrow.title);
 			li.data('desc', jsonrow.desc);
             li.data('import_id', jsonrow.import_id);
-			li.append(jsonrow.title);
+			li.append('<div class = "list-title">' + jsonrow.title + '</div>');
 			$('ul#program-list').append(li);
 
             // if we are loading the page with id predefined - expand that session
@@ -263,32 +276,46 @@ function fillDays(){
             for(var i = 0; i < 7; i++){
                 dayCount++;
                 var dayData = new Object;
-                var dayContent = $('<div>');
+                var dayContent = $('<div class = "workout">');
 
                 if(json[jsonIt] && json[jsonIt].day_number == dayCount){
 
-                    // create link to bring user to set editing page
-                    var setLink = $('<a href = "#">');
-                    setLink.addClass('set-details');
                     dayContent.data('set_id', json[jsonIt].set_id);
                     dayContent.data('connector_id', json[jsonIt].id);
-                    setLink.append(json[jsonIt].title);
-                    dayContent.append(setLink);
-                    dayContent.append('<br /><a href = "#" class = "remove-set">Remove</a><br />');
+                    
+                    // create div to bring user to set editing page
+                    var setDiv = $('<div>');
+                    setDiv.addClass('set-details');
 
+                    dayContent.append('<div class = "edit-box"><a href = "#" class = "remove-set"></a></div>');
+
+                    var sessionStatus = '';
+                    var colorClass = '';
                     if(json[jsonIt].session.id){
-                        dayContent.append(
-                            '<a href = "' + baseUrl + 'sessions/index/' + json[jsonIt].session.id + '">' 
-                            + json[jsonIt].session.status + '</a>');
                         dayContent.data('session_id', json[jsonIt].session.id);
+                        sessionStatus = '<a href = "' + baseUrl + 'sessions/index/' + json[jsonIt].session.id + '">' 
+                        + statusesMap[json[jsonIt].session.status] + '</a>';
+                        if(json[jsonIt].session.status == 'DONE'){
+                            colorClass = 'status-done';
+                        }else if(json[jsonIt].session.status == 'INPROGRESS'){
+                            colorClass = 'in-progress';
+                        }
+                    }else{
+                        sessionStatus = 'Not started';
+                        colorClass = 'not-started';
                     }
+                    
+                    setDiv.append('<div class = "status ' + colorClass + '">' + sessionStatus + '</div>');
+                    dayContent.append(setDiv);
 
                     if(jsonIt < json.length - 1){
                         jsonIt++;
                     }
-                }else{
-                    dayContent.append(dayCount);
                 }
+                
+                // add day number in any case
+                dayContent.append('<div class = "day-number">' + dayCount + '</div>');
+                
 
                 dayData.content = dayContent;
                 dayData.day_number = dayCount;
@@ -317,7 +344,7 @@ function appendWeek(daysData){
     var week = $('<tr>');
     for(var i = 0; i < 7; i++){
 
-        var day = $('<td>');
+        var day = $('<td class = "no-pad">');
         var dayDiv = daysData[i].content;
 
         dayDiv.data('day_number', daysData[i].day_number);
@@ -345,9 +372,10 @@ function showAddSetDialog(dayNumber){
 
     $('#set-edit form')[0].reset();
     $('#set-edit form input[name="id"]').val('');
+    $('#set-edit form input[name="title"]').val(programTitle + ' - day ' + dayNumber);
     $('#set-edit form input[name="program_id"]').val(programId);
     $('#set-edit form input[name="day_number"]').val(dayNumber); 
-    $('#set-edit').dialog('option','title', 'Add plan'); 
+    $('#set-edit').dialog('option','title', 'Add workout'); 
     $('#set-edit').dialog('open');
 }
 
@@ -359,7 +387,7 @@ function showEditSetDialog(setId){
         $('#set-edit form input[name="program_id"]').val('');
         $('#set-edit form input[name="day_number"]').val('');
         $('#set-edit form').populate(json[0]);
-        $('#set-edit').dialog('option','title', 'Edit plan'); 
+        $('#set-edit').dialog('option','title', 'Edit workout'); 
         $('#set-edit').dialog('open');
     });
 }
@@ -376,8 +404,8 @@ function addWeek(){
 
         dayCount++;
         var dayData = new Object;
-        var dayContent = $('<div>');
-        dayContent.append(dayCount);
+        var dayContent = $('<div class = "workout">');
+        dayContent.append('<div class = "day-number">' + dayCount + '</div>');
 
         dayData.content = dayContent;
         dayData.day_number = dayCount;
@@ -399,7 +427,7 @@ function moveSet(connectorId, dayNumber){
 
 function removeSet(connectorId){
 
-    fancyConfirm('Confirm delete', 'Are you sure you want to delete this plan?', function(){
+    fancyConfirm('Confirm delete', 'Are you sure you want to delete this workout?', function(){
         $.post(baseUrl + 'ajaxpost/removefromprogram', {connector_id: connectorId}, function(json){
 
             if(json.result == 'OK'){

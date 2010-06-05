@@ -1,43 +1,46 @@
-<style>td{border: dashed;}</style>
-
 <ul id = "sessions-filter">
 <li id = "sessions-inprogress">Current</li>
 <li id = "sessions-done">Done</li>
 <li id = "sessions-all">All</li>
 </ul>
 
-<a id = "start-session" href = "#">Start session</a>
-<ul id = "session-list">
-</ul>
-<div id = "desc-holder">
-    <div id = "session-description"></div>
+<div class = "list-container">
+    <a id = "start-session" href = "#" class = "add-link" >Start session</a>
+    <div style = "clear:both;"></div>
+    <ul id = "session-list" class = "items-list">
+    </ul>
+    <div id = "session-description" class = "desc-box"></div>
+    <div style = "clear:both;"></div>
+    <div id = "session-stats"></div>
 </div>
 
-<div id = "session-exercises" style = "display: none;">
-  <a href="#" id = "exercise-link">Add exercise</a>
-  <a href="#" id = "session-done">Done!</a>
-  <a href="#" id = "print-plan">Print</a>
+<div class = "details-container">
+  <a href="#" id = "exercise-link" class = "add-link">Add exercise</a>
+  <a href="#" id = "print-plan" class = "add-link">Print</a>
   <table id = "session-exercise-list" cellspacing="0">
-      <thead>
-      <tr>
-      <th>Title</th>
-      <th>Description</th>
-      <th>Type</th>
-      <th>Group</th>
-      <th>Reps</th>
-      <th>Done</th>
-      </tr>
-      </thead>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Group</th>
+                <th>Reps</th>
+                <th>Done</th>
+                <th class = "image-column no-pad" ></th>
+            </tr>
+        </thead>
       <tbody>
       </tbody>
   </table>
 </div>
 <?php
     $startSessionId = $sessionId ? $sessionId : 0;
+    $startSessionFilter = '';
 
     echo '
         <script type = "text/javascript">
             var startSessionId = ' . $startSessionId . ';
+            var startSessionFilter = \'' . $startSessionFilter . '\';
         </script>
     ';
     echo html::script(array

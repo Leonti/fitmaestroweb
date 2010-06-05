@@ -50,18 +50,32 @@ echo '
 $content->timeFormat = $timeFormat;
 $content->timeZone = $timeZone;
 ?>
+<link href='http://fonts.googleapis.com/css?family=Reenie+Beanie' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Cantarell' rel='stylesheet' type='text/css'>
+
 <title><?php echo html::specialchars($title) ?></title>
 </head>
 <body>
 <div id = "header">
-    <h1>BodyB site</h1>
+    <h1>FitMaestro</h1>
+    <h2>Where health meets technology</h2>
+    <div style = "clear: both;"></div>
+</div>
+
     <ul class = "navigation-menu">
     <?php foreach ($links as $link => $url): ?>
     <li><?php echo html::anchor($url, $link) ?></li>
     <?php endforeach ?>
     </ul>
-</div>
+
 <?php echo $content ?>
+
+<div id = "footer">
+    <div id = "copyright">Copyright 2010 Leonty Belskiy</div>
+    <div id = "footer-links">
+        <a href = "http://fitmaestro.com/Privacy.html">Privacy Policy</a>
+    </div>
+</div>
 </body>
 </html>
  

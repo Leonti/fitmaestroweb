@@ -1,11 +1,12 @@
 <h2>Register</h2>
 
+<div class = "form">
 <?php
 
     echo form::open(null, array('id' => 'register_form'));
-    echo 'Email: '. form::input('username') . '<br />';
-    echo 'Password: '. form::password('password') . '<br />';
-    echo 'Repeat password: '. form::password('repeat_password') . '<br /><br />';
+    echo '<span class = "label">Email: </span>'. form::input('username') . '<br /><br />';
+    echo '<span class = "label">Password: </span>'. form::password('password') . '<br /><br />';
+    echo '<span class = "label">Repeat password: </span>'. form::password('repeat_password') . '<br /><br />';
     echo form::submit('submit', 'Register');
 
     echo '
@@ -14,6 +15,8 @@
         </script>
     ';
 ?>
+</div>
+
 <?php
     echo html::script(array
           (

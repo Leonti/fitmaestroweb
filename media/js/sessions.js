@@ -9,6 +9,8 @@ $(function() {
     $('#session-edit').dialog({autoOpen:false});
 
     $('#sessions-inprogress').addClass('selected');
+    
+    initialSetup();
     fillSessions();
 
     if(timeFormat == "ampm"){
@@ -33,9 +35,12 @@ $(function() {
         $(this).addClass('selected');
         $('div#session-description').html($(this).data('desc'));
 
-        $(this).append('<div class = "edit-session-box">'
-                        + '<a class = "edit" href="#">Edit</a>'
-                        + '<a class = "delete" href="#">Delete</a></div>');
+        var editBox = '<div class = "edit-session-box edit-box">' 
+                        + '<a class = "edit" href="#"></a>'
+                        + '<a class = "done" href="#"></a>'
+                        + '<a class = "delete" href="#"></a></div>';
+
+        $(this).append(editBox);
 
         fillSessionExercises();
     });
@@ -101,9 +106,26 @@ $(function() {
         return false;
     });
 
-    $('#session-done').click(function(){
+
+    $('ul#session-list li div.edit-session-box a.done').live('click', function(){
+
         var saveData = {id: sessionId, status: 'DONE'};
         sendSaveSession(saveData);
+        return false;
+    });
+
+    $('ul#session-list li div.edit-session-box a.delete').live('click', function(){
+
+        fancyConfirm('Confirm delete', 'Are you sure you want to delete this session?', function(){
+
+            $.post(baseUrl + 'ajaxpost/deletesession', {id : sessionId}, function(json){
+
+                if(json.result == 'OK'){
+                    sessionId = 0;
+                    fillSessions();
+                }
+            },"json");
+        });
         return false;
     });
 
@@ -128,8 +150,21 @@ $(function() {
 
         fillSessions();
     });
+    
+    $('.remove-from-session').live('click', function(){
+
+        removeExerciseFromSession($(this).parent().parent().data('connector_id'));
+        return false;
+    });
 
 });
+
+function initialSetup(){
+    
+    // if we are loading the page with id predefined - expand that session
+    sessionId = startSessionId;
+    sessionsFilter = startSessionFilter;
+}
 
 function fillSessions(){
 
@@ -143,95 +178,94 @@ function fillSessions(){
             li.data('id', jsonrow.id);
             li.data('status', jsonrow.status);
             li.data('desc', jsonrow.desc);
-            li.append(jsonrow.title);
-            li.append(jsonrow.status);
+            li.append('<div class = "list-title">' + jsonrow.title + '</div>');
             $('ul#session-list').append(li);
-
-            // if we are loading the page with id predefined - expand that session
-            if(startSessionId == jsonrow.id){
-                sessionId = startSessionId;
-
-                // we needed it only once
-                startSessionId = 0;
-            }
 
             if(sessionId == jsonrow.id){
                 li.addClass('selected');
                 li.trigger('click');
             }
         });
+        makeZebra($('ul#session-list'));
 
+        if(sessionId == 0){
+            $('ul#session-list li:last').trigger('click');
+        }
     });
+
 }
 
 function fillSessionExercises(){
-
-    $('#session-exercises').show();
 
     $.getJSON(baseUrl + 'json/sessionexercises', {id : sessionId}, function(json){
 
             $('table#session-exercise-list tbody').remove();
             $('table#session-exercise-list').append($('<tbody>'));
 
-            $.each(json, function(i, jsonrow){
+            if(json.length > 0){
+                $.each(json, function(i, jsonrow){
 
-                var tr = $('<tr>');
-                tr.data('id', jsonrow.id);
-                tr.data('maxWeight', jsonrow.max_weight);
-                tr.data('connector_id', jsonrow.connector_id);
-                tr.data('ex_type', jsonrow.ex_type);
-                tr.data('details', jsonrow.details);
-                tr.append('<td>' + jsonrow.title + '</td><td>'
-                      + jsonrow.desc + '</td><td>'
-                      + getExerciseTypeName(jsonrow.ex_type) + '</td><td>'
-                      + jsonrow.group_title + '</td>' );
+                    var tr = $('<tr>');
+                    tr.data('id', jsonrow.id);
+                    tr.data('maxWeight', jsonrow.max_weight);
+                    tr.data('connector_id', jsonrow.sessions_connector_id);
+                    tr.data('ex_type', jsonrow.ex_type);
+                    tr.data('details', jsonrow.details);
+                    tr.append('<td>' + jsonrow.title + '</td><td>'
+                        + jsonrow.desc + '</td><td>'
+                        + getExerciseTypeName(jsonrow.ex_type) + '</td><td>'
+                        + jsonrow.group_title + '</td>' );
 
-                var repsTd = $('<td>');
-                repsTd.addClass('reps');
+                    var repsTd = $('<td>');
+                    repsTd.addClass('reps');
 
-                var doneTd = $('<td>');
-                doneTd.addClass('reps');
+                    var doneTd = $('<td>');
+                    doneTd.addClass('reps');
 
-                $.each(jsonrow.details, function(i, detailrow){
+                    $.each(jsonrow.details, function(i, detailrow){
 
-                    var done = 'not done';
+                        var done = 'not done';
 
-                    var toAppend = '';
-                    var toAppendDone = 'not done';
+                        var toAppend = '';
+                        var toAppendDone = 'not done';
 
-                    if(jsonrow.ex_type == 1){
-                        toAppend = detailrow.reps + 'x' + detailrow.percentage + '%';
+                        if(jsonrow.ex_type == 1){
+                            toAppend = detailrow.reps + 'x' + detailrow.percentage + '%';
+
+                            if(detailrow.log_data){
+                                toAppendDone = detailrow.log_data.reps + 'x' + detailrow.log_data.weight + ' kg';
+                            }
+                        }else{
+                            toAppend = detailrow.reps;
+
+                            if(detailrow.log_data){
+                                toAppendDone = detailrow.log_data.reps;
+                            }
+                        }
 
                         if(detailrow.log_data){
-                            toAppendDone = detailrow.log_data.reps + 'x' + detailrow.log_data.weight + ' kg';
+                            done = detailrow.log_data.reps + 'x' + detailrow.log_data.weight + ' kg';
                         }
-                    }else{
-                        toAppend = detailrow.reps;
-
-                        if(detailrow.log_data){
-                            toAppendDone = detailrow.log_data.reps;
+                        if(detailrow.id != 0){
+                            repsTd.append('<div>' + toAppend + '</div>');
+                        }else{
+                            repsTd.append('<div>extra</div>');
                         }
-                    }
 
-                    if(detailrow.log_data){
-                        done = detailrow.log_data.reps + 'x' + detailrow.log_data.weight + ' kg';
-                    }
-                    if(detailrow.id != 0){
-                        repsTd.append('<div>' + toAppend + '</div>');
-                    }else{
-                        repsTd.append('<div>extra</div>');
-                    }
+                        doneTd.append('<div>' + toAppendDone + '</div>');
 
-                    doneTd.append('<div>' + toAppendDone + '</div>');
+                    });
+                    tr.append(repsTd);
+                    tr.append(doneTd);
 
+                    tr.append('<td class = "non-printable no-pad"><a href = "#" class = "remove-from-session delete"></a></td>');
+
+                    $('table#session-exercise-list tbody').append(tr);
                 });
-                tr.append(repsTd);
-                tr.append(doneTd);
-
-                tr.append('<td class = "non-printable"><a href = "#" class = "remove-from-set">Remove</a></td>');
-
-                $('table#session-exercise-list tbody').append(tr);
-            });
+            }else{
+                $('table#session-exercise-list tbody').append('<tr><td colspan = "7" class = "center">No exercises added yet!</td></tr>');
+            }
+            makeZebra($('table#session-exercise-list tbody'));
     });
 
 }
@@ -345,6 +379,10 @@ function sendSaveSession(data){
 
             if(json.result == 'OK'){
 
+                // if we set session to 'DONE' - it disappears from list, so we must reset
+                if(data.status && data.status == 'DONE'){
+                    sessionId = 0;
+                }
                 fillSessions();
             }
         },"json");
@@ -399,4 +437,19 @@ function addDiff(time, diff){
     });
 
     return formattedTime;
+}
+
+function removeExerciseFromSession(connectorId){
+
+    fancyConfirm('Confirm delete', 'Are you sure you want to remove exercise from this session?', function(){
+
+        $.post(baseUrl + 'ajaxpost/sessiondeleteexercise', {id : connectorId}, function(json){
+
+            if(json.result == 'OK'){
+
+                fillSessionExercises();
+            }
+        },"json");
+            });
+    return false;
 }

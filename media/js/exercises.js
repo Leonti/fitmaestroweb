@@ -4,6 +4,7 @@ $(function() {
 
 	$('#exercise-edit').dialog({autoOpen:false});
 	$('#group-edit').dialog({autoOpen:false});
+    $('#import-exercises').dialog({autoOpen:false});
 
 	$('#add-exercise').click(function(){
 
@@ -20,7 +21,7 @@ $(function() {
 
     $('#import-exercises-link').click(function(){
 
-        $('div#import-exercises').show();
+        $('div#import-exercises').dialog('open');
         return false;
     });
 
@@ -140,7 +141,7 @@ $(function() {
 
 		$('ul#group-list li div.edit-group-box').remove();	
 		groupId = $(this).data('id');
-
+//alert(groupId);
 
 		if(groupId){
 
@@ -156,7 +157,6 @@ $(function() {
             $('div#import-exercises form input[name="noimport_id[]"]').attr('disabled', 'disabled');
 		}
 		if(groupId = $(this).data('id')){
-
 			$(this).addClass('selected');
 			$('div#group-description').html($(this).data('desc'));
 		}else{
@@ -171,73 +171,67 @@ $(function() {
         return false;
     });
 
-    $('#close-import').click(function(){
-        $('div#import-exercises').hide();
-        return false;
-    });
-
 });
  
 function fillExercises(){
 
-	if(groupId){
+    var requestUrl = '';
+    if(groupId){
+        requestUrl = baseUrl + 'json/exercisesbygroup';
+    }else{
+        requestUrl = baseUrl + 'json/exercises';
+    }
 
-		$.getJSON(baseUrl + 'json/exercisesbygroup', {id : groupId}, function(json){
+    $.getJSON(requestUrl, {id : groupId}, function(json){
 
+            if(groupId){
                 // remove if already appended
-                $('ul#group-list li.selected div').remove();
-				$('ul#group-list li.selected').append('<div class = "edit-group-box"><a class = "edit" href="#">Edit</a><a class = "delete" href="#">Delete</a></div>');
-			 	$('table#exercise-list tbody').remove();
-				$('table#exercise-list').append($('<tbody>'));
-				$('th#groups-th').hide();
+                $('ul#group-list li.selected div.edit-box').remove();
+                var editBox = '<div class = "edit-group-box edit-box">' 
+                                + '<a class = "edit" href="#"></a>'
+                                + '<a class = "delete" href="#"></a></div>';
+                $('ul#group-list li.selected').append(editBox);
+                $('table#exercise-list tbody').remove();
+                $('table#exercise-list').append($('<tbody>'));
+                $('th#groups-th').hide();
+            }else{
+                $('table#exercise-list tbody').remove();
+                $('table#exercise-list').append($('<tbody>'));
+                $('th#groups-th').show();
+            }
 
-				$.each(json, function(i, jsonrow){
 
-					var tr = $('<tr>');
-					tr.data('id', jsonrow.id);
-                    var exportLink = '';
+            if(json.length > 0){
+                $.each(json, function(i, jsonrow){
 
-                    // it means it doesn't have a copy in public exercises
-                    if(jsonrow.import_id == 0){
-                        exportLink = '<td><a class = "export" href="#">Export</a></td>';
-                    }
-
-					tr.append('<td>' + jsonrow.title + '</td><td>'
-						  + jsonrow.desc + '</td><td>' 
-						  + getExerciseTypeName(jsonrow.ex_type) + '</td>' 
-						  + '<td><a class = "delete" href="#">Delete</a></td><td><a class = "edit" href="#">Edit</a></td>' + exportLink);
-					$('table#exercise-list tbody').append(tr);
-				});
-		});
-	}else{
-
-		$.getJSON(baseUrl + 'json/exercises', function(json){
-
-			 	$('table#exercise-list tbody').remove();
-				$('table#exercise-list').append($('<tbody>'));
-				$('th#groups-th').show();
-
-				$.each(json, function(i, jsonrow){
-
-					var tr = $('<tr>');
-					tr.data('id', jsonrow.id);
-                    var exportLink = '';
+                    var tr = $('<tr>');
+                    tr.data('id', jsonrow.id);
+                    var exportLink = '<td></td>';
 
                     // it means it doesn't have a copy in public exercises
                     if(jsonrow.import_id == 0){
-                        exportLink = '<td><a class = "export" href="#">Export</a></td>';
+                        exportLink = '<td class = "no-pad"><a class = "export" href="#"></a></td>';
                     }
 
-					tr.append('<td>' + jsonrow.exercise_title + '</td><td>' 
-						  + jsonrow.desc +'</td><td>'
-						  + getExerciseTypeName(jsonrow.ex_type) +'</td><td>'
-						  + jsonrow.group_title 
-						  + '</td><td><a class = "delete" href="#">Delete</a></td><td><a class = "edit" href="#">Edit</a></td>' + exportLink);
-					$('table#exercise-list tbody').append(tr);
-				});
-		});
-	}
+                    var groupTd = '';
+                    if(!groupId){
+                        groupTd = '<td>' + jsonrow.group_title + '</td>';
+                    }
 
+                    tr.append('<td>' + jsonrow.title + '</td><td>'
+                            + jsonrow.desc + '</td><td class = "center">' 
+                            + getExerciseTypeName(jsonrow.ex_type) + '</td>'
+                            + groupTd
+                            + '<td class = "no-pad no-right"><a class = "edit" href="#"></a></td><td class = "no-pad no-right" ><a class = "delete" href="#"></a></td>' + exportLink);
+
+                    $('table#exercise-list tbody').append(tr);
+                });
+            }else{
+                $('table#exercise-list tbody').append('<tr><td colspan = 7 class = "center">No exercises added yet!</td></tr>');
+            }
+
+            makeZebra($('table#exercise-list tbody'));
+    });
 
 }
 
@@ -272,7 +266,7 @@ function fillGroups(){
 			var li = $('<li>');
 			li.data('id', jsonrow.id);
 			li.data('desc', jsonrow.desc);
-			li.append(jsonrow.title);
+			li.append('<div class = "list-title">' + jsonrow.title + '</div>');
 			$('ul#group-list').append(li);
 			if(groupId == jsonrow.id){
 				li.addClass('selected');
@@ -280,6 +274,7 @@ function fillGroups(){
 			}
 			$('#exercise-edit form select[name="group_id"]').append('<option value = "' + jsonrow.id + '">' + jsonrow.title + '</option>');
 		});
+        makeZebra($('ul#group-list'));
 	});
 
 }

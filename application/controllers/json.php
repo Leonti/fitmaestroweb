@@ -144,6 +144,50 @@ class Json_Controller extends Controller {
 
         echo json_encode(array('formatted_time' => $formattedTime));
     }
+
+    public function statistics($type = null){
+        $type = $type ? $type : 'weight_log';
+
+        $logs = new Log_Model($this->user->id);
+        $startDate = $_GET['startdate'];
+        $endDate = $_GET['enddate'];
+
+        switch($type){
+        case 'weight_log':
+
+            break;
+
+        case 'exercise_log':
+
+            $exercise_id = intval($_GET['id']);
+            $exercises = new Exercise_Model($this->user->id);
+            $exercise = $exercises->getItem($exercise_id);
+
+            // now we have to choose which type
+            // of exercise log:
+            // max - max weight for the exercise (with weight type)
+            //       max reps for exercises with own weight
+            // total - weight*repetitions for the whole day (with weight)
+            //       - total repetitions for the whole day (own weight)
+            switch($_GET['type']){
+
+            case 'max':
+                echo json_encode(array(
+                                    'stats' => $logs->getMaxForPeriod($exercise_id, $startDate, $endDate),
+                                    'exercise' => $exercise->result_array(),
+                                      ));
+                break;
+
+            case 'total':
+                echo json_encode(array(
+                                    'stats' => $logs->getTotalForPeriod($exercise_id, $startDate, $endDate),
+                                    'exercise' => $exercise->result_array(),
+                                        ));
+                break;
+            }
+            break;
+        }
+    }
 }
 
 function getArray($data){
@@ -172,7 +216,7 @@ function getSessionExercises($sessionId, $userId){
     $exercises = $sessions->getExercises($sessionId)->result_array();
 
     foreach($exercises as &$exercise){
-        $exercise->details = $sets->getReps($exercise->sets_connector_id)->result_array();
+        $exercise->details = $sessions->getReps($exercise->sessions_connector_id)->result_array();
 
         // we need to fetch exercises actually done for this session
 

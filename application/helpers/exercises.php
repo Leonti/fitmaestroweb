@@ -65,12 +65,19 @@ Start of GROUPS
 	public function getSiteId($table, $phoneId){
 
 		$phoneId = intval($phoneId);
+
+        // for cases when id can be zero (for example free sets, free session exercises)
+        // watch for regressions!
+        if($phoneId == 0){
+            return 0;
+        }
+
 		$siteId = 0;
 		$sql = "SELECT `id` FROM `$table` WHERE `phone_id` = $phoneId AND `user_id` = " . $this -> userId . " LIMIT 1";
 		if($res = mysql_query($sql)){
 			
 			$row = mysql_fetch_assoc($res);
-			$siteId = $row['id'];    
+			$siteId = $row['id'];
 		}
 
 		return $siteId;
@@ -88,13 +95,19 @@ Start of GROUPS
 
 	public function getPhoneId($table, $siteId){
 
-		$siteId = intval($siteId);  
+		$siteId = intval($siteId);
+
+        // for cases when id can be zero (for example free sets, free session exercises)
+        if($siteId == 0){
+            return 0;
+        }
+
 		$phoneId = 0;
 		$sql = "SELECT `phone_id` FROM `$table` WHERE `id` = $siteId AND `user_id` = " . $this -> userId . " LIMIT 1";
 		if($res = mysql_query($sql)){
 			
 			$row = mysql_fetch_assoc($res);
-			$phoneId = $row['phone_id'];    
+			$phoneId = $row['phone_id'];
 		}
 
 		return $phoneId;
