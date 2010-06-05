@@ -607,12 +607,14 @@ class Ajaxpost_Controller extends Controller {
 
                         if($reps != '' || $weight != ''){
 
+                            $done = date("Y-m-d H:i:s", strtotime($post['done'][$i]));
                             $result = $log -> addReps(array( 
                                             'session_id' => $post['session_id'],
                                             'exercise_id' => $post['exercise_id'],
                                             'sessions_detail_id' => $repsId,
                                             'reps' => $reps,
-                                            'weight' => $weight));
+                                            'weight' => $weight,
+                                            'done' => $done));
                         }
                     }
               }

@@ -19,7 +19,7 @@ class Log_Model extends Model {
                                             'reps' => $data['reps'],
                                             'weight' => $data['weight'],
                                             'user_id' => $this->userId,
-                                            'done' => new Database_Expression('NOW()')));
+                                            'done' => $data['done']));
         return $query->insert_id();
     }
 
