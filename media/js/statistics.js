@@ -15,11 +15,7 @@ var months = [
 "December"];
 
 $(function () {
-    $("#data").css({
-        position: "absolute",
-                   left: "-9999em",
-                   top: "-9999em"
-    });
+
     
     $('#start-date').datepicker();
     $('#end-date').datepicker();
@@ -93,9 +89,9 @@ function drawChart(labels, data, statsType, subType, exercise){
     $('#holder').empty();
     
     // Draw
-    var width = 800,
+    var width = 775,
     height = 250,
-    leftgutter = 30,
+    leftgutter = 0,
     bottomgutter = 40,
     topgutter = 20,
     colorhue = .6 || Math.random(),
@@ -155,7 +151,7 @@ function drawChart(labels, data, statsType, subType, exercise){
                             case 'max':
                                 
                                 // with weight so label should be something like kgs
-                                if(exercise.type == 1){
+                                if(exercise.ex_type == 1){
                                     caption = data + ' ' + units + ((data % 10 == 1) ? "" : "s");
                                     
                                     // just reps
@@ -168,7 +164,7 @@ function drawChart(labels, data, statsType, subType, exercise){
                             case 'total':
                                 
                                 // with weight so label should be something like kgs*reps
-                                if(exercise.type == 1){
+                                if(exercise.ex_type == 1){
                                     caption = data + ' ' + units + ((data % 10 == 1) ? "" : "s") + '*reps';
                                 // just reps
                                 }else{
@@ -202,6 +198,8 @@ function drawChart(labels, data, statsType, subType, exercise){
             }    
         })(x, y, data[i], labels[i], dot);
         
+        
+        
     }
     bgp.lineTo(x, height - bottomgutter).andClose();
     frame.toFront();
@@ -218,12 +216,12 @@ function getStats(){
     var startDate = $('#start-date').val();
     var endDate = $('#end-date').val();
     
-    //var subType = $('#stats-subtype').val();
-    var subType = 'total';
+    var subType = $('#stats-subtype').val();
+    //var subType = 'total';
     
     // if type is for exercise stats, if not - null will be assigned
-   // var exerciseId = $('#exercise-holder').data('id');
-    var exerciseId = 60;
+    var exerciseId = $('#exercise-holder').data('id');
+    //var exerciseId = 147;
     
     var requestUrl = baseUrl + 'json/statistics/' + statsType;
     
@@ -232,20 +230,50 @@ function getStats(){
         var labels = [],
               data = [];
               
+        $('#statistics-list tbody tr').remove();
         $.each(json.stats, function(i, jsonrow){
             var date = new Date(Date.parse(jsonrow.date));
             labels.push(date);
-            if(jsonrow.datas.length > 0){
-                $('.details-container').append('(!) ');
+
+            var statsRow = $('<tr>');
+            statsRow.append('<td>' + date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear() + '</td>');
+
+            
+            if(jsonrow.datas.length > 0){                
                 data.push(jsonrow.datas[0].data);
+                // fill with relevant data
+                
+                var sessionTitle = jsonrow.datas[0].session.title;
+                var sessionId = jsonrow.datas[0].session.id;
+                statsRow.append('<td><a href=' + baseUrl + 'sessions/index/' 
+                                + sessionId + ' target="_blank">' 
+                                + sessionTitle + '</a></td>');
+                var repsTd = $('<td>');
+                var weightTd = $('<td class = "to-hide">');
+                $.each(jsonrow.datas[0].reps, function(j, repsrow){
+                    repsTd.append('<div>' + repsrow.reps + '</div>');
+                    weightTd.append('<div>' + repsrow.weight + '</div>');
+                });
+                statsRow.append(repsTd);
+                statsRow.append(weightTd);
             }else{
                 data.push(0);
+                
+                // empty cells
+                statsRow.append('<td>--</td><td>--</td><td class = "to-hide">--</td>');
             }
+            
+            $('#statistics-list tbody').append(statsRow);
         });
         
         var exercise;
         if(statsType == 'exercise_log'){
             exercise = json.exercise;
+            if(json.exercise.ex_type == 1){
+                $('.to-hide').show();
+            }else{
+                $('.to-hide').hide();
+            }
         }
         
         drawChart(labels, data, statsType, subType, exercise);

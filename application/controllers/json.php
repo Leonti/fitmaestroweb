@@ -162,6 +162,7 @@ class Json_Controller extends Controller {
             $exercise_id = intval($_GET['id']);
             $exercises = new Exercise_Model($this->user->id);
             $exercise = $exercises->getItem($exercise_id);
+            $exercise_array = $exercise->result_array();
 
             // now we have to choose which type
             // of exercise log:
@@ -174,14 +175,14 @@ class Json_Controller extends Controller {
             case 'max':
                 echo json_encode(array(
                                     'stats' => $logs->getMaxForPeriod($exercise_id, $startDate, $endDate),
-                                    'exercise' => $exercise->result_array(),
+                                    'exercise' => $exercise_array[0],
                                       ));
                 break;
 
             case 'total':
                 echo json_encode(array(
                                     'stats' => $logs->getTotalForPeriod($exercise_id, $startDate, $endDate),
-                                    'exercise' => $exercise->result_array(),
+                                    'exercise' => $exercise_array[0],
                                         ));
                 break;
             }

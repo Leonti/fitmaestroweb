@@ -1,5 +1,5 @@
 body { 
-  width: 700px; 
+  width: 800px; 
   margin: 0.5em auto;
   font-family: Arial, 
   Verdana, sans-serif;
@@ -292,4 +292,10 @@ div.form .label{
   color: gray;
 }
 
+#holder{
+    height: 250px;
+    width: 775px;
+    margin: 0 auto 0 auto;
+    padding: 0;
+}
 

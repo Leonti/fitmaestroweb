@@ -48,6 +48,19 @@ class Log_Model extends Model {
                 ->get();
     }
 
+    // log entries made in session with and without plans from set
+    // used for statistics
+    public function getSessionEntries($sessionId, $exerciseId){
+
+        return $this->db->select() // selects all fields by default
+                ->where('deleted', 0)
+                ->where('session_id', $sessionId)
+                ->where('exercise_id', $exerciseId)
+                ->where('user_id', $this->userId)
+                ->from('log')
+                ->get();
+    }
+
     public function deleteItem($id){
 
         return $this->db->update('log', array('deleted' => 1), array('id' => $id, 'user_id' => $this->userId));
@@ -134,7 +147,12 @@ class Log_Model extends Model {
             foreach($result as $dataEntry){
 
                 if($dataEntry->done_formatted == $currentDayFormatted){
-                    $datas[] = array('data' => $dataEntry->data, 'session' => $dataEntry->session_title);
+
+                    $reps = $this->getSessionEntries($dataEntry->session_id, $exerciseId);
+                    $datas[] = array(
+                                'data' => $dataEntry->data, 
+                                'session' => array('title' => $dataEntry->session_title, 'id' => $dataEntry->session_id),
+                                'reps' => $reps->result_array());
                 }
             }
 

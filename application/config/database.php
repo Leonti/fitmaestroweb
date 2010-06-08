@@ -35,7 +35,7 @@ $config['default'] = array
 		'host'     => 'localhost',
 		'port'     => FALSE,
 		'socket'   => FALSE,
-		'database' => 'bodyb'
+		'database' => 'fitmaestro'
 	),
 	'character_set' => 'utf8',
 	'table_prefix'  => '',
