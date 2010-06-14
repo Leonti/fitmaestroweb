@@ -113,7 +113,6 @@ $.datepicker._hideDatepicker = function(input, duration) {
     if (input === undefined && showTime) {
         if (inst.input) {
             inst.input.val(this._formatDate(inst));
-            inst.input.trigger('change'); // fire the change event
         }
 
         this._updateAlternate(inst);
@@ -247,6 +246,7 @@ Timepicker.prototype = {
         var curDate = $('#' + this._inputId).val();
 
         $('#' + this._inputId).val(fd + ' ' + curTime);
+        $('#' + this._inputId).trigger('change'); // fire the change event
 
         if (this._altTimeField) {
             $(this._altTimeField).each(function() { $(this).val(curTime); });

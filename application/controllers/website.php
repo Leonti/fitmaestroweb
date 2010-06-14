@@ -13,6 +13,7 @@ class Website_Controller extends Template_Controller {
         'Programs' => 'programs',
 		'Workouts' => 'workouts',
         'Sessions' => 'sessions',
+        'Measurements' => 'measurements',
         'Statistics' => 'statistics',
         'Settings' => 'settings',
         'Login' => 'user/login',

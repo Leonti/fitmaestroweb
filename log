@@ -3,9 +3,21 @@
 stdClass Object
 (
     [what] => STARTUPDATE
-    [authkey] => d8a33bb908d3c896cae9b3eabf13d8ce
+    [authkey] => 00fb38b71489c3dd272b05c7d630455c
     [data] => stdClass Object
         (
+            [log] => Array
+                (
+                )
+
+            [sessions_connector] => Array
+                (
+                )
+
+            [programs] => Array
+                (
+                )
+
             [sets] => Array
                 (
                 )
@@ -14,34 +26,46 @@ stdClass Object
                 (
                 )
 
-            [log] => Array
-                (
-                    [0] => stdClass Object
-                        (
-                            [exercise_id] => 1
-                            [done] => 2010-05-07 23:13:43
-                            [stamp] => 1273266847
-                            [site_id] => 132
-                            [session_id] => 2
-                            [reps] => 57
-                            [sessions_detail_id] => 0
-                            [weight] => 0
-                            [deleted] => 0
-                            [id] => 5
-                        )
-
-                )
-
             [groups] => Array
                 (
                 )
 
-            [localtime] => 1273266860
-            [sessions_connector] => Array
+            [measurement_types] => Array
                 (
                 )
 
+            [localtime] => 1276391232
             [exercises] => Array
+                (
+                )
+
+            [measurements_log] => Array
+                (
+                    [0] => stdClass Object
+                        (
+                            [value] => 75
+                            [stamp] => 1276391138
+                            [site_id] => 4
+                            [deleted] => 0
+                            [id] => 5
+                            [measurement_type_id] => 2
+                            [date] => 2010-06-10 12:13:00
+                        )
+
+                    [1] => stdClass Object
+                        (
+                            [value] => 11
+                            [stamp] => 1276391147
+                            [site_id] => 0
+                            [deleted] => 0
+                            [id] => 7
+                            [measurement_type_id] => 2
+                            [date] => 2010-06-13 01:05:47
+                        )
+
+                )
+
+            [programs_connector] => Array
                 (
                 )
 
@@ -49,11 +73,7 @@ stdClass Object
                 (
                 )
 
-            [programs_connector] => Array
-                (
-                )
-
-            [programs] => Array
+            [sets_connector] => Array
                 (
                 )
 
@@ -61,15 +81,12 @@ stdClass Object
                 (
                 )
 
-            [sets_connector] => Array
-                (
-                )
-
         )
 
+    [fresh] => 0
 )
 
-User id is: 32
+User id is: 35
 -----------TO PHONE-------------
 
 stdClass Object
@@ -121,6 +138,27 @@ stdClass Object
                 (
                 )
 
+            [measurement_types] => Array
+                (
+                )
+
+            [measurements_log] => Array
+                (
+                    [0] => stdClass Object
+                        (
+                            [id] => 8
+                            [phone_id] => 7
+                            [user_id] => 35
+                            [updated] => 2010-06-13 03:07:39
+                            [deleted] => 0
+                            [measurement_type_id] => 2
+                            [value] => 11
+                            [date] => 2010-06-13 01:05:47
+                            [stamp] => 1276391259
+                        )
+
+                )
+
         )
 
 )
@@ -130,9 +168,21 @@ stdClass Object
 stdClass Object
 (
     [what] => FINISHUPDATE
-    [authkey] => d8a33bb908d3c896cae9b3eabf13d8ce
+    [authkey] => 00fb38b71489c3dd272b05c7d630455c
     [data] => stdClass Object
         (
+            [log] => Array
+                (
+                )
+
+            [sessions_connector] => Array
+                (
+                )
+
+            [programs] => Array
+                (
+                )
+
             [sets] => Array
                 (
                 )
@@ -141,15 +191,11 @@ stdClass Object
                 (
                 )
 
-            [log] => Array
-                (
-                )
-
             [groups] => Array
                 (
                 )
 
-            [sessions_connector] => Array
+            [measurement_types] => Array
                 (
                 )
 
@@ -157,7 +203,7 @@ stdClass Object
                 (
                 )
 
-            [sessions] => Array
+            [measurements_log] => Array
                 (
                 )
 
@@ -165,11 +211,7 @@ stdClass Object
                 (
                 )
 
-            [programs] => Array
-                (
-                )
-
-            [sets_detail] => Array
+            [sessions] => Array
                 (
                 )
 
@@ -177,11 +219,15 @@ stdClass Object
                 (
                 )
 
+            [sets_detail] => Array
+                (
+                )
+
         )
 
 )
 
-User id is: 32
+User id is: 35
 -----------TO PHONE-------------
 
 stdClass Object
@@ -230,6 +276,14 @@ stdClass Object
                 )
 
             [log] => Array
+                (
+                )
+
+            [measurement_types] => Array
+                (
+                )
+
+            [measurements_log] => Array
                 (
                 )
 

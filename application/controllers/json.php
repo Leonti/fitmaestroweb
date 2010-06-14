@@ -122,6 +122,26 @@ class Json_Controller extends Controller {
         echo json_encode(getArray($sessions->getFiltered($filters)));
     }
 
+    public function measurement_types(){
+
+        $measurements = new Measurement_Model($this->user->id);
+        echo json_encode($measurements->getTypes()->result_array());
+    }
+
+    public function measurementinfo(){
+
+        $get = $this->input->get();
+        $measurements = new Measurement_Model($this->user->id);
+        echo json_encode($measurements->getType($get['id'])->result_array());
+    }
+
+    public function measurementLog(){
+        $get = $this->input->get();
+        $measurements = new Measurement_Model($this->user->id);
+        echo json_encode($measurements->getLogEntries($get['id'])->result_array());
+    }
+
+
     public function getdatetime(){
 
         $get = $this->input->get();

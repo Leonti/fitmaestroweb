@@ -49,6 +49,12 @@ Start of GROUPS
 		return mysql_unbuffered_query($sql);
 	}
 
+    public function resetPhoneIds($table){
+
+        $sql =  "UPDATE `$table` SET `phone_id` = 0 WHERE `user_id` = " . $this -> userId;
+        return mysql_unbuffered_query($sql);
+    }
+
 	public function getItem($table, $id){
 
 		$id = intval($id);

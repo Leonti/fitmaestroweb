@@ -36,7 +36,7 @@ class Remote_Controller extends Controller {
                 case "STARTUPDATE":
                     if($userId = remoteUser::checkUserByKey($data -> authkey)){
 
-                        $toSend = json_encode(array("result" => "STARTUPDATED", "data" => prepareUpdate($userId, $data->data)));
+                        $toSend = json_encode(array("result" => "STARTUPDATED", "data" => prepareUpdate($userId, $data->data, $data->fresh)));
                         echo $toSend;
         error_log(print_r("-----------TO PHONE-------------" . "\n", true)."\n", 3, "log");
         error_log(print_r(json_decode($toSend), true)."\n", 3, "log");
@@ -61,7 +61,7 @@ class Remote_Controller extends Controller {
 }
 
 // update database with data from the phone and give the phone entries that are newer back
-function prepareUpdate($userId, $phoneData = null){
+function prepareUpdate($userId, $phoneData = null, $fresh = 0){
 
     // order of the tables matter
     // for example groups have to be first so correct id's may be put in exercises table
@@ -77,7 +77,8 @@ function prepareUpdate($userId, $phoneData = null){
                 'sessions_connector' => array('session_id', 'exercise_id'),
                 'sessions_detail' => array('sessions_connector_id', 'reps', 'percentage'),
                 'log' => array('exercise_id', 'weight', 'reps', 'done', 'session_id', 'sessions_detail_id'),
-
+                'measurement_types' => array('title', 'units', 'desc'),
+                'measurements_log' => array('measurement_type_id', 'value', 'date'),
                 );
 
 
@@ -92,10 +93,11 @@ function prepareUpdate($userId, $phoneData = null){
                 'programs_connector_id' => 'programs_connector',
                 'sets_connector_id' => 'sets_connector',
                 'sessions_connector_id' => 'sessions_connector',
+                'measurement_type_id' => 'measurement_types',
 
                 );
 
-    $convertTimeMap = array('done');
+    $convertTimeMap = array('done', 'date');
 
     $exercisesObj = new exercises();
     $exercisesObj -> userId = $userId;
@@ -106,6 +108,11 @@ error_log("User id is: " . $userId . "\n", 3, "log");
     $lastUpdated = $exercisesObj -> getLastUpdated();
 
     foreach($tablesMap as $table => $fields){
+
+        // if it's a fresh install on  the phone - reset all phone id's first for each table
+        if($fresh){
+            $exercisesObj -> resetPhoneIds($table);
+        }
 
         $updatedItems = $exercisesObj -> getUpdatedItems($table, $lastUpdated);
 
@@ -192,6 +199,8 @@ function finishUpdate($userId, $phoneData){
                         'sessions_connector',
                         'sessions_detail',
                         'log',
+                        'measurement_types',
+                        'measurements_log',
 
                         );
 

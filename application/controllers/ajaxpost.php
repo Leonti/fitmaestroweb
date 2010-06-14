@@ -637,6 +637,147 @@ class Ajaxpost_Controller extends Controller {
 
     }
 
+// measurements start
+
+    public function savemeasurement(){
+
+        $post = $this->input->post();
+        if(isset($post['title']) && isset($post['units'])){
+
+            $measurements = new Measurement_Model($this->user->id);
+
+            $result = null;
+            // existing item
+            if($post['id']){
+
+                if($measurements -> updateType(array(
+                                                'title' => $post['title'], 
+                                                'units' => $post['units'],
+                                                'desc'  => $post['desc'],
+                                                ), $post['id'])){
+
+                    $result = true;
+                }
+            }else{
+
+                if($measurements -> addType(array(
+                                                'title' => $post['title'], 
+                                                'units' => $post['units'],
+                                                'desc'  => $post['desc'],
+                                                ))){
+
+                    $result = true;
+                }
+            }
+
+            if($result){
+
+                echo json_encode(array('result' => 'OK'));
+            }else{
+
+                echo json_encode(array('result' => 'FAILED'));
+            }
+            //do adding stuff
+        }else{
+              
+            echo "No data provided";
+        }
+    }
+
+
+    public function deletemeasurement(){
+
+        $post = $this->input->post();
+        if(isset($post['id'])){
+
+            $measurements = new Measurement_Model($this->user->id);
+
+            if($measurements -> deleteType($post['id'])){
+
+                echo json_encode(array('result' => 'OK'));
+            }else{
+
+                echo json_encode(array('result' => 'FAILED'));
+            }
+
+        }else{
+            echo "No data provided";
+        }
+    }
+// save-measurement-entry
+
+    public function saveMeasurementEntry(){
+
+        $post = $this->input->post();
+        if(isset($post['value']) && isset($post['date'])){
+    
+            $date = date("Y-m-d H:i:s", strtotime($post['date']));
+            $typeId = $post['type_id'];
+            $value = floatval($post['value']);
+
+            $measurements = new Measurement_Model($this->user->id);
+
+            $result = null;
+            // existing item
+            if($post['id']){
+
+                if($measurements -> updateLogEntry(array(
+                                                'value' => $value, 
+                                                'measurement_type_id' => $typeId,
+                                                'date'  => $date,
+                                                ), $post['id'])){
+
+                    $result = true;
+                }
+            }else{
+
+                if($measurements -> addLogEntry(array(
+                                                'value' => $value, 
+                                                'measurement_type_id' => $typeId,
+                                                'date'  => $date,
+                                                ))){
+
+                    $result = true;
+                }
+            }
+
+            if($result){
+
+                echo json_encode(array('result' => 'OK'));
+            }else{
+
+                echo json_encode(array('result' => 'FAILED'));
+            }
+            //do adding stuff
+        }else{
+              
+            echo "No data provided";
+        }
+    }
+
+    public function deleteMeasurementEntry(){
+
+        $post = $this->input->post();
+        if(isset($post['id'])){
+
+            $measurements = new Measurement_Model($this->user->id);
+
+            if($measurements -> deleteLogEntry($post['id'])){
+
+                echo json_encode(array('result' => 'OK'));
+            }else{
+
+                echo json_encode(array('result' => 'FAILED'));
+            }
+
+        }else{
+            echo "No data provided";
+        }
+    }
+
+// measurements end
+
+
     public function importexercises(){
 
         $post = $this->input->post();
