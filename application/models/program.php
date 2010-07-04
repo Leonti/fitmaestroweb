@@ -20,6 +20,26 @@ class Program_Model extends Model {
 			    ->get();
 	}
 
+    public function getPublicPrograms(){
+
+        return $this->db->select() // selects all fields by default
+                ->where('deleted', 0)
+                ->where('user_id', 0)
+                ->from('programs')
+                ->orderby('id', 'ASC')
+                ->get();
+    }
+
+    public function getByPublicId($public_id){
+
+        return $this->db->select() // selects all fields by default
+                ->where('deleted', 0)
+                ->where('import_id', $public_id)
+                ->where('user_id', $this->userId)
+                ->from('programs')
+                ->get();
+    }
+
 	public function getItem($programId){
 
 		return $this->db->select() // selects all fields by default
@@ -143,17 +163,6 @@ class Program_Model extends Model {
     public function moveSet($id, $dayNumber){
 
         return $this->db->update('programs_connector', array('day_number' => $dayNumber), array('id' => $id, 'user_id' => $this->userId));
-    }
-
-    // importing program
-    // 1. program itself should be imported
-    // 2. programs_connector
-    // 3. sets
-    // 4. sets_connector
-    // 5. exercises + groups
-    // oh my
-    public function importProgram(){
-
     }
 }
  

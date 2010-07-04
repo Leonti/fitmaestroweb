@@ -7,7 +7,9 @@ statusesMap['DONE'] = 'Done';
 $(function() {
 
     $('#select-exercise').dialog({autoOpen:false, width: 600});
-    
+
+    // we need acordion for exercise import
+    $('.accordion').accordion( { autoHeight: false } );
     $('#group-select').change(function(){
         var group_id = $(this).val();
         

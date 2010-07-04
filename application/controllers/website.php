@@ -19,6 +19,7 @@ class Website_Controller extends Template_Controller {
         'Login' => 'user/login',
         'Logout' => 'user/logout',
         'Register' => 'user/register',
+        'Public programs' => 'programs/publicPrograms',
 		);
 
 		$this->db = Database::instance();

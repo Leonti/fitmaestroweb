@@ -76,7 +76,8 @@ ul.items-list{
 }
 
 div.list-container,
-div.details-container{
+div.details-container,
+div.public-program{
   -moz-border-radius:6px 6px 6px 6px;
   padding: 0.5em;
   border:2px solid #DCD998;
@@ -310,5 +311,9 @@ div.form .label{
 /* button in exercise selector */
 #select-exercise-button{
     float: right;
+}
+/* public programs */
+div.public-program{
+    margin: 0.5em 0 0 0;
 }
 

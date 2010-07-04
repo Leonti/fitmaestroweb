@@ -36,4 +36,21 @@ class Programs_Controller extends Website_Controller {
         $this->template->content->exercisesArray = $exercisesArray;
     }
 
+    public function publicPrograms(){
+
+        $this->template->title = 'Programs::BodyB site';
+        $this->template->content = new View('pages/public_programs');
+
+        $programs = new Program_Model($this->user->id);
+        $public_programs = $programs->getPublicPrograms();
+
+        $this->template->content->programs_model = $programs;
+        $this->template->content->public_programs = $public_programs;
+    }
+
+    public function import($program_id){
+        $imported_program_id = imports::importProgram($this->user->id, $program_id);
+        url::redirect('/programs/index/' . $imported_program_id);
+    }
+
 } 

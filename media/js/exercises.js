@@ -303,7 +303,7 @@ function importExercises(){
 
         if(json.result == 'OK'){
 
-            $('div#import-exercises').hide();
+            $('div#import-exercises').dialog('close');
             $('div#import-exercises form input[type="checkbox"]').attr('checked', '');
             // exercises will be filled automatically
             fillGroups();
