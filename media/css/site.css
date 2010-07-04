@@ -299,3 +299,12 @@ div.form .label{
     padding: 0;
 }
 
+/* statistics page */
+#measurements-holder{
+    display: inline-block;
+}
+/* measurements dates picker*/
+#dates-holder{
+    float: right;
+}
+

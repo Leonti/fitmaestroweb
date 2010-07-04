@@ -135,13 +135,6 @@ class Json_Controller extends Controller {
         echo json_encode($measurements->getType($get['id'])->result_array());
     }
 
-    public function measurementLog(){
-        $get = $this->input->get();
-        $measurements = new Measurement_Model($this->user->id);
-        echo json_encode($measurements->getLogEntries($get['id'])->result_array());
-    }
-
-
     public function getdatetime(){
 
         $get = $this->input->get();
@@ -173,8 +166,27 @@ class Json_Controller extends Controller {
         $endDate = $_GET['enddate'];
 
         switch($type){
-        case 'weight_log':
+        case 'measurements_log':
 
+            $measurement_type_id = intval($_GET['measurement_type_id']);
+            $measurements = new Measurement_Model($this->user->id);
+            $logData = $measurements->getLogForPeriod($measurement_type_id, $startDate, $endDate);
+            $measurement_type = $measurements->getType($measurement_type_id);
+
+            $chart_url = "http://chart.apis.google.com/chart?cht=bvs&chco=4d89f9&chbh=a&chs=775x250";
+            $chart_url  .= "&chd=t:" . $logData['values_string']
+                        .= "&chxt=x,x,y&chxl=0:|" . $logData['labels_string_days']
+                        .= "|1:|" . $logData['labels_string_months']
+                        .= "&chxp=1," . $logData['labels_months_positions']
+                        .= "&chxr=2,0," . $logData['max_value'];
+
+            echo json_encode(array(
+                        'data' => array(
+                                    'stats' => $logData['dates']->result_array(),
+                                    'units' => $measurement_type[0]->units,
+                                    ),
+                        'chart_url' => $chart_url,
+                            ));
             break;
 
         case 'exercise_log':
@@ -190,22 +202,22 @@ class Json_Controller extends Controller {
             //       max reps for exercises with own weight
             // total - weight*repetitions for the whole day (with weight)
             //       - total repetitions for the whole day (own weight)
-            switch($_GET['type']){
 
-            case 'max':
-                echo json_encode(array(
-                                    'stats' => $logs->getMaxForPeriod($exercise_id, $startDate, $endDate),
-                                    'exercise' => $exercise_array[0],
-                                      ));
-                break;
+            $logData = $logs->getLogForPeriod($_GET['type'], $exercise_id, $startDate, $endDate);
 
-            case 'total':
-                echo json_encode(array(
-                                    'stats' => $logs->getTotalForPeriod($exercise_id, $startDate, $endDate),
-                                    'exercise' => $exercise_array[0],
-                                        ));
-                break;
-            }
+            $chart_url = "http://chart.apis.google.com/chart?cht=bvs&chco=4d89f9&chbh=a&chs=775x250";
+            $chart_url  .= "&chd=t:" . $logData['values_string']
+                        .= "&chxt=x,x,y&chxl=0:|" . $logData['labels_string_days']
+                        .= "|1:|" . $logData['labels_string_months']
+                        .= "&chxp=1," . $logData['labels_months_positions']
+                        .= "&chxr=2,0," . $logData['max_value'];
+
+            echo json_encode(array(
+                                'stats' => $logData['dates'],
+                                'exercise' => $exercise_array[0],
+                                'chart_url' => $chart_url,
+                                ));
+
             break;
         }
     }

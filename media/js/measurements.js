@@ -99,6 +99,11 @@ $(function() {
         
     $('table#measurements-log-list tbody tr a.delete').live('click', showDeleteEntry);
     
+    $('#get-stats').click(function(){
+        fillMeasurementLog();
+        return false;
+    });
+    
 });
 
 function showEditEntry(){
@@ -169,33 +174,42 @@ function fillMeasurementTypes(){
 
 function fillMeasurementLog(){
     
-    $.getJSON(baseUrl + 'json/measurementLog', {id : measurementTypeId}, function(json){
-        
-        $('table#measurements-log-list tbody').remove();
-        $('table#measurements-log-list').append($('<tbody>'));
-        
-        if(json.length > 0){
-            $.each(json, function(i, jsonrow){
-                
-                var tr = $('<tr>');
-                tr.data('id', jsonrow.id);
-                tr.data('date', jsonrow.date);
-                
-                var value = jsonrow.value;
-                
-                // date will need to be properly formatted
-                var date = jsonrow.date;
-                
-                tr.append('<td>' + value + '</td><td>' + date + '</td>');
-                tr.append('<td class = "no-pad no-right"><a class = "edit" href="#"></a></td><td class = "no-pad no-right" ><a class = "delete" href="#"></a></td>');
-                
-                $('table#measurements-log-list tbody').append(tr);
-            });
-        }else{
-            $('table#measurements-log-list tbody').append('<tr><td colspan = "3" class = "center">No log entries added yet!</td></tr>');
-        }
-        makeZebra($('table#measurements-log-list tbody'));
+    var startDate = $('#start-date').val();
+    var endDate = $('#end-date').val();
+    
+    $.getJSON(baseUrl + 'json/statistics/measurements_log', {startdate: startDate, enddate: endDate, measurement_type_id: measurementTypeId}, function(json){
+
+        fillMeasurementsTable(json.data, '#measurements-log-list');
     });
+}
+
+function fillMeasurementsTable(data, table){
+
+    $('table' + table + ' tbody').remove();
+    $('table' + table).append($('<tbody>'));
+    
+    if(data.stats.length > 0){
+        var units = data.units;
+        $.each(data.stats, function(i, jsonrow){
+            
+            var tr = $('<tr>');
+            tr.data('id', jsonrow.id);
+            tr.data('date', jsonrow.date);
+            
+            var value = jsonrow.value;
+            
+            // date will need to be properly formatted
+            var date = jsonrow.date;
+            
+            tr.append('<td>' + date + '</td><td>' + value + ' ' + units + '</td>');
+            tr.append('<td class = "no-pad no-right"><a class = "edit" href="#"></a></td><td class = "no-pad no-right" ><a class = "delete" href="#"></a></td>');
+            
+            $('table' + table + ' tbody').append(tr);
+        });
+    }else{
+        $('table' + table + ' tbody').append('<tr><td colspan = "4" class = "center">No log entries added yet!</td></tr>');
+    }
+    makeZebra($('table' + table + ' tbody'));
 }
 
 function showEditMeasurementTypePopup(){

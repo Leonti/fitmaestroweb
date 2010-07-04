@@ -14,6 +14,9 @@ $(function() {
         addExCallback(metadata.id);
         $('#select-exercise').dialog('close');
     });
+    
+    $('#start-date').datepicker();
+    $('#end-date').datepicker();
 });
 
 function getExerciseTypeName(typeInt){

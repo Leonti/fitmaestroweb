@@ -31,6 +31,9 @@ class Statistics_Controller extends Website_Controller {
 
         $this->template->content->exercisesArray = $exercisesArray;
 
+        $measurements = new Measurement_Model($this->user->id);
+        $this->template->content->measurement_types = $measurements->getTypes();
+
     }
 
 } 

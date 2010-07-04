@@ -1,10 +1,8 @@
 <div class = "details-container">
-    Start: <input type = "text" id = "start-date" value = "<?php echo date("m/d/Y", strtotime('-1 month')); ?>" /> 
-    End: <input type = "text" id = "end-date" value = "<?php echo date("m/d/Y"); ?>" /> 
-    <input type = "submit" value = "Refresh" id = "get-stats" /><br /><br />
+    <?php echo View::factory('pages_parts/dates_selector'); ?><br /><br />
     Stats type:
     <select id = "stats-type">
-        <option value = "weight_log">Weight Log</option>
+        <option value = "measurements_log">Measurements Log</option>
         <option value = "exercise_log">Exercise Progress</option>
     </select>
     <div id = "exercise-holder" style = "display: none;">
@@ -15,9 +13,16 @@
             <option value = "total">Weight/reps sum</option>
         </select>
     </div>
+    <div id = "measurements-holder">
+        <select id = "measurements-type">
+        <?php foreach($measurement_types as $type){ ?>
+            <option value = "<?php echo $type->id; ?>"><?php echo $type->title; ?></option>
+        <?php }?>
+        </select>
+    </div>
 
     <div id="holder"></div>
-    <table id = "statistics-list">
+    <table id = "statistics-list" style = "display: none;">
         <thead>
             <tr>
                 <th>Date</th>
@@ -30,12 +35,24 @@
         </tbody>
     </table>
 
+    <table id = "measurements-log-list">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Value</th>
+                <th class = "image-column no-pad no-right" ></th>
+                <th class = "image-column no-pad" ></th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
 </div>
 <?php
     echo html::script(array
           (
-          'media/js/raphael-min.js',
-          'media/js/plugins/raphael.path.methods.js',
+          'media/js/measurements.js',
           'media/js/statistics.js',
           ), FALSE);
 
