@@ -48,6 +48,7 @@ $(function() {
     $('#exercise-link').click(function(){
 
         exerciseChooser(addExerciseToSession);
+        return false;
     });
 
     $('#session-edit form input[type="submit"]').click(function(){

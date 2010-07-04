@@ -6,13 +6,25 @@ statusesMap['DONE'] = 'Done';
 
 $(function() {
 
-    $('.accordion').accordion( { autoHeight: false } );
-    $('#select-exercise').dialog({autoOpen:false});
-
-    $('.accordion li').click(function(){
-        var metadata = $(this).metadata();
-        addExCallback(metadata.id);
+    $('#select-exercise').dialog({autoOpen:false, width: 600});
+    
+    $('#group-select').change(function(){
+        var group_id = $(this).val();
+        
+        $.getJSON(baseUrl + 'json/exercisesbygroup', {id: group_id}, function(json){
+            $('#exercise-select').empty();
+            $.each(json, function(i, jsonrow){
+                $('#exercise-select').append('<option value = "' + jsonrow.id + '">' + jsonrow.title + '</option>');
+            });
+        })
+    });
+    
+    $('#group-select').change();
+    
+    $('#select-exercise-button').click(function(){
+        addExCallback($('#exercise-select').val());
         $('#select-exercise').dialog('close');
+        return false;
     });
     
     $('#start-date').datepicker();

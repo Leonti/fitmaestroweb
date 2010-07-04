@@ -307,4 +307,8 @@ div.form .label{
 #dates-holder{
     float: right;
 }
+/* button in exercise selector */
+#select-exercise-button{
+    float: right;
+}
 
