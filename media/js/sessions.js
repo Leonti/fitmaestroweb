@@ -43,6 +43,7 @@ $(function() {
         $(this).append(editBox);
 
         fillSessionExercises();
+        return false;
     });
 
     $('#exercise-link').click(function(){
@@ -60,6 +61,7 @@ $(function() {
     $('.reps').live('click', function(){
 
         openRepsDialog($(this));
+        return false;
     });
 
     $('#reps-table tbody tr:last input[type="text"]').live('click', function(){
@@ -72,6 +74,7 @@ $(function() {
 
         $(this).parent().parent().find('input[type="checkbox"]').attr('checked', 'checked');
         $(this).parent().parent().find('input[type="checkbox"]').trigger('change');
+        return false;
     });
 
     $('#reps-table tbody tr input[type="checkbox"]').live('change', function(){

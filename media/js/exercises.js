@@ -17,6 +17,7 @@ $(function() {
 		$('#exercise-edit').dialog('option','title', 'Add exercise');
         $('#exercise-edit form select[name="ex_type"]').trigger('change');
 		$('#exercise-edit').dialog('open');
+        return false;
 	});
 
     $('#import-exercises-link').click(function(){
@@ -90,6 +91,7 @@ $(function() {
 		$('#group-edit form input[type="hidden"]').val('');
 		$('#group-edit').dialog('option','title', 'Add group'); 
 		$('#group-edit').dialog('open');
+        return false;
 	});
 
 	$('#group-edit form input[type="submit"]').click(function(){
@@ -163,6 +165,7 @@ $(function() {
 			$('div#group-description').html('List of exercises for all groups');
 		}
 		fillExercises();
+        return false;
 	});
 
     $('#import-exercises form input[type="submit"]').click(function(){

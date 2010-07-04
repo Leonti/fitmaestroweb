@@ -167,6 +167,7 @@ $(function() {
                 showAddSetDialog($(this).data('day_number'));
             }
         }
+        return false;
     });
 
     $('#add-week').click(function(){

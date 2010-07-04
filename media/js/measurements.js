@@ -36,6 +36,7 @@ $(function() {
         $(this).append(editBox);
         
         fillMeasurementLog();
+        return false;
     });
     
     // save measurement info - add or edit depending on id value
@@ -48,13 +49,13 @@ $(function() {
             if(json.result == 'OK'){
                 
                 fillMeasurementTypes();
-        }
+            }
+            $('#measurement-edit').dialog('close');
+        },"json");
+    
         $('#measurement-edit').dialog('close');
-    },"json");
     
-    $('#measurement-edit').dialog('close');
-    
-    return false;
+        return false;
     });
     
     // edit measurement type

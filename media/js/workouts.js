@@ -18,6 +18,7 @@ $(function() {
 		$('#set-edit form input[type="hidden"]').val('');
 		$('#set-edit').dialog('option','title', 'Add workout'); 
 		$('#set-edit').dialog('open');
+        return false;
 	});
 
 	fillSets();
@@ -37,6 +38,7 @@ $(function() {
         $(this).append(editBox);
 
 		fillSetExercises();
+        return false;
 	});
 
 
@@ -108,11 +110,13 @@ $(function() {
 			  appendRepsRow();
 		 }
 		 $('#reps-edit').dialog('open');
+         return false;
 	});
 
 	$('#reps-table tbody tr:last input[type="text"]').live('click', function(){
 
 		appendRepsRow();
+        return false;
 	});
 
 	$('#reps-edit form input[type="submit"]').click(function(){
@@ -144,11 +148,13 @@ $(function() {
 
 			$(this).parent().parent().remove();
 		}
+		return false;
 	});
 
 	$('.remove-from-set').live('click', function(){
 
 		removeExerciseFromSet($(this).parent().parent().data('connector_id'));
+        return false;
 	});
 
     $('#start-session-link').click(function(){

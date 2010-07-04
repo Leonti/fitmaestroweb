@@ -43,6 +43,7 @@ $(function () {
     
     $('#exercise-change').click(function(){
         exerciseChooser(changeExercise);
+        return false;
     });
     
     getStats();
