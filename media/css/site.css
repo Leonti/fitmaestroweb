@@ -23,7 +23,8 @@ p { margin: 0.5em,0.5em,0,0; padding: 0.5em; }
 
 div.list-container ul li,
 a.add-link,
-a.add-link-bottom {
+a.add-link-bottom,
+a.import-link {
   font-size: 1.1em;
 }
 
@@ -315,5 +316,26 @@ div.form .label{
 /* public programs */
 div.public-program{
     margin: 0.5em 0 0 0;
+    position: relative;
+}
+div.public-program-title{
+    position: absolute;
+    top: 0;
+    left: 0;
+    -moz-border-radius:6px 0px 6px 0px;
+    padding: 0.2em;
+    font-size: 1.1em;
+    font-weight: bold;
+    background-color:#FFFFDD;
+    border-right:2px solid #DCD998;
+    border-bottom:2px solid #DCD998;
 }
 
+div.public-program-desc{
+    margin-top: 2em;
+}
+a.import-link{
+    position: absolute;
+    top: 0.5em;
+    right: 0.5em;
+}

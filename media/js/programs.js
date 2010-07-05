@@ -75,7 +75,7 @@ $(function() {
 				if(json.result == 'OK'){
 
                     resetPage();
-					programId = null;
+					programId = 0;
 					fillPrograms();
 				}
 			},"json");
@@ -126,21 +126,22 @@ $(function() {
         return false;
     });
 
-    $('div.set-details').live('click', function(){
+    $('div.set-details').live('click', function(e){
+        if(!$(e.target).is('a')){
+            setId = $(this).parent().data('set_id');
+            programsConnectorId = $(this).parent().data('connector_id');
 
-        setId = $(this).parent().data('set_id');
-        programsConnectorId = $(this).parent().data('connector_id');
+            // do not allow to start another session
+            if($(this).parent().data('session_id')){
+                $('#start-session-link').hide();
+            }else{
+                $('#start-session-link').show();
+            }
 
-        // do not allow to start another session
-        if($(this).parent().data('session_id')){
-            $('#start-session-link').hide();
-        }else{
-            $('#start-session-link').show();
+            $('#program-workout').show();
+            fillSetExercises();
+            return false;
         }
-
-        $('#program-workout').show();
-        fillSetExercises();
-        return false;
     });
 
     $('a.remove-set').live('click', function(){
@@ -152,9 +153,7 @@ $(function() {
     // day in days "table"
     $('table#days tbody tr td div').live('click', function(e){
 
-        if($(e.target).is('a')){
-
-        }else{
+        if(!$(e.target).is('a')){
 
             // check if it already has set attached
             // if not - add new set
@@ -166,8 +165,8 @@ $(function() {
                 $('#program-workout').hide();
                 showAddSetDialog($(this).data('day_number'));
             }
+            return false;
         }
-        return false;
     });
 
     $('#add-week').click(function(){
@@ -245,6 +244,12 @@ function fillPrograms(){
 				li.trigger('click');
 			}
 		});
+        
+        makeZebra($('ul#program-list'));
+        
+        if(programId == 0){
+            $('ul#program-list li:last').trigger('click');
+        }
 	});
 
 }

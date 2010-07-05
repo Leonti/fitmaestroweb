@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-class imports_Core{
+class exports_Core{
 
     public static function exportExercise($userId, $exportExerciseId){
         $exercises = new Exercise_Model($userId);
@@ -50,7 +50,7 @@ class imports_Core{
         return $exportedExerciseId;
     }
 
-    public static function function exportSet($userId, $exportSetId){
+    public static function exportSet($userId, $exportSetId){
 
         $sets = new Set_Model($userId);
 

@@ -14,7 +14,8 @@
             $testProgram = $programs_model->getByPublicId($public_program->id);
             if(count($testProgram) == 0){
         ?>
-            <a href = "import/<?php echo $public_program->id; ?>">Import Program</a>
+            <a href = "import/<?php echo $public_program->id; ?>" class = "import-link">Import Program</a>
+            <div style = "clear: both;"></div>
         <?php } ?>
 
     </div>
