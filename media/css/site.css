@@ -6,9 +6,17 @@ body {
 }
 
 a { text-decoration: none; }
-ul.navigation-menu, ul#sessions-filter { list-style: none; padding: 1em 0; }
-ul.navigation-menu li, ul#sessions-filter li { display: inline; padding-right: 1em; }
+ul.navigation-menu, ul#sessions-filter { list-style: none;}
+ul.navigation-menu li, ul#sessions-filter li { display: inline; padding-right: 0.5em; }
 p { margin: 0.5em,0.5em,0,0; padding: 0.5em; } 
+
+ul#sessions-filter li{
+    cursor: pointer;
+    padding-left: 0.5em;
+}
+ul#sessions-filter li.selected{
+    -moz-border-radius:6px 6px 0px 0px;
+}
 
 .no-pad{
   padding: 0;
@@ -71,9 +79,22 @@ ul li .edit-box{
   top: 0.1em;
   right: 0.1em;
 }
-ul.items-list{
+ul.items-list, ul#sessions-filter{
   border:2px solid #DCD998;
+}
+ul.items-list{
   float:left;
+}
+ul#sessions-filter{
+    display: table;
+    margin-top: 1em;
+    font-size: 1.1em;
+    border-bottom: none;
+    -moz-border-radius:6px 6px 0px 0px;
+}
+
+div#session-list-container{
+    -moz-border-radius:0px 6px 6px 6px;
 }
 
 div.list-container,

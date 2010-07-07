@@ -152,7 +152,7 @@ $(function() {
             sessionsFilter = '';
         }
 
-        fillSessions();
+        fillSessions(true);
     });
     
     $('.remove-from-session').live('click', function(){
@@ -170,7 +170,7 @@ function initialSetup(){
     sessionsFilter = startSessionFilter;
 }
 
-function fillSessions(){
+function fillSessions(select_last){
 
     $.getJSON(baseUrl + 'json/sessions', {status: sessionsFilter}, function(json){
 
@@ -192,7 +192,7 @@ function fillSessions(){
         });
         makeZebra($('ul#session-list'));
 
-        if(sessionId == 0){
+        if(sessionId == 0 || select_last){
             $('ul#session-list li:last').trigger('click');
         }
     });

@@ -1,10 +1,10 @@
 <ul id = "sessions-filter">
-<li id = "sessions-inprogress">Current</li>
+<li id = "sessions-inprogress"><div style = "text-align: center; display: inline-block;">Current</div></li>
 <li id = "sessions-done">Done</li>
 <li id = "sessions-all">All</li>
 </ul>
 
-<div class = "list-container">
+<div class = "list-container" id = "session-list-container">
     <a id = "start-session" href = "#" class = "add-link" >Start session</a>
     <div style = "clear:both;"></div>
     <ul id = "session-list" class = "items-list">
@@ -34,13 +34,13 @@
   </table>
 </div>
 <?php
-    $startSessionId = $sessionId ? $sessionId : 0;
+
     $startSessionFilter = '';
 
     echo '
         <script type = "text/javascript">
-            var startSessionId = ' . $startSessionId . ';
-            var startSessionFilter = \'' . $startSessionFilter . '\';
+            var startSessionId = ' . $session_id . ';
+            var startSessionFilter = \'' . $session_status . '\';
         </script>
     ';
     echo html::script(array

@@ -153,7 +153,7 @@ $(function() {
     // day in days "table"
     $('table#days tbody tr td div').live('click', function(e){
 
-        if(!$(e.target).is('a')){
+        if(!$(e.target).is('a') && !$(e.target).is('.status')){
 
             // check if it already has set attached
             // if not - add new set

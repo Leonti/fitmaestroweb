@@ -110,10 +110,10 @@ $(function() {
 function showEditEntry(){
     //alert($(this).parent().parent().data('id'));
     var row = $(this).parent().parent();
-    var valueTd = $('td', row).eq(0);
-    var dateTd = $('td', row).eq(1);
-    valueTd.html('<input type = "text" name = "value" value = "' + valueTd.html() + '" />');
+    var dateTd = $('td', row).eq(0);
+    var valueTd = $('td', row).eq(1);
     dateTd.html('<input type = "text" name = "date" class="time" value = "' + row.data('date') + '" />');
+    valueTd.html('<input type = "text" name = "value" value = "' + valueTd.html() + '" />');
     attachDatepicker();
     return false;
 }

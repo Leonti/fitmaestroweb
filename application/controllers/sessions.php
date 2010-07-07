@@ -31,7 +31,15 @@ class Sessions_Controller extends Website_Controller {
 
         $this->template->content->exercisesArray = $exercisesArray;
 
-        $this->template->content->sessionId = $sessionId;
+        $session_status = 'INPROGRESS';
+        if($sessionId){
+            $sessions = new Session_Model($this->user->id);
+            $current_session = $sessions->getItem($sessionId);
+            $session_status = $current_session[0]->status;
+        }
+
+        $this->template->content->session_id = $sessionId ? $sessionId : 0;
+        $this->template->content->session_status = $session_status;
 /*
         $settings = new Setting_Model($this->user->id);
         $userSettings = $settings->getSettings();
