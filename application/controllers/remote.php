@@ -11,7 +11,13 @@ class Remote_Controller extends Controller {
 
     public function index(){
 
-        $data = json_decode($_POST['jsonString']);
+    $data = json_decode($_POST['jsonString']);
+
+/*
+    $data = new stdClass;
+    $data->what = "PUBLICPROGRAMS";
+    $data->authkey = "c77feca090963cf3aee40f9de859d0c7";
+*/
 
     // logging
     if($data -> what == "STARTUPDATE"){
@@ -20,6 +26,12 @@ class Remote_Controller extends Controller {
     fclose($handle);
     }
     // end of logging
+
+
+    if(isset($_POST['jsonString'])){
+        error_log(print_r("-----------FROM PHONE-------------" . "\n", true)."\n", 3, "log");
+        error_log(print_r(json_decode($_POST['jsonString']), true)."\n", 3, "log");
+    }
 
         error_log(print_r("-----------FROM PHONE-------------" . "\n", true)."\n", 3, "log");
         error_log(print_r($data, true)."\n", 3, "log");
@@ -50,6 +62,38 @@ class Remote_Controller extends Controller {
                         echo $toSend;
         error_log(print_r("-----------TO PHONE-------------" . "\n", true)."\n", 3, "log");
         error_log(print_r(json_decode($toSend), true)."\n", 3, "log");
+                    }
+                break;
+
+                case "PUBLICEXERCISES":
+                    if($userId = remoteUser::checkUserByKey($data -> authkey)){
+
+                        $toSend = json_encode(array("data" => getPublicExercises($userId)));
+                        echo $toSend;
+                    }
+                break;
+
+                case "IMPORTEXERCISES":
+                    if($userId = remoteUser::checkUserByKey($data -> authkey)){
+
+                        $toSend = json_encode(array("result" => importExercises($userId, $data->data)));
+                        echo $toSend;
+                    }
+                break;
+
+                case "PUBLICPROGRAMS":
+                    if($userId = remoteUser::checkUserByKey($data -> authkey)){
+
+                        $toSend = json_encode(array("data" => getPublicPrograms($userId)));
+                        echo $toSend;
+                    }
+                break;
+
+                case "IMPORTPROGRAMS":
+                    if($userId = remoteUser::checkUserByKey($data -> authkey)){
+
+                        $toSend = json_encode(array("result" => importPrograms($userId, $data->data)));
+                        echo $toSend;
                     }
                 break;
 
@@ -213,6 +257,60 @@ function finishUpdate($userId, $phoneData){
     }
 
     return prepareUpdate($userId);
+}
+
+function getPublicExercises($user_id){
+
+    $exercises = new Exercise_Model($user_id);
+    $groups = new Group_Model($user_id);
+    $public_groups = $groups->getPublicAll();
+
+    $public_exercises_array = array();
+    foreach($public_groups as $public_group){
+
+        $public_exercises = $exercises->getPublicByGroupId($public_group->id)->result_array();
+        foreach($public_exercises as &$public_exercise){
+            $test_exercise = $exercises->getByPublicId($public_exercise->id);
+            $public_exercise->imported = count($test_exercise);
+        }
+
+        $public_exercises_array[] = array(
+                                        'id' => $public_group->id,
+                                        'title' => $public_group->title,
+                                        'desc' => $public_group->desc,
+                                        'exercises' => $public_exercises,
+        );
+    }
+    return $public_exercises_array;
+
+}
+
+function importExercises($user_id, $to_import){
+
+    foreach($to_import as $import_exercise_id){
+        imports::importExercise($user_id, $import_exercise_id);
+    }
+    return "SUCCESS";
+}
+
+function getPublicPrograms($user_id){
+
+    $programs = new Program_Model($user_id);
+    $public_programs = $programs->getPublicPrograms()->result_array();
+    foreach($public_programs as &$public_program){
+        $testProgram = $programs->getByPublicId($public_program->id);
+        $public_program->imported = count($testProgram) > 0 ? 1 : 0;
+    }
+    return $public_programs;
+
+}
+
+function importPrograms($user_id, $to_import){
+
+    foreach($to_import as $import_program_id){
+        imports::importProgram($user_id, $import_program_id);
+    }
+    return "SUCCESS";
 }
 
 function jsonArray($array){
