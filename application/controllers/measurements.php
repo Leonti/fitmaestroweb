@@ -16,7 +16,7 @@ class Measurements_Controller extends Website_Controller {
 
     public function index(){
 
-        $this->template->title = 'Measurements::BodyB site';
+        $this->template->title = 'FitMaestro Measurements';
         $this->template->content = new View('pages/measurements');
 
         $measurements = new Measurement_Model($this->user->id);

@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
+ini_set('error_log','php-errors.log');
 class Ajaxpost_Controller extends Controller {
 
     function __construct(){
@@ -79,40 +79,102 @@ class Ajaxpost_Controller extends Controller {
 	public function saveexercise(){
 
 		$post = $this->input->post();
+                $uploads_folder = '/home/leonti/public_html/koh/files/';
+                error_log('Savin\' exercise');
+                error_log('File is: ' . print_r($_FILES['image'], true));
+                $error_type = '';
+                $allowed_extentions = array('jpg', 'jpeg', 'gif', 'png');
 		if(isset($post['title']) && isset($post['desc'])){
 
+                    $file_error = intval($_FILES['image']['error']);
+                    $frames_count = 1;
+                    if(!$file_error){
+
+                        $file_name = $_FILES['image']['name'];
+                        $ext = substr($file_name, strrpos($file_name, '.') + 1);
+                        error_log($ext);
+                        if(in_array($ext, $allowed_extentions)){
+                            $new_filename = md5(uniqid()) . '.' . $ext;
+                            $uploaded_file = $uploads_folder . $new_filename;
+                            move_uploaded_file($_FILES['image']['tmp_name'], $uploaded_file);
+                            $image = new Imagick($uploaded_file);
+                            $frames_count = $image->getNumberImages();
+
+                            // create frame files from animated gif
+                            if($frames_count > 1){
+                                animationWriteFrames($uploaded_file, $uploads_folder);
+                            }
+                        }else{
+                            $error_type = 'ext';
+                        }
+                    }
+
 			$exercises = new Exercise_Model($this->user->id);
+                        $files = new File_Model($this->user->id);
 
 			$result = null;
 
-            $exerciseData = array('title' => $post['title'], 
+                        $exerciseData = array('title' => $post['title'],
                                   'desc' => $post['desc'], 
                                   'ex_type' => $post['ex_type'],
                                   'max_weight' => floatval($post['max_weight']),
                                   'max_reps' => intval($post['max_reps']),
                                   'group_id' => $post['group_id']);
 
-			// existing item
-			if($post['id']){
 
-				if($exercises -> updateItem($exerciseData, $post['id'])){
+                        // only proceed if there is no file error (extention)
+                        if(!$error_type){
+                            error_log("no file error");
+                            // existing item
+                            if($post['id']){
 
-					$result = true;
-				}
-			}else{
+                                    $exercise = $exercises->getItem($post['id']);
+                                    $file_id = $exercise[0]->file_id;
 
-				if($exercises -> addItem($exerciseData)){
+                                    // we have file uploaded
+                                    if(!$file_error){
+                                        
+                                        error_log('File ID is: ' . $file_id);
+                                        // it has already uploaded file
+                                        if($file_id){
+                                            $old_file = $files->getItem($file_id);
+                                            $old_filename = $old_file[0]->filename;
+                                            $files->updateItem(array('filename'=>$new_filename, 'frames' => $frames_count), $file_id);
 
-					$result = true;
-				}
-			}
+                                            //remove old file
+                                            unlink($uploads_folder . $old_filename);
+                                        }else{
+
+                                            // this is new file - adding it to the database
+                                            $file_id = $files->addItem(array('filename'=>$new_filename, 'frames' => $frames_count));
+                                        }
+                                    }
+                                    $exerciseData['file_id'] = $file_id;
+                                    if($exercises -> updateItem($exerciseData, $post['id'])){
+
+                                            $result = true;
+                                    }
+                            }else{
+                                    if(!$file_error){
+                                        $file_id = $files->addItem(array('filename'=>$new_filename, 'frames' => $frames_count));
+                                    }
+                                    $exerciseData['file_id'] = $file_id;
+
+                                    if($exercises -> addItem($exerciseData)){
+
+                                            $result = true;
+                                    }
+                            }
+                         }else{
+                            error_log("file error: " . $error_type);
+                        }
 
 			if($result){
 
 				echo json_encode(array('result' => 'OK'));
 			}else{
 
-				echo json_encode(array('result' => 'FAILED'));
+				echo json_encode(array('result' => 'FAILED', 'error' => $error_type));
 			}
 			//do adding stuff
 		}else{
@@ -446,7 +508,7 @@ class Ajaxpost_Controller extends Controller {
 					$reps = $post['reps'][$i];
 					$percentage = $post['percentage'][$i];
 
-					if($reps != ''){
+					if($percentage != ''){
 
 						$result = $sets -> addReps(array( 'sets_connector_id' => $post['connector_id'],
 										  'reps' => $reps,
@@ -572,6 +634,9 @@ class Ajaxpost_Controller extends Controller {
 
         $post = $this->input->post();
 
+        $settings = new Setting_Model($this->user->id);
+        $userSettings = $settings->getSettings();
+
         if(isset($post['log_id'])){
 
             $sessions = new Session_Model($this->user->id);
@@ -583,7 +648,10 @@ class Ajaxpost_Controller extends Controller {
 
                 $reps = $post['reps'][$i];
                 $weight = $post['weight'][$i];
-                $done = date("Y-m-d H:i:s", strtotime($post['done'][$i]));
+
+               // we use UTC time in DB so converting time user has provided to UTC so it is saved right in DB
+                $done = timeConvert::getUTCTime($post['done'][$i],  
+                                            $userSettings->time_zone);
 
                 // updating existing
                 if($logId){
@@ -603,6 +671,7 @@ class Ajaxpost_Controller extends Controller {
                     }
 
                 }else{
+
                     // check if checkbox is checked
                     if(isset($post['isDone'][$i])){
                         $repsId = !empty($post['rep_id'][$i]) ? $post['rep_id'][$i] : 0;
@@ -868,3 +937,30 @@ class Ajaxpost_Controller extends Controller {
     }
 
 }
+
+function animationWriteFrames($filename, $destination="")
+{
+        $format = basename($filename, ".gif") . "-%0d.gif";
+        try
+        {
+                $animation = new Imagick($filename);
+                $coalesced = $animation->coalesceImages();
+
+                // total frames
+                // $total = $coalesced->getNumberImages();
+
+                foreach ($coalesced as $frame)
+                {
+                        $index = 1 + $frame->getImageIndex();
+                        $tofilename = $destination . sprintf($format, $index);
+
+                        $frame->writeImage($tofilename);
+                }
+        }
+        catch(Exception $e)
+        {
+                echo $e->GetMessage(), "\n";
+                return FALSE;
+        }
+        return TRUE;
+} 

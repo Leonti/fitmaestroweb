@@ -5,8 +5,8 @@ var sessionsFilter = 'INPROGRESS';
 
 $(function() {
 
-    $('#reps-edit').dialog({autoOpen:false});
-    $('#session-edit').dialog({autoOpen:false});
+    $('#reps-edit').dialog({autoOpen:false, width:'auto'});
+    $('#session-edit').dialog({autoOpen:false, width:'auto'});
 
     $('#sessions-inprogress').addClass('selected');
     
@@ -212,6 +212,7 @@ function fillSessionExercises(){
                     var tr = $('<tr>');
                     tr.data('id', jsonrow.id);
                     tr.data('maxWeight', jsonrow.max_weight);
+                    tr.data('maxReps', jsonrow.max_reps);
                     tr.data('connector_id', jsonrow.sessions_connector_id);
                     tr.data('ex_type', jsonrow.ex_type);
                     tr.data('details', jsonrow.details);
@@ -234,10 +235,10 @@ function fillSessionExercises(){
                         var toAppendDone = 'not done';
 
                         if(jsonrow.ex_type == 1){
-                            toAppend = detailrow.reps + 'x' + detailrow.percentage + '%';
+                            toAppend = detailrow.reps + 'x' + detailrow.percentage + ' ' + weightUnits;
 
                             if(detailrow.log_data){
-                                toAppendDone = detailrow.log_data.reps + 'x' + detailrow.log_data.weight + ' kg';
+                                toAppendDone = detailrow.log_data.reps + 'x' + detailrow.log_data.weight + ' ' + weightUnits;
                             }
                         }else{
                             toAppend = detailrow.reps;
@@ -248,7 +249,7 @@ function fillSessionExercises(){
                         }
 
                         if(detailrow.log_data){
-                            done = detailrow.log_data.reps + 'x' + detailrow.log_data.weight + ' kg';
+                            done = detailrow.log_data.reps + 'x' + detailrow.log_data.weight + ' ' + weightUnits;
                         }
                         if(detailrow.id != 0){
                             repsTd.append('<div>' + toAppend + '</div>');
@@ -285,7 +286,7 @@ function showEditSessionPopup(){
     });
 }
 
-function appendRepsRow(details, maxWeight){
+function appendRepsRow(details){
 
     var lastDate = $('#reps-table tbody tr:last input[name="done[]"]').val(); 
     if(typeof(lastDate) == 'undefined'){
@@ -295,7 +296,7 @@ function appendRepsRow(details, maxWeight){
     }
 
     var reps = '';
-    var weight = '';
+    var weight = 0;
     var repId = '';
     var logId = '';
     var done = '';
@@ -311,7 +312,7 @@ function appendRepsRow(details, maxWeight){
             logId = details.log_data.id;
         }else{
             reps = details.reps;
-            weight = (parseFloat(details.percentage) * maxWeight)/100;
+            weight = details.percentage;
         }
     }else{
         done = lastDate;
@@ -327,21 +328,24 @@ function appendRepsRow(details, maxWeight){
         checkAttr = 'checked = "checked"';
     }
 
+    var xPart = '';
+    var weightDonePart = '';
     if(exType == 1){
-        $('#reps-table tbody').append('<tr ' + grayed + '><td><input type = "text" name = "reps[]" value = "' + reps + '" /></td><td>x</td>'
-            + '<td><input type = "text" name = "weight[]" value = "' + weight + '" /></td>'
-            + '<td><input class = "time" type = "text" name = "done[]" value = "' + done + '" />'
-            + '<input type = "hidden" name = "rep_id[]" value = "' + repId + '" />'
-            + '<input type = "hidden" name = "log_id[]" value = "' + logId + '" /></td>'
-            + '<td><input type = "checkbox" name = isDone[] ' + checkAttr + ' /></td></tr>');
-    }else if(exType == 0){
-        $('#reps-table tbody').append('<tr ' + grayed + '><td><input type = "text" name = "reps[]" value = "' + reps + '" /></td>'
-            + '<td><input type = "hidden" name = "weight[]" value = "0" />'
-            + '<input class = "time" type = "text" name = "done[]" value = "' + done + '" />'
-            + '<input type = "hidden" name = "rep_id[]" value = "' + repId + '" />'
-            + '<input type = "hidden" name = "log_id[]" value = "' + logId + '" /></td>'
-            + '<td><input type = "checkbox" name = isDone[] ' + checkAttr + ' /></td></tr>');
+
+        xPart = '<td>x</td>';
+        weightDonePart = '<td><input type = "text" name = "weight[]" class = "number" value = "' + weight + '" /> ' + weightUnits + '</td>'
+         + '<td><input class = "time" type = "text" name = "done[]" value = "' + done + '" />'
+    }else{
+        weightDonePart = '<td><input type = "hidden" name = "weight[]" class = "number" value = "' + weight + '" />'
+        + '<input class = "time" type = "text" name = "done[]" value = "' + done + '" />'
     }
+
+    $('#reps-table tbody').append('<tr ' + grayed + '><td><input type = "text" name = "reps[]" class = "number" value = "' + reps + '" /></td>'
+    + xPart
+    + weightDonePart
+    + '<input type = "hidden" name = "rep_id[]" value = "' + repId + '" />'
+    + '<input type = "hidden" name = "log_id[]" value = "' + logId + '" /></td>'
+    + '<td><input type = "checkbox" name = isDone[] ' + checkAttr + ' /></td></tr>');
 
 
     $('.time').datepicker({  
@@ -399,6 +403,7 @@ function openRepsDialog(repsTd){
 
     exType = repsTd.parent().data('ex_type');
     var maxWeight = parseFloat(repsTd.parent().data('maxWeight'));
+    var maxReps = parseFloat(repsTd.parent().data('maxReps'));
 
     var details = repsTd.parent().data('details');
 
@@ -408,7 +413,7 @@ function openRepsDialog(repsTd){
 
         $.each(details, function(i, detailrow){
 
-            appendRepsRow(detailrow, maxWeight);
+            appendRepsRow(detailrow);
         });
 
         if(details.length == 0){
@@ -418,8 +423,10 @@ function openRepsDialog(repsTd){
 
         if(exType == 1){
             $('.to-hide').show();
+            $('.to-hide-reps').hide();
         }else if (exType == 0){
             $('.to-hide').hide();
+            $('.to-hide-reps').show();
         }
 
         $('#reps-edit').dialog('open');

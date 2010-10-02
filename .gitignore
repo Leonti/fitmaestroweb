@@ -3,3 +3,4 @@ application/config/config.php
 application/logs
 log
 php-errors.log
+files/*

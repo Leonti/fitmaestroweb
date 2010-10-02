@@ -1,11 +1,10 @@
 var setId = 0;
-var exType = 0;
 
 $(function() {
 
-	$('#set-edit').dialog({autoOpen:false});
-	$('#reps-edit').dialog({autoOpen:false});
-    $('#start-session-popup').dialog({autoOpen:false});
+	$('#set-edit').dialog({autoOpen:false, width:'auto'});
+	$('#reps-edit').dialog({autoOpen:false, width:'auto'});
+        $('#start-session-popup').dialog({autoOpen:false, width:'auto'});
 
 	$('#exercise-link').click(function(){
 
@@ -14,31 +13,31 @@ $(function() {
 	});
 
 	$('#add-set').click(function(){
-		$('#set-edit form')[0].reset();
-		$('#set-edit form input[type="hidden"]').val('');
-		$('#set-edit').dialog('option','title', 'Add workout'); 
-		$('#set-edit').dialog('open');
-        return false;
+            $('#set-edit form')[0].reset();
+            $('#set-edit form input[type="hidden"]').val('');
+            $('#set-edit').dialog('option','title', 'Add workout');
+            $('#set-edit').dialog('open');
+            return false;
 	});
 
 	fillSets();
 
 	$('ul#set-list li').live('click', function(){
 
-		$('ul#set-list li div.edit-set-box').remove();	
-		setId = $(this).data('id');
+            $('ul#set-list li div.edit-set-box').remove();
+            setId = $(this).data('id');
 
-		$('ul#set-list li').removeClass('selected');
+            $('ul#set-list li').removeClass('selected');
 
-		$(this).addClass('selected');
-		$('div#set-description').html($(this).data('desc'));
-        var editBox = '<div class = "edit-set-box edit-box">' 
-        + '<a class = "edit" href="#"></a>'
-        + '<a class = "delete" href="#"></a></div>';
-        $(this).append(editBox);
+            $(this).addClass('selected');
+            $('div#set-description').html($(this).data('desc'));
+            var editBox = '<div class = "edit-set-box edit-box">'
+            + '<a class = "edit" href="#"></a>'
+            + '<a class = "delete" href="#"></a></div>';
+            $(this).append(editBox);
 
-		fillSetExercises();
-        return false;
+            fillSetExercises();
+            return false;
 	});
 
 
@@ -90,33 +89,45 @@ $(function() {
 
 	$('.reps').live('click', function(){
 
-		$('#reps-edit form input[name="connector_id"]').val($(this).parent().data('connector_id'));
-		$('#reps-table tbody tr').remove();
-        exType = $(this).parent().data('ex_type');
-        if(exType == 1){
-            $('.to-hide').show();
-        }else if (exType == 0){
-            $('.to-hide').hide();
-        }
+            $('#reps-edit form input[name="connector_id"]').val($(this).parent().data('connector_id'));
+            $('#reps-table tbody tr').remove();
+            
+            var exType = $(this).parent().data('ex_type');
+            $('#reps-edit').data('exType', exType);
+            $('#reps-edit').data('maxWeight', $(this).parent().data('maxWeight'));
+            $('#reps-edit').data('maxReps', $(this).parent().data('maxReps'));
 
-		 var details = $(this).data('details');
-		 $.each(details, function(i, detailrow){
+            if(exType == 1){
+                $('.to-hide').show();
+                $('.to-hide-reps').hide();
+            }else if (exType == 0){
+                $('.to-hide').hide();
+                $('.to-hide-reps').show();
+            }
 
-			  appendRepsRow(detailrow.reps, detailrow.percentage, detailrow.id);
-		 });
-	  
-		 if(details.length == 0){
 
-			  appendRepsRow();
-		 }
-		 $('#reps-edit').dialog('open');
-         return false;
+             var details = $(this).data('details');
+             $.each(details, function(i, detailrow){
+
+                      appendRepsRow(detailrow.reps, detailrow.percentage, detailrow.id);
+             });
+
+             if(details.length == 0){
+
+                      appendRepsRow();
+             }
+             $('#reps-edit').dialog('open');
+            return false;
 	});
 
 	$('#reps-table tbody tr:last input[type="text"]').live('click', function(){
 
-		appendRepsRow();
-        return false;
+            appendRepsRow();
+            return false;
+	});
+
+        $('#reps-table tbody tr input[name="percentage[]"]').live('keyup', function(){
+            updateCalculation(this);
 	});
 
 	$('#reps-edit form input[type="submit"]').click(function(){
@@ -153,8 +164,8 @@ $(function() {
 
 	$('.remove-from-set').live('click', function(){
 
-		removeExerciseFromSet($(this).parent().parent().data('connector_id'));
-        return false;
+            removeExerciseFromSet($(this).parent().parent().data('connector_id'));
+            return false;
 	});
 
     $('#start-session-link').click(function(){
@@ -179,6 +190,22 @@ $(function() {
 	
 }); 
 
+
+function updateCalculation(textField){
+    
+    var exType = $('#reps-edit').data('exType');
+    var maxWeight = parseFloat($('#reps-edit').data('maxWeight'));
+    var maxReps = parseInt($('#reps-edit').data('maxReps'));
+
+    var percentage = parseFloat($(textField).val() != '' ? $(textField).val() : 0);
+
+    if(exType == 1){
+        
+        $('.calculated-weight', $(textField).parent().parent()).text(percentages.calculateWeight(percentage, maxWeight) + ' ' + weightUnits);
+    }else{
+        $('.calculated-reps', $(textField).parent().parent()).text(percentages.calculateReps(percentage, maxReps));
+    }
+}
 
 function fillSets(){
 
@@ -210,7 +237,6 @@ function fillSets(){
 function fillSetExercises(){
 
 	$.getJSON(baseUrl + 'json/setexercises', {id : setId}, function(json){
-
 			$('table#set-exercise-list tbody').remove();
 			$('table#set-exercise-list').append($('<tbody>'));
 
@@ -220,6 +246,7 @@ function fillSetExercises(){
                     var tr = $('<tr>');
                     tr.data('id', jsonrow.id);
                     tr.data('maxWeight', jsonrow.max_weight);
+                    tr.data('maxReps', jsonrow.max_reps);
                     tr.data('connector_id', jsonrow.connector_id);
                     tr.data('ex_type', jsonrow.ex_type);
                     tr.append('<td>' + jsonrow.title + '</td><td>' 
@@ -233,11 +260,14 @@ function fillSetExercises(){
 
                     $.each(jsonrow.details, function(i, detailrow){
 
+                        percentage = parseFloat(detailrow.percentage);
                         var toAppend = '';
                         if(jsonrow.ex_type == 1){
-                            toAppend = detailrow.reps + 'x' + detailrow.percentage + '%';
+                            var calculatedWeight = percentages.calculateWeight(percentage, parseFloat(jsonrow.max_weight));
+                            toAppend = detailrow.reps + 'x' + detailrow.percentage + '% ' + calculatedWeight + ' ' + weightUnits;
                         }else{
-                            toAppend = detailrow.reps;
+                            var calculatedReps = percentages.calculateReps(percentage, parseInt(jsonrow.max_reps));
+                            toAppend = detailrow.percentage + '% ' + calculatedReps;
                         }
                         repsTd.append('<div>' + toAppend + '</div>');
                     });
@@ -277,25 +307,40 @@ function addExerciseToSet(exerciseId){
 
 function appendRepsRow(reps, percentage, id){
 
-	if(typeof(reps) == 'undefined'){
+    if(typeof(reps) == 'undefined'){
 
-		reps = '';
-		percentage = '';
-		id = '';
-	}
+            reps = '';
+            percentage = '';
+            id = '';
+    }
+
+
+    var exType = $('#reps-edit').data('exType');
+    var maxWeight = parseFloat($('#reps-edit').data('maxWeight'));
+    var maxReps = parseInt($('#reps-edit').data('maxReps'));
+
+    var percentageVal = parseFloat(percentage != '' ? percentage : 0);
 
     // draw different rows for different exercise types
     if(exType == 1){
-        $('#reps-table').append('<tr><td><input type = "text" name = "reps[]" value = "' + reps + '" /></td><td>x</td>'
-            + '<td><input type = "text" name = "percentage[]" value = "' + percentage + '" />'
-            + '<input type = "hidden" name = "rep_id[]" value = "' + id + '" /></td>'
-            + '<td><a href = "#" class = "rep-remove" tabindex = "-1">x</a></td></tr>');
-    }else if(exType == 0){
-        $('#reps-table').append('<tr><td><input type = "text" name = "reps[]" value = "' + reps + '" />'
-            + '<input type = "hidden" name = "percentage[]" value = "0" />'
-            + '<input type = "hidden" name = "rep_id[]" value = "' + id + '" /></td>'
-            + '<td><a href = "#" class = "rep-remove" tabindex = "-1">x</a></td></tr>');
+
+        var weightVal = percentages.calculateWeight(percentageVal, maxWeight);
+        $('#reps-table').append('<tr><td><input type = "text" name = "reps[]" class = "number" value = "' + reps + '" /></td><td>x</td>'
+        + '<td><input type = "text" name = "percentage[]" class = "number" value = "' + percentage + '" /> %'
+        + '<input type = "hidden" name = "rep_id[]" value = "' + id + '" /></td>'
+        + '<td><span class="calculated-weight">' + weightVal + ' ' + weightUnits + '</span></td>'
+        + '<td><a href = "#" class = "rep-remove" tabindex = "-1">x</a></td></tr>');
+        
+    }else{
+
+        var repsVal = percentages.calculateReps(percentageVal, maxReps);
+        $('#reps-table').append('<tr><td><input type = "text" name = "percentage[]" class = "number" value = "' + percentage + '" /> %'
+        + '<input type = "hidden" name = "rep_id[]" value = "' + id + '" /><input type = "hidden" name = "reps[]" class = "number" value = "0" /></td>'
+        + '<td><span class="calculated-reps">' + repsVal + '</span></td>'
+        + '<td><a href = "#" class = "rep-remove" tabindex = "-1">x</a></td></tr>');
     }
+
+
 }
 
 function removeExerciseFromSet(connectorId){

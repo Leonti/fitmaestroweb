@@ -122,12 +122,20 @@ Start of GROUPS
 	// takes an array and converts table connections to phone id's
 	public function convertToPhone($data){
 
+                // flag to determine if we have some id which is not mappable to phone id yet
+                // so we can take it into account later
+                $new_id = 0;
+
 		// remap site id's to phone id's
 		foreach($data as $fieldName => $value){
 
 			if(isset($this -> convertMap[$fieldName])){
 
 				$data[$fieldName] = $this -> getPhoneId($this -> convertMap[$fieldName], $data[$fieldName]);
+
+                                if($data[$fieldName] == 0){
+                                    $new_id = 1;
+                                }
 			}
   
 			if(isset($this -> convertTimeMap[$fieldName])){
@@ -135,6 +143,8 @@ Start of GROUPS
 				$data[$fieldName] = $this -> getPhoneTime($data[$fieldName]);
 			}
 		}
+
+                $data['new_id'] = $new_id;
 
 		return $data;
 	}
@@ -164,7 +174,8 @@ Start of GROUPS
 		$date = mysql_real_escape_string($date);
 		$items = array();
 
-		$sql = "SELECT *, UNIX_TIMESTAMP(`updated`) AS 'stamp' FROM `$table` WHERE `updated` > '$date' AND `user_id` =" . $this -> userId;
+		$sql = "SELECT *, UNIX_TIMESTAMP(`updated`) AS 'stamp' FROM `$table` WHERE `updated` > '$date' AND `user_id` =" . $this -> userId .
+                " OR `id` IN (SELECT `item_id` FROM `request_update` WHERE `table` = '$table' AND `user_id` = " . $this -> userId . ")";
 		if($res = mysql_query($sql)){
 			
 			$items = array();
@@ -176,6 +187,18 @@ Start of GROUPS
 
 		return $items;
 	}
+
+        // adding item to the queue inspecific cases (when it's not yet ready but will be for the second update round)
+        public function addRequestUpdate($table, $itemId){
+
+            mysql_unbuffered_query("INSERT INTO `request_update` (`id`, `table`, `item_id`, `user_id`) VALUES (NULL, '$table', '$itemId', '" . $this -> userId . "')");
+        }
+
+        public function clearRequestUpdates(){
+
+            mysql_unbuffered_query("DELETE FROM `request_update` WHERE `user_id` = " . $this -> userId);
+        }
+
 
 /************************************************
 End of GROUPS

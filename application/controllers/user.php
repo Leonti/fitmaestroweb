@@ -3,7 +3,7 @@
 class User_Controller extends Website_Controller {
 
     public function register(){
-        $this->template->title = 'Register::BodyB site';
+        $this->template->title = 'FitMaestro Register';
         $this->template->content = new View('pages/register');
 
         $this->template->content->formData = array();
@@ -58,7 +58,7 @@ class User_Controller extends Website_Controller {
             url::redirect('accessdenied'); //User hasn't confirmed account yet
         }
 
-        $this->template->title = 'Login::BodyB site';
+        $this->template->title = 'FitMaestro Login';
         $this->template->content = new View('pages/login');
 
         $this->template->content->formData = array();

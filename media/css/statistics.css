@@ -1,3 +1,19 @@
 #exercise-holder{
   display:inline;
 }
+.session-name{
+    position: relative;
+    height: 100%;
+}
+
+.sums{
+    border: dashed;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+#statistics-list tbody tr,
+#statistics-list tbody td{
+    height: 100%;
+}

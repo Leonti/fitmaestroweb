@@ -50,7 +50,17 @@ class Json_Controller extends Controller {
 
 		$get = $this->input->get();
 		$exercises = new Exercise_Model($this->user->id);
-		echo json_encode($exercises->getItem($get['id'])->result_array());
+                $files = new File_Model($this->user->id);
+                $exercise = $exercises->getItem($get['id']);
+                $exercise_array = $exercise->result_array();
+
+                $file_id = $exercise[0]->file_id;
+                if($file_id != 0){
+                    $file_info = $files->getItem($file_id);
+                    $exercise_array[0]->filename = $file_info[0]->filename;
+                }
+                
+		echo json_encode($exercise_array);
 	}
 
     public function programs(){
@@ -248,6 +258,10 @@ function getSessionExercises($sessionId, $userId){
     $sessions = new Session_Model($userId);
     $exercises = $sessions->getExercises($sessionId)->result_array();
 
+    // we need settings to convert saved time to right time zone and time format
+    $settings = new Setting_Model($userId);
+    $userSettings = $settings->getSettings();
+
     foreach($exercises as &$exercise){
         $exercise->details = $sessions->getReps($exercise->sessions_connector_id)->result_array();
 
@@ -260,6 +274,10 @@ function getSessionExercises($sessionId, $userId){
                 // $detail->id - sets_detail_id in log table
                 $logData = $log->getEntryBySession($sessionId, $detail -> id)->result_array();
                 if(count($logData) > 0){
+
+                    $logData[0]->done =  timeConvert::formatDateFromUTC($logData[0]->done, 
+                                            timeConvert::getFormat($userSettings->time_format), 
+                                            $userSettings->time_zone);
                     $detail->log_data = $logData[0];
                 }
             }
@@ -267,6 +285,12 @@ function getSessionExercises($sessionId, $userId){
         // adding free(without reps planned) log entries
         $freeEntries = $log->getFreeEntries($sessionId, $exercise->id);
         foreach ($freeEntries as $freeEntry){
+
+            // format time for user selected timezone
+            $freeEntry->done =  timeConvert::formatDateFromUTC($freeEntry->done, 
+                                            timeConvert::getFormat($userSettings->time_format), 
+                                            $userSettings->time_zone);
+
             $exercise->details[] = array('id' => 0, 'log_data' => $freeEntry);
         }
     }

@@ -107,11 +107,24 @@ class Remote_Controller extends Controller {
 // update database with data from the phone and give the phone entries that are newer back
 function prepareUpdate($userId, $phoneData = null, $fresh = 0){
 
+
+/*
+ IMPORTANT - also update items where external id's have changed, for example - we create new group
+ and move exercise to that group at the same time, so we don't have a phone id to paste in the first go
+ so while finishing updates we have to include exercise also which had group changed
+
+note: if in the first round we have site item with 0 phone id - dont include it in update (remove it)
+it also has to be an old item - both on phone and site
+it wil be added during finishupdate- check!!!
+*/
+
+
     // order of the tables matter
     // for example groups have to be first so correct id's may be put in exercises table
     $tablesMap = array(
                 'groups' =>   array('title', 'desc'),
-                'exercises' => array('title', 'desc', 'group_id', 'ex_type', 'max_weight', 'max_reps'),
+                'files' => array('filename', 'frames'),
+                'exercises' => array('title', 'desc', 'group_id', 'ex_type', 'max_weight', 'max_reps', 'file_id'),
                 'sets' =>   array('title', 'desc'),
                 'sets_connector' => array('set_id', 'exercise_id'),
                 'sets_detail' => array('sets_connector_id', 'reps', 'percentage'),
@@ -128,6 +141,7 @@ function prepareUpdate($userId, $phoneData = null, $fresh = 0){
 
     $convertMap = array(
                 'group_id' => 'groups',
+                'file_id' => 'files',
                 'set_id' => 'sets',
                 'exercise_id' => 'exercises',
                 'session_id' => 'sessions',
@@ -150,6 +164,8 @@ error_log("User id is: " . $userId . "\n", 3, "log");
     $exercisesObj -> convertMap = $convertMap;
     $exercisesObj -> convertTimeMap = $convertTimeMap;
     $lastUpdated = $exercisesObj -> getLastUpdated();
+
+    $secondRound = array();
 
     foreach($tablesMap as $table => $fields){
 
@@ -214,6 +230,21 @@ error_log("User id is: " . $userId . "\n", 3, "log");
                 }
 
             }
+
+            // now we have removed all data from $updatedItems which are newer on the phone
+            // in array only left data which is newer on the site and newly added data
+            // now check updatedItems for items with unmappable phone id's and remove them too (they will be updated later)
+            foreach($updatedItems as $itemId => $updatedItem){
+                if(isset($updatedItem['new_id']) && $updatedItem['new_id'] == 1){
+                    error_log('removing from updated items');
+                    unset($updatedItems[$itemId]);
+
+                    // updating id just to trigger update time so it will show up on the second round
+                    // if it works - update field directly
+                   // $exercisesObj -> updateItem($table, $itemId, array('id' => $itemId));
+                    $secondRound[$table][] = $itemId;
+                }
+            }
         }
 
 
@@ -221,6 +252,18 @@ error_log("User id is: " . $userId . "\n", 3, "log");
     }
 
     $exercisesObj -> setLastUpdated();
+
+   // mysql_unbuffered_query("DELETE FROM `request_update` WHERE `user_id` = $userId");
+    $exercisesObj -> clearRequestUpdates();
+
+    foreach($secondRound as $table => $toUpdate){
+        foreach($toUpdate as $itemId){
+//            error_log('updating an item with id: ' . $itemId . ' in table: ' . $table);
+//            $exercisesObj -> updateItem($table, $itemId, array('updated' => $currentLastUpdated));
+     //   mysql_unbuffered_query("INSERT INTO `request_update` (`id`, `table`, `item_id`, `user_id`) VALUES (NULL, '$table', '$itemId', '$userId')");
+            $exercisesObj -> addRequestUpdate($table, $itemId);
+        }
+    }
 
     return $data;
 }
@@ -233,6 +276,7 @@ function finishUpdate($userId, $phoneData){
 
     $updateTables = array(
                         'groups',
+                        'files',
                         'exercises',
                         'sets',
                         'sets_connector',

@@ -294,7 +294,12 @@ div.form .label{
 }
 
 #footer{
-  margin-top: 2em;
+    /*
+  position: absolute;
+    bottom: 0.5em;
+    */
+  height: 2em;
+  width: 780px;
 }
 
 #copyright, #footer-links{
@@ -359,4 +364,45 @@ a.import-link{
     position: absolute;
     top: 0.5em;
     right: 0.5em;
+}
+
+input[type="text"].number{
+    width: 3em;
+}
+
+#menu-holder{
+    display: table;
+    margin: 0.5em auto 0.5em auto;
+}
+
+.login-block{
+    float: right;
+    margin-top: 0.5em;
+    margin-right: 0.5em;
+}
+
+/* commented for now for clarity
+.fileinput-wrapper{
+    position: relative;
+    overflow: hidden;
+    border: solid;
+    width:10em;
+    text-align: center;
+    padding: 0.2em;
+    background: #ccc;
+}
+
+input[type=file]{
+    position: absolute;
+    right: 0px;
+    top: -13px;
+    font-size: 500px;
+    opacity: 0;
+}
+*/
+
+#exercise-image{
+    width: 170px;
+    height: 170px;
+    border: none;
 }

@@ -16,7 +16,7 @@ class Sessions_Controller extends Website_Controller {
 
     public function index($sessionId = null){
 
-        $this->template->title = 'Sessions::BodyB site';
+        $this->template->title = 'FitMaestro Sessions';
         $this->template->content = new View('pages/sessions');
 
         $exercises = new Exercise_Model($this->user->id);

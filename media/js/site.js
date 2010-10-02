@@ -6,10 +6,10 @@ statusesMap['DONE'] = 'Done';
 
 $(function() {
 
-    $('#select-exercise').dialog({autoOpen:false, width: 600});
+    $('#select-exercise').dialog({autoOpen:false, width:'auto'});
 
     // we need acordion for exercise import
-    $('.accordion').accordion( { autoHeight: false } );
+    $('.accordion').accordion( {autoHeight: false} );
     $('#group-select').change(function(){
         var group_id = $(this).val();
         
@@ -60,3 +60,16 @@ function makeZebra(zebra){
             }
         });
 }
+
+var percentages = {
+    calculateReps: function(percentage, maxReps){
+        return percentage != 0 ? Math.round(percentage*maxReps/100) : 0;
+    },
+
+    calculateWeight: function(percentage, maxWeight){
+        var calculatedValue = percentage != 0 ? percentage*maxWeight/100 : 0;
+        var steppedNumber = multiplicator != 0 ? Math.round(calculatedValue / multiplicator) * multiplicator
+				: Math.round(calculatedValue);
+        return steppedNumber;
+    }
+};

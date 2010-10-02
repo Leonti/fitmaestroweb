@@ -2,10 +2,23 @@
 
 class Home_Controller extends Website_Controller {
 
-	public function index(){
+        function __construct(){
+        parent::__construct();
 
-		$this->template->title = 'Home::BodyB site';
-		$this->template->content = new View('pages/home');
-	}
+        $authentic = new Auth;
+        $this->user = $authentic->get_user(); //now you have access to user information stored in the database
+
+    }
+
+    public function index(){
+
+            $this->template->title = 'FitMaestro Home';
+
+            if($this->user){
+                $this->template->content = new View('pages/home');
+            }else{
+                $this->template->content = new View('pages/guest_home');
+            }
+    }
 
 }

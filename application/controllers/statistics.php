@@ -16,7 +16,7 @@ class Statistics_Controller extends Website_Controller {
 
     public function index($sessionId = null){
 
-        $this->template->title = 'Statistics::BodyB site';
+        $this->template->title = 'FitMaestro Statistics';
         $this->template->content = new View('pages/statistics');
 
         $exercises = new Exercise_Model($this->user->id);

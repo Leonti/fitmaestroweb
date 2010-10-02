@@ -94,38 +94,19 @@ class Log_Model extends Model {
         $startDateParsed = date("Y-m-d",strtotime($startDate));
         $endDateParsed = date("Y-m-d",strtotime($endDate));
 
-        switch($type){
-        case 'total':
-
-            // 0 - own weight
-            if($exercise[0]->ex_type == 0){
-                $sum = "`reps`";
-            }elseif($exercise[0]->ex_type == 1){
-                $sum = "`reps` * `weight`";
-            }
-
-            $selection = "SUM($sum)";
-            break;
-
-        case 'max':
-
-            // 0 - own weight
-            if($exercise[0]->ex_type == 0){
-                $max = "`reps`";
-            }elseif($exercise[0]->ex_type == 1){
-                $max = "`weight`";
-            }
-
-            $selection = "MAX($max)";
-
-            break;
+        if($exercise[0]->ex_type == 0){
+            $sum = "`reps`";
+            $max = "`reps`";
+        }elseif($exercise[0]->ex_type == 1){
+            $sum = "`reps` * `weight`";
+            $max = "`weight`";
         }
 
 
 
         // own weight
         $result = $this->db->query(
-            "SELECT $selection AS `data`, DATE_FORMAT(`done`, '%Y-%m-%d') AS `done_formatted`, 
+            "SELECT MAX($max) AS `max`, SUM($sum) AS `sum`, DATE_FORMAT(`done`, '%Y-%m-%d') AS `done_formatted`,
                     `session_id`, `sessions`.`title` AS `session_title` 
                 FROM `log` 
                 LEFT JOIN `sessions` ON `sessions`.`id` = `session_id` 
@@ -159,7 +140,6 @@ class Log_Model extends Model {
 
             // look for results with the same day
             // needs optimization in the future
-
             $datas = array();
             foreach($result as $dataEntry){
 
@@ -167,7 +147,8 @@ class Log_Model extends Model {
 
                     $reps = $this->getSessionEntries($dataEntry->session_id, $exerciseId);
                     $datas[] = array(
-                                'data' => $dataEntry->data, 
+                                'max' => $dataEntry->max,
+                                'sum' => $dataEntry->sum,
                                 'session' => array('title' => $dataEntry->session_title, 'id' => $dataEntry->session_id),
                                 'reps' => $reps->result_array());
                 }
@@ -177,7 +158,8 @@ class Log_Model extends Model {
             if(count($datas) > 0){
 
                 // for now getting first entry from array
-                $values_array[] = $datas[0]['data'];
+                $data = $type == 'total' ? $datas[0]['sum'] : $datas[0]['max'];
+                $values_array[] = $data;
             }else{
                 $values_array[] = '0';
             }

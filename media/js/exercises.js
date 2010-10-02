@@ -4,7 +4,7 @@ $(function() {
 
 	$('#exercise-edit').dialog({autoOpen:false});
 	$('#group-edit').dialog({autoOpen:false});
-    $('#import-exercises').dialog({autoOpen:false});
+        $('#import-exercises').dialog({autoOpen:false});
 
 	$('#add-exercise').click(function(){
 
@@ -15,7 +15,7 @@ $(function() {
 		}
 		$('#exercise-edit form input[type="hidden"]').val('');
 		$('#exercise-edit').dialog('option','title', 'Add exercise');
-        $('#exercise-edit form select[name="ex_type"]').trigger('change');
+                $('#exercise-edit form select[name="ex_type"]').trigger('change');
 		$('#exercise-edit').dialog('open');
         return false;
 	});
@@ -29,17 +29,23 @@ $(function() {
 	$('#exercise-edit form input[type="submit"]').click(function(){
 
 		if($.trim(($('#exercise-edit form input[name = "title"]').val())) != ''){
-			var dataString = $('#exercise-edit form').serialize();
+			//var dataString = $('#exercise-edit form').serialize();
 
-			$.post(baseUrl + 'ajaxpost/saveexercise', dataString, function(json){
+                        $('#exercise-edit form').ajaxSubmit(function(data){
+                            var json = $.parseJSON($('<div>' + data + '</div>').html());
 
-				if(json.result == 'OK'){
+                            if(json.result == 'OK'){
+                               fillExercises();
+                               $('#exercise-edit').dialog('close');
+                            }else{
+                                if(json.error == 'ext'){
+                                    fancyAlert('Invalid image' , 'Only gif, png, jpg images are allowed');
+                                }
+                            }
+                            
+                        });
 
-					fillExercises();
-				}
-			},"json");
-
-			$('#exercise-edit').dialog('close');
+			
 		}
 
 		return false;
@@ -241,11 +247,19 @@ function fillExercises(){
 function showEditExercisePopup(id){
 
 	$.getJSON(baseUrl + 'json/exerciseinfo', {id : id}, function(json){
-
+            $('#exercise-edit form input[name="title"]').empty()
 		$('#exercise-edit form')[0].reset();
 		$('#exercise-edit form').populate(json[0]);
-		$('#exercise-edit').dialog('option','title', 'Edit exercise'); 
-        $('#exercise-edit form select[name="ex_type"]').trigger('change');
+
+               if(typeof(json[0].filename) != 'undefined'){
+                    //alert('Have Image!');
+                    $('#image-holder').html('<img id = "exercise-image" src = "' + baseUrl + 'files/' + json[0].filename + '" />');
+                }else{
+                    $('#image-holder').empty();
+                }
+                
+		$('#exercise-edit').dialog('option','title', 'Edit exercise');
+                $('#exercise-edit form select[name="ex_type"]').trigger('change');
 		$('#exercise-edit').dialog('open');
 	});
 }

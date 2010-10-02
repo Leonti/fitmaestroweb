@@ -28,6 +28,6 @@
 	$selector->render(TRUE);
 	echo View::factory('popups/set-popup');
 	echo View::factory('popups/reps-popup');
-    echo View::factory('popups/add-session-popup');
+        echo View::factory('popups/add-session-popup');
 ?>
  

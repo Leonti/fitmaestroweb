@@ -1,5 +1,5 @@
 <div id="exercise-edit" style="display:none;" title="Add exercise">
-    <form>
+    <form enctype="multipart/form-data" action ="ajaxpost/saveexercise" method="post">
 	<p>
 	    Title:<br />
 	    <input type="text" name = "title" />
@@ -30,6 +30,12 @@
     <?php } ?>
 	    </select>
 	</p>
+        <div id="image-holder">
+        </div>
+        <div class="fileinput-wrapper">
+            <!--Select Image... -->
+            <input type="file" id="image" name ="image" />
+        </div>
 	<input type = "hidden" name = "id" value = "" />
 	<input type="submit" value="Save" />
     </form>

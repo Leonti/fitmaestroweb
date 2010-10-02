@@ -34,6 +34,9 @@ class Set_Model extends Model {
             $toExclude[] = $programSet->set_id;
         }
 
+        // add 0 in case when there is no program sets - so query could be built anyway
+        $toExclude[] = 0;
+
         return $this->db->select() // selects all fields by default
                 ->where('deleted', 0)
                 ->where('user_id', $this->userId)
@@ -72,7 +75,8 @@ class Set_Model extends Model {
 			    'exercises.id',
 			    'exercises.title',
 			    'exercises.desc',
-                'exercises.max_weight',
+                            'exercises.max_weight',
+                            'exercises.max_reps',
 			    'exercises.ex_type',
 			    'groups.title AS group_title',
 			    'sets_connector.id AS connector_id'

@@ -86,7 +86,7 @@ function getStats(){
 }
 
 function getExercisesChart(json, subType){
-    
+
     $.each(json.stats, function(i, jsonrow){
         var date = new Date(Date.parse(jsonrow.date));
 
@@ -94,17 +94,18 @@ function getExercisesChart(json, subType){
            
            var statsRow = $('<tr>');
            statsRow.append('<td>' + date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear() + '</td>');
-           
+
+           var sums = '<div class = "sums">Max value: ' + jsonrow.datas[0].max + '<br />Sum: ' + jsonrow.datas[0].sum + '</div>';
             var sessionTitle = jsonrow.datas[0].session.title;
             var sessionId = jsonrow.datas[0].session.id;
-            statsRow.append('<td><a href=' + baseUrl + 'sessions/index/' 
+            statsRow.append('<td><div class = "session-name"><a href=' + baseUrl + 'sessions/index/'
             + sessionId + ' target="_blank">' 
-            + sessionTitle + '</a></td>');
+            + sessionTitle + '</a>' + sums + '</div></td>');
             var repsTd = $('<td>');
             var weightTd = $('<td class = "to-hide">');
             $.each(jsonrow.datas[0].reps, function(j, repsrow){
                 repsTd.append('<div>' + repsrow.reps + '</div>');
-                weightTd.append('<div>' + repsrow.weight + '</div>');
+                weightTd.append('<div>' + repsrow.weight + ' ' + weightUnits + '</div>');
             });
             statsRow.append(repsTd);
             statsRow.append(weightTd);

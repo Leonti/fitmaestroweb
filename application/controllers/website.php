@@ -10,30 +10,32 @@ class Website_Controller extends Template_Controller {
 		(
 		'Home' => 'home',
 		'Exercises' => 'exercises',
-        'Programs' => 'programs',
+                'Programs' => array(
+                            'My Programs' => 'programs',
+                            'Public Programs' => 'programs/publicPrograms',
+                                    ),
 		'Workouts' => 'workouts',
-        'Sessions' => 'sessions',
-        'Measurements' => 'measurements',
-        'Statistics' => 'statistics',
-        'Settings' => 'settings',
-        'Login' => 'user/login',
-        'Logout' => 'user/logout',
-        'Register' => 'user/register',
-        'Public programs' => 'programs/publicPrograms',
+                'Sessions' => 'sessions',
+                'Measurements' => 'measurements',
+                'Statistics' => 'statistics',
+                'Settings' => 'settings',
 		);
 
-		$this->db = Database::instance();
+	$this->db = Database::instance();
         $this->session= Session::instance();
 
         $authentic = new Auth;
 
         $user = $authentic->get_user(); //now you have access to user information stored in the database
+        $this->template->user = $user;
 
         if($user){
             $settings = new Setting_Model($user->id);
             $userSettings = $settings->getSettings();
             $this->template->timeFormat = $userSettings->time_format;
             $this->template->timeZone = $userSettings->time_zone;
+            $this->template->weightUnits = $userSettings->weight_units;
+            $this->template->multiplicator = $userSettings->multiplicator;
         }
 
 	}

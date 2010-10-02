@@ -16,7 +16,7 @@ class Programs_Controller extends Website_Controller {
 
 	public function index($programId = null){
 
-		$this->template->title = 'Programs::BodyB site';
+		$this->template->title = 'FitMaestro Programs';
 		$this->template->content = new View('pages/programs');
 
         $this->template->content->programId = $programId;
@@ -38,7 +38,7 @@ class Programs_Controller extends Website_Controller {
 
     public function publicPrograms(){
 
-        $this->template->title = 'Programs::BodyB site';
+        $this->template->title = 'FitMaestro Public Programs';
         $this->template->content = new View('pages/public_programs');
 
         $programs = new Program_Model($this->user->id);

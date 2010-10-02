@@ -16,7 +16,7 @@ class Workouts_Controller extends Website_Controller {
 
 	public function index(){
 
-		$this->template->title = 'Exercises::BodyB site';
+		$this->template->title = 'FitMaestro Workouts';
 		$this->template->content = new View('pages/workouts');
 
 		$exercises = new Exercise_Model($this->user->id);

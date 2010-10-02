@@ -16,7 +16,7 @@ class Settings_Controller extends Website_Controller {
 
 	public function index(){
 
-		$this->template->title = 'Settings::BodyB site';
+		$this->template->title = 'FitMaestro Settings';
 		$this->template->content = new View('pages/settings');
 
         $settings = new Setting_Model($this->user->id);

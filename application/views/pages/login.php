@@ -1,4 +1,6 @@
-<h2>Login</h2>
+<div class="login-block">
+    <?php echo html::anchor('home', 'Main Page'); ?>
+</div>
 <div class = "form">
 <?php
 
@@ -9,18 +11,4 @@
 
 ?>
 </div>
-<?php
-    echo html::script(array
-          (
-          //'media/js/jquery.populate.pack.js',
-          ), FALSE);
-/*
-    echo View::factory('popups/reps-session-popup');
-    $selector = new View('popups/selector-popup'); 
-    $selector->exercisesArray = $exercisesArray;
-    $selector->groups = $groups;
-    $selector->render(TRUE);
-    echo View::factory('popups/session-popup');
-*/
-?>
  

@@ -42,7 +42,8 @@
 <?php 
 	echo html::script(array
 	      (
-		  'media/js/exercises.js'
+		  'media/js/exercises.js',
+                  'media/js/jquery.form.js',
 	      ), FALSE);
 	$popup = new View('popups/exercise-popup'); 
 	$popup->groups = $groups;

@@ -11,6 +11,8 @@ echo html::stylesheet(array
         'media/css/site',
         'media/css/ui-lightness/jquery-ui-1.8.custom',
         'media/css/print',
+        'media/css/dropdown/dropdown',
+        'media/css/dropdown/default/default',
 	),
 	array
 	(
@@ -30,7 +32,9 @@ echo html::script(array
     'media/js/jquery.populate.pack.js',
     'media/js/jquery.metadata.js',
     'media/js/jquery.jqprint.js',
+    'media/js/jquery.dropdown.js',
 ), FALSE);
+
 
     // setting default value
     if(!isset($timeFormat)){
@@ -41,17 +45,31 @@ echo html::script(array
         $timeZone = "Europe/Warsaw";
     }
 
+    if(!isset($weightUnits)){
+        $weightUnits = "kg";
+    }
+
+    if(!isset($multiplicator)){
+        $multiplicator = "0";
+    }
+
+
 echo '
     <script type = "text/javascript">
         var baseUrl ="' . url::base() . '";
         var timeFormat = "' . $timeFormat . '";
+        var multiplicator = ' . $multiplicator . ';
+        var weightUnits = "' . $weightUnits . '";
     </script>
 ';
 $content->timeFormat = $timeFormat;
 $content->timeZone = $timeZone;
+$content->weightUnits = $weightUnits;
+$content->multiplicator = $multiplicator;
+
 ?>
-<link href='http://fonts.googleapis.com/css?family=Reenie+Beanie' rel='stylesheet' type='text/css'>
-<link href='http://fonts.googleapis.com/css?family=Cantarell' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Reenie+Beanie' rel='stylesheet' type='text/css' />
+<link href='http://fonts.googleapis.com/css?family=Cantarell' rel='stylesheet' type='text/css' />
 
 <title><?php echo html::specialchars($title) ?></title>
 </head>
@@ -62,11 +80,29 @@ $content->timeZone = $timeZone;
     <div style = "clear: both;"></div>
 </div>
 
-    <ul class = "navigation-menu">
-    <?php foreach ($links as $link => $url): ?>
-    <li><?php echo html::anchor($url, $link) ?></li>
-    <?php endforeach ?>
+    <?php if($user){ ?>
+<div class="login-block">
+    <?php echo html::anchor('user/logout', 'Sign Off'); ?>
+</div>
+<div id="menu-holder" style ="clear:both;">
+    <ul id="nav" class="dropdown dropdown-horizontal">
+        <?php foreach ($links as $link => $url){
+
+            // we have submenus
+            if(is_array($url)){
+                echo '<li><span class="dir">Programs</span><ul>';
+                    foreach ($url as $sub_link => $sub_url){
+                        echo '<li>' . html::anchor($sub_url, $sub_link) . '</li>';
+                    }
+                echo '</ul></li>';
+            }else{
+                echo '<li>' . html::anchor($url, $link) . '</li>';
+            }
+         } ?>
     </ul>
+    <div style="clear:both;"></div>
+</div>
+    <?php } ?>
 
 <?php echo $content ?>
 

@@ -11,6 +11,15 @@ class timeConvert_Core{
         return null;
     }
 
+    public static function formatDateFromUTC($timeString = "now", $outputFormat = 'Y-m-d H:i:s', $timeZone = 'UTC'){
+
+        if ($date = new DateTime($timeString, new DateTimeZone("UTC"))) {
+            $date->setTimeZone(new DateTimeZone($timeZone));
+            return $date->format($outputFormat);
+        }
+        return null;
+    }
+
     public static function getTimezones(){
 
         $timeZonesList = array();
@@ -40,5 +49,14 @@ class timeConvert_Core{
         }
 
         return false;
+    }
+
+    public static function getUTCTime($timeString = "now", $fromTimeZone = "UTC"){
+
+        if ($date = new DateTime($timeString, new DateTimeZone($fromTimeZone))) {
+            $date->setTimeZone(new DateTimeZone("UTC"));
+            return $date->format('Y-m-d H:i:s');
+        }
+        return null;
     }
 }

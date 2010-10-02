@@ -26,18 +26,32 @@ class Session_Model extends Model {
         $sets = new Set_Model($this->userId);
         $setExercises = $sets->getExercises($setId);
 
+        $exercises = new Exercise_Model($this->userId);
+        $settings = new Setting_Model($this->userId);
+        $userSettings = $settings->getSettings();
+        $multiplicator = $userSettings->multiplicator;
+
         foreach($setExercises as $setExercise){
 
             $sessionsConnector = $this->addExerciseToSession($sessionId, $setExercise->id);
+            $exerciseInfo = $exercises->getItem($setExercise->id);
 
             $exerciseReps = $sets->getReps($setExercise->connector_id);
             foreach($exerciseReps as $exerciseRep){
 
-                
+                $reps = 0;
+                $weight = 0;
+                if($exerciseInfo[0]->ex_type == 1){
+                    $weight = percentages::calculateWeight($exerciseRep->percentage, $exerciseInfo[0]->max_weight, $multiplicator);
+                    $reps = $exerciseRep->reps;
+                }else{
+                    $reps = percentages::calculateReps($exerciseRep->percentage, $exerciseInfo[0]->max_reps);
+                }
+
                 $this->addReps(array(
                                     'sessions_connector_id' => $sessionsConnector,
-                                    'reps' => $exerciseRep->reps,
-                                    'percentage' => $exerciseRep->percentage,
+                                    'reps' => $reps,
+                                    'percentage' => $weight,
                                     ));
             }
 
