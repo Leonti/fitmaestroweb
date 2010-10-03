@@ -79,7 +79,7 @@ class Ajaxpost_Controller extends Controller {
 	public function saveexercise(){
 
 		$post = $this->input->post();
-                $uploads_folder = '/home/leonti/public_html/koh/files/';
+                $uploads_folder = Kohana::config('core.uploads_folder');
                 error_log('Savin\' exercise');
                 error_log('File is: ' . print_r($_FILES['image'], true));
                 $error_type = '';
