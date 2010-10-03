@@ -27,11 +27,11 @@ class Remote_Controller extends Controller {
     }
     // end of logging
 
-
+/*
     if(isset($_POST['jsonString'])){
         error_log(print_r("-----------FROM PHONE-------------" . "\n", true)."\n", 3, "log");
         error_log(print_r(json_decode($_POST['jsonString']), true)."\n", 3, "log");
-    }
+    } */
 
         error_log(print_r("-----------FROM PHONE-------------" . "\n", true)."\n", 3, "log");
         error_log(print_r($data, true)."\n", 3, "log");
@@ -46,19 +46,24 @@ class Remote_Controller extends Controller {
 
 
                 case "STARTUPDATE":
-                    if($userId = remoteUser::checkUserByKey($data -> authkey)){
+                        $userId = remoteUser::checkUserByKey($data -> authkey);
+                    if($userId){
 
-                        $toSend = json_encode(array("result" => "STARTUPDATED", "data" => prepareUpdate($userId, $data->data, $data->fresh)));
+                        $toSend = json_encode(array("result" => "STARTUPDATED", "data" => prepareUpdate($userId, $data->data, $data->fresh)->tables));
                         echo $toSend;
         error_log(print_r("-----------TO PHONE-------------" . "\n", true)."\n", 3, "log");
         error_log(print_r(json_decode($toSend), true)."\n", 3, "log");
                     }
                 break;
 
-                case "FINISHUPDATE":
-                    if($userId = remoteUser::checkUserByKey($data -> authkey)){
+                case "UPDATEPHONEIDS":
+                    $userId = remoteUser::checkUserByKey($data -> authkey);
+                    if($userId){
 
-                        $toSend = json_encode(array("result" => "FINISHUPDATED", "data" => finishUpdate($userId, $data->data)));
+                        $returnedData = updatePhoneIds($userId, $data->data);
+
+                        // in future add a flag if this is last ids from phone - if so - don't send anything back
+                        $toSend = json_encode(array("result" => "PHONEIDSUPDATED", "data" => $returnedData->tables, "new_ids" => $returnedData->new_ids));
                         echo $toSend;
         error_log(print_r("-----------TO PHONE-------------" . "\n", true)."\n", 3, "log");
         error_log(print_r(json_decode($toSend), true)."\n", 3, "log");
@@ -66,7 +71,8 @@ class Remote_Controller extends Controller {
                 break;
 
                 case "PUBLICEXERCISES":
-                    if($userId = remoteUser::checkUserByKey($data -> authkey)){
+                    $userId = remoteUser::checkUserByKey($data -> authkey);
+                    if($userId){
 
                         $toSend = json_encode(array("data" => getPublicExercises($userId)));
                         echo $toSend;
@@ -74,7 +80,8 @@ class Remote_Controller extends Controller {
                 break;
 
                 case "IMPORTEXERCISES":
-                    if($userId = remoteUser::checkUserByKey($data -> authkey)){
+                    $userId = remoteUser::checkUserByKey($data -> authkey);
+                    if($userId){
 
                         $toSend = json_encode(array("result" => importExercises($userId, $data->data)));
                         echo $toSend;
@@ -82,7 +89,8 @@ class Remote_Controller extends Controller {
                 break;
 
                 case "PUBLICPROGRAMS":
-                    if($userId = remoteUser::checkUserByKey($data -> authkey)){
+                    $userId = remoteUser::checkUserByKey($data -> authkey);
+                    if($userId){
 
                         $toSend = json_encode(array("data" => getPublicPrograms($userId)));
                         echo $toSend;
@@ -90,7 +98,8 @@ class Remote_Controller extends Controller {
                 break;
 
                 case "IMPORTPROGRAMS":
-                    if($userId = remoteUser::checkUserByKey($data -> authkey)){
+                    $userId = remoteUser::checkUserByKey($data -> authkey);
+                    if($userId){
 
                         $toSend = json_encode(array("result" => importPrograms($userId, $data->data)));
                         echo $toSend;
@@ -106,18 +115,6 @@ class Remote_Controller extends Controller {
 
 // update database with data from the phone and give the phone entries that are newer back
 function prepareUpdate($userId, $phoneData = null, $fresh = 0){
-
-
-/*
- IMPORTANT - also update items where external id's have changed, for example - we create new group
- and move exercise to that group at the same time, so we don't have a phone id to paste in the first go
- so while finishing updates we have to include exercise also which had group changed
-
-note: if in the first round we have site item with 0 phone id - dont include it in update (remove it)
-it also has to be an old item - both on phone and site
-it wil be added during finishupdate- check!!!
-*/
-
 
     // order of the tables matter
     // for example groups have to be first so correct id's may be put in exercises table
@@ -166,6 +163,7 @@ error_log("User id is: " . $userId . "\n", 3, "log");
     $lastUpdated = $exercisesObj -> getLastUpdated();
 
     $secondRound = array();
+    $newIds = false;
 
     foreach($tablesMap as $table => $fields){
 
@@ -175,6 +173,16 @@ error_log("User id is: " . $userId . "\n", 3, "log");
         }
 
         $updatedItems = $exercisesObj -> getUpdatedItems($table, $lastUpdated);
+       // $requestedItems = $exercisesObj -> getRequestedItems($table);
+        //$allUpdatedItems = array_merge($updatedItems, $requestedItems);
+        error_log(print_r($updatedItems,true));
+        //error_log(print_r($requestedItems,true));
+       // error_log(print_r($allUpdatedItems,true));
+
+        if($exercisesObj -> getRequestedItemsCount($table) > 0){
+            error_log("We have some new requested ids!");
+            $newIds = true;
+        }
 
         // if it's null - just display updated items (with relations)
         if($phoneData != null){
@@ -252,24 +260,22 @@ error_log("User id is: " . $userId . "\n", 3, "log");
     }
 
     $exercisesObj -> setLastUpdated();
-
-   // mysql_unbuffered_query("DELETE FROM `request_update` WHERE `user_id` = $userId");
     $exercisesObj -> clearRequestUpdates();
 
     foreach($secondRound as $table => $toUpdate){
         foreach($toUpdate as $itemId){
-//            error_log('updating an item with id: ' . $itemId . ' in table: ' . $table);
-//            $exercisesObj -> updateItem($table, $itemId, array('updated' => $currentLastUpdated));
-     //   mysql_unbuffered_query("INSERT INTO `request_update` (`id`, `table`, `item_id`, `user_id`) VALUES (NULL, '$table', '$itemId', '$userId')");
+
             $exercisesObj -> addRequestUpdate($table, $itemId);
         }
     }
 
-    return $data;
+    $returnValue->tables = $data;
+    $returnValue->new_ids = $newIds;
+    return $returnValue;
 }
 
 // we got new stuff from the phone, gave new site stuff back, now it's time to update phone_id's in site's database
-function finishUpdate($userId, $phoneData){
+function updatePhoneIds($userId, $phoneData){
 
     $exercisesObj = new exercises();
     $exercisesObj -> userId = $userId;

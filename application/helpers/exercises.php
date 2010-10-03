@@ -174,8 +174,8 @@ Start of GROUPS
 		$date = mysql_real_escape_string($date);
 		$items = array();
 
-		$sql = "SELECT *, UNIX_TIMESTAMP(`updated`) AS 'stamp' FROM `$table` WHERE `updated` > '$date' AND `user_id` =" . $this -> userId .
-                " OR `id` IN (SELECT `item_id` FROM `request_update` WHERE `table` = '$table' AND `user_id` = " . $this -> userId . ")";
+		$sql = "SELECT *, UNIX_TIMESTAMP(`updated`) AS 'stamp' FROM `$table` WHERE `updated` > '$date' AND `user_id` =" . $this -> userId . "
+                       OR `id` IN (SELECT `item_id` FROM `request_update` WHERE `table` = '$table' AND `user_id` = " . $this -> userId . ")";
 		if($res = mysql_query($sql)){
 			
 			$items = array();
@@ -190,9 +190,27 @@ Start of GROUPS
 
         // adding item to the queue inspecific cases (when it's not yet ready but will be for the second update round)
         public function addRequestUpdate($table, $itemId){
-
+            error_log("putting into requested");
             mysql_unbuffered_query("INSERT INTO `request_update` (`id`, `table`, `item_id`, `user_id`) VALUES (NULL, '$table', '$itemId', '" . $this -> userId . "')");
         }
+
+       
+	public function getRequestedItemsCount($table){
+
+		//$date = mysql_real_escape_string($date);
+		$items = array();
+
+		$sql = "SELECT COUNT(*) AS `count` FROM `request_update` WHERE `table` = '$table' AND `user_id` = " . $this -> userId;
+
+                $count = 0;
+		if($res = mysql_query($sql)){
+
+			$row = mysql_fetch_assoc($res);
+                        $count = intval($row['count']);
+		}
+
+		return $count;
+	}
 
         public function clearRequestUpdates(){
 
