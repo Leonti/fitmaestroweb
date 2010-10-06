@@ -7,8 +7,10 @@
 <div class = "list-container" id = "session-list-container">
     <a id = "start-session" href = "#" class = "add-link" >Start session</a>
     <div style = "clear:both;"></div>
-    <ul id = "session-list" class = "items-list">
-    </ul>
+    <div id = "session-list-wrapper">
+        <ul id = "session-list" class = "items-list">
+        </ul>
+    </div>
     <div id = "session-description" class = "desc-box"></div>
     <div style = "clear:both;"></div>
     <div id = "session-stats"></div>
@@ -43,11 +45,24 @@
             var startSessionFilter = \'' . $session_status . '\';
         </script>
     ';
+
+
+    // jScrollPane.css
+
+    echo html::stylesheet(array
+	(
+        'media/css/jScrollPane',
+        'media/css/sessions'
+	));
+
     echo html::script(array
           (
           'media/js/sessions.js',
           'media/js/timepicker.js',
+          'media/js/jScrollPane.js',
+          'media/js/jquery.mousewheel.js',
           ), FALSE);
+
 
     echo View::factory('popups/reps-session-popup');
     $selector = new View('popups/selector-popup'); 

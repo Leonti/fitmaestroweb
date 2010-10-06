@@ -97,6 +97,19 @@ div#session-list-container{
     -moz-border-radius:0px 6px 6px 6px;
 }
 
+div#session-list-wrapper{
+    float: left;
+    height: 20em;
+    overflow: auto;
+    padding-right: 10px;
+}
+
+
+/*
+div#session-description{
+    margin-left: 17em;
+} */
+
 div.list-container,
 div.details-container,
 div.public-program{

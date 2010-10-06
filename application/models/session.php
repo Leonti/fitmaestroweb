@@ -141,7 +141,7 @@ class Session_Model extends Model {
                 ->where('deleted', 0)
                 ->where('user_id', $this->userId)
                 ->from('sessions')
-                ->orderby('id', 'ASC')
+                ->orderby('id', 'DESC')
                 ->get();
     }
 
@@ -152,7 +152,7 @@ class Session_Model extends Model {
                 ->where('user_id', $this->userId)
                 ->where($filters)
                 ->from('sessions')
-                ->orderby('id', 'ASC')
+                ->orderby('id', 'DESC')
                 ->get();
     }
 

@@ -161,6 +161,8 @@ $(function() {
         return false;
     });
 
+   // $('#session-list-wrapper').jScrollPane();
+
 });
 
 function initialSetup(){
@@ -191,9 +193,10 @@ function fillSessions(select_last){
             }
         });
         makeZebra($('ul#session-list'));
+        $('#session-list-wrapper').jScrollPane();
 
         if(sessionId == 0 || select_last){
-            $('ul#session-list li:last').trigger('click');
+            $('ul#session-list li:first').trigger('click');
         }
     });
 
