@@ -25,7 +25,7 @@ $(function() {
         return false;
     });
 
-    $('ul#session-list li').live('click', function(){
+    $('ul#session-list li').not('.no-entry').live('click', function(){
 
         $('ul#session-list li div.edit-session-box').remove();
         sessionId = $(this).data('id');;
@@ -193,11 +193,16 @@ function fillSessions(select_last){
             }
         });
         makeZebra($('ul#session-list'));
-        $('#session-list-wrapper').jScrollPane();
 
         if(sessionId == 0 || select_last){
             $('ul#session-list li:first').trigger('click');
         }
+
+        if(json.length == 0){
+            $('ul#session-list').append('<li class="no-entries">No entries</li>');
+        }
+
+        $('#session-list-wrapper').jScrollPane();
     });
 
 }
