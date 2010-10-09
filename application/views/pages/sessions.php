@@ -16,7 +16,7 @@
     <div id = "session-stats"></div>
 </div>
 
-<div class = "details-container">
+<div class = "details-container" style ="display:none;">
   <a href="#" id = "exercise-link" class = "add-link">Add exercise</a>
   <a href="#" id = "print-plan" class = "add-link">Print</a>
   <table id = "session-exercise-list" cellspacing="0">

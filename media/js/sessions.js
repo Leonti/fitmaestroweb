@@ -27,6 +27,7 @@ $(function() {
 
     $('ul#session-list li:not(.no-entries)').live('click', function(){
 
+        $('div.details-container').show();
         $('ul#session-list li div.edit-session-box').remove();
         sessionId = $(this).data('id');;
 
@@ -141,6 +142,7 @@ $(function() {
 
     $('#sessions-filter li').click(function(){
 
+        $('div.details-container').hide();
         $(this).parent().find('li').removeClass('selected');
         $(this).addClass('selected');
 
