@@ -25,7 +25,7 @@ $(function() {
         return false;
     });
 
-    $('ul#session-list li').not('.no-entry').live('click', function(){
+    $('ul#session-list li:not(.no-entries)').live('click', function(){
 
         $('ul#session-list li div.edit-session-box').remove();
         sessionId = $(this).data('id');;
