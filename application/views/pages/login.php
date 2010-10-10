@@ -1,6 +1,24 @@
 <div class="login-block">
     <?php echo html::anchor('home', 'Main Page'); ?>
 </div>
+
+<?php
+    if(count($errors) > 0){
+?>
+    <div id="errors">
+        Please correct following errors: <br />
+        <ul>
+        <?php
+            foreach($errors as $key => $value){
+                echo '<li>' . $errors_mapping[$key][$value] . '</li>';
+            }
+        ?>
+        </ul>
+    </div>
+        <?php
+    }
+?>
+
 <div class = "form">
 <?php
 

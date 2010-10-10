@@ -2,11 +2,37 @@
 
 class User_Controller extends Website_Controller {
 
+
+    private $register_errors_mapping = array(
+        'username' => array(
+                'email' => 'Invalid email format.',
+                'required' => 'Email is required.',
+            ),
+            'password' => array(
+                'required' => 'Password is required.',
+            ),
+            'repeat_password' => array(
+                'matches' => 'Passwords do not match.',
+            ),
+        );
+
+        private $login_errors_mapping = array(
+            'username' => array(
+                'required' => 'Email is required.',
+                'length' => 'Invalid email format.',
+                'invalid' => 'Invalid username and/or password.',
+            ),
+            'password' => array(
+                'required' => 'Password is required.',
+            ),
+        );
+
     public function register(){
         $this->template->title = 'FitMaestro Register';
         $this->template->content = new View('pages/register');
 
         $this->template->content->formData = array();
+        $this->template->content->errors = array();
 
         if(isset($_POST['submit'])){
             $post = new Validation($_POST);
@@ -17,7 +43,6 @@ class User_Controller extends Website_Controller {
             $post->add_rules('repeat_password', 'matches[password]');
 
             if($post->validate()){
-                echo 'No validation errors found ';
                 $username = $this->input->post('username');
                 $password = $this->input->post('password');
 
@@ -43,7 +68,10 @@ class User_Controller extends Website_Controller {
                 }
 
             }else{
-                echo 'Validation errors were found '.'<br />';
+
+                $this->template->content->errors_mapping = $this->register_errors_mapping;
+                $this->template->content->errors = $post->errors();
+
                 // repopulating
                 $this->template->content->formData = $post->as_array();
             }
@@ -62,6 +90,7 @@ class User_Controller extends Website_Controller {
         $this->template->content = new View('pages/login');
 
         $this->template->content->formData = array();
+        $this->template->content->errors = array();
 
 
         //Attempt login if form was submitted
@@ -71,7 +100,9 @@ class User_Controller extends Website_Controller {
                 url::redirect($this->session->get('requested_url'));
             } else {
                 $this->template->content->username = $post['username']; //Redisplay username (but not password) when form is redisplayed.
-                $this->template->content->message = in_array('required', $post->errors()) ? 'Username and password are required.' : 'Invalid username and/or password.';
+                //$this->template->content->message = in_array('required', $post->errors()) ? 'Username and password are required.' : 'Invalid username and/or password.';
+                $this->template->content->errors = $post->errors();
+                $this->template->content->errors_mapping = $this->login_errors_mapping;
             }
         }
     }

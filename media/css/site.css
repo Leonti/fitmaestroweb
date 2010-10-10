@@ -251,7 +251,7 @@ div.set-details{
 
 div.status{
   padding: 0.2em;
-  margin-left: auto:
+  margin-left: auto;
   margin-right: auto;
   font-size: 0.8em;
 }
@@ -300,7 +300,7 @@ div.form .label{
 }
 
 #header h2{
-  font-family: 'Reenie Beanie', arial, serif;
+  font-family: 'Cantarell', arial, serif;
   font-size: 1.5em;
   float: right;
 }
@@ -408,8 +408,7 @@ input[type="text"].number{
 
 .login-block{
     float: right;
-    margin-top: 0.5em;
-    margin-right: 0.5em;
+    padding: 0.25em;
 }
 
 /* commented for now for clarity
@@ -436,4 +435,18 @@ input[type=file]{
     width: 170px;
     height: 170px;
     border: none;
+}
+
+div#errors{
+    background-color:#ffaabb;
+    margin: 0.5em 0 0.5em 0;
+    border: 2px solid red;
+    padding: 0.5em;
+    display: table;
+    -moz-border-radius:6px 6px 6px 6px;
+}
+
+div#errors ul{
+    margin-left: 2em;
+    font-style: italic;
 }

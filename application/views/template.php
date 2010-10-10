@@ -68,12 +68,11 @@ $content->weightUnits = $weightUnits;
 $content->multiplicator = $multiplicator;
 
 ?>
-<link href='http://fonts.googleapis.com/css?family=Reenie+Beanie' rel='stylesheet' type='text/css' />
 <link href='http://fonts.googleapis.com/css?family=Cantarell' rel='stylesheet' type='text/css' />
 
 <title><?php echo html::specialchars($title) ?></title>
 <meta name = "description"
-      content = "Fitmaestro is an online tool for managing and keeping track of you bodybuilding or fitness exercises, trainig programs and results." />
+      content = "Fitmaestro is an online tool for managing and keeping track of you bodybuilding, powerlifting or fitness exercises, trainig programs and results." />
 </head>
 <body>
     <div id="non-footer-wrap">
