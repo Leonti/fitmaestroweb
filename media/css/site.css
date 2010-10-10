@@ -97,11 +97,15 @@ div#session-list-container{
     -moz-border-radius:0px 6px 6px 6px;
 }
 
-div#session-list-wrapper{
+div#session-list-wrapper, div#group-list-wrapper{
     float: left;
     height: 20em;
     overflow: auto;
     padding-right: 10px;
+}
+
+.jScrollPaneContainer{
+    float: left;
 }
 /*
 div#session-description{
@@ -309,6 +313,7 @@ div.form .label{
   position: absolute;
     bottom: 0.5em;
     */
+  margin-top: 0.5em;
   height: 2em;
   width: 780px;
 }
@@ -382,9 +387,17 @@ input[type="text"].number{
 }
 
 #menu-holder{
-    display: table;
-    margin: 0.5em auto 0.5em auto;
+    background-color: #FFFFDD;
+    margin: 0.5em 0 0.5em 0;
+    border: 2px solid #DCD998;
+    -moz-border-radius:6px 6px 6px 6px;
 }
+
+#menu-wrapper{
+    display: table;
+    margin: 0 auto 0 auto;
+}
+
 
 .login-block{
     float: right;

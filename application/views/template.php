@@ -85,21 +85,33 @@ $content->multiplicator = $multiplicator;
     <?php echo html::anchor('user/logout', 'Sign Off'); ?>
 </div>
 <div id="menu-holder" style ="clear:both;">
-    <ul id="nav" class="dropdown dropdown-horizontal">
-        <?php foreach ($links as $link => $url){
+    <div id="menu-wrapper">
+        <ul id="nav" class="dropdown dropdown-horizontal">
+            <?php 
+            
+            $count = 0;
+            $links_count = count($links);
+            foreach ($links as $link => $url){
 
-            // we have submenus
-            if(is_array($url)){
-                echo '<li><span class="dir">Programs</span><ul>';
-                    foreach ($url as $sub_link => $sub_url){
-                        echo '<li>' . html::anchor($sub_url, $sub_link) . '</li>';
+                $count++;
+
+                // we have submenus
+                if(is_array($url)){
+                    echo '<li><span class="dir">Programs</span><ul>';
+                        foreach ($url as $sub_link => $sub_url){
+                            echo '<li class = "submenu">' . html::anchor($sub_url, $sub_link) . '</li>';
+                        }
+                    echo '</ul></li>';
+                }else{
+                    $last_class = '';
+                    if($count == $links_count){
+                        $last_class = 'class = "last-menu-item"';
                     }
-                echo '</ul></li>';
-            }else{
-                echo '<li>' . html::anchor($url, $link) . '</li>';
-            }
-         } ?>
-    </ul>
+                    echo '<li ' . $last_class . '>' . html::anchor($url, $link) . '</li>';
+                }
+             } ?>
+        </ul>
+    </div>
     <div style="clear:both;"></div>
 </div>
     <?php } ?>

@@ -106,10 +106,20 @@ class imports_Core{
             $importedExerciseId = $testExercise[0]->id;
         }else{
 
+            // copy exercise image files and assign them, to new exercise
+            $old_file_id = $importExercise[0]->file_id;
+            $new_file_id = 0;
+            if($old_file_id != 0){
+                $new_file_id = files::copyFile($userId, $old_file_id);
+            }
+            error_log($userId);
+            error_log($groupId);
+
             $importedExerciseId = $exercises->addItem(array(
                                                         'title' => $importExercise[0]->title,
                                                         'desc' => $importExercise[0]->desc,
                                                         'ex_type' => $importExercise[0]->ex_type,
+                                                        'file_id' => $new_file_id,
                                                         'group_id' => $groupId,
                                                         'import_id' =>$importExercise[0]->id,
                                                         ));

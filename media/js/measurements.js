@@ -85,8 +85,8 @@ $(function() {
     $('a#add-measurement-entry').click(function(){
         var editRow = $('<tr>');
         editRow.data('id', '');
-        editRow.append('<td><input type = "text" name = "value" /></td>'
-                        + '<td><input type = "text" name = "date" class="time" /></td><td></td>');
+        editRow.append('<td><input type = "text" name = "date" class="time" /></td>'
+                        + '<td><input type = "text" name = "value" /></td><td></td>');
         $('table#measurements-log-list tbody').prepend(editRow);
         attachDatepicker();
         return false;
@@ -96,7 +96,14 @@ $(function() {
     $('input[name="value"]').live('blur', saveMeasurmentEntry);
     $('input[name="date"]').live('change', saveMeasurmentEntry);
     
-    $('table#measurements-log-list tbody tr a.edit').live('click', showEditEntry);
+    $('table#measurements-log-list tbody tr a.edit').live('click', function(){
+        if(!$(this).data('in-progress')){
+            showEditEntry(this);
+            $(this).data('in-progress', true);
+        }
+
+        return false;
+    });
         
     $('table#measurements-log-list tbody tr a.delete').live('click', showDeleteEntry);
     
@@ -107,9 +114,9 @@ $(function() {
     
 });
 
-function showEditEntry(){
+function showEditEntry(tableRow){
     //alert($(this).parent().parent().data('id'));
-    var row = $(this).parent().parent();
+    var row = $(tableRow).parent().parent();
     var dateTd = $('td', row).eq(0);
     var valueTd = $('td', row).eq(1);
     dateTd.html('<input type = "text" name = "date" class="time" value = "' + row.data('date') + '" />');
@@ -120,7 +127,6 @@ function showEditEntry(){
 
 function showDeleteEntry(){
     var id = $(this).parent().parent().data('id');
-
     fancyConfirm('Confirm delete', 'Are you sure you want to delete this entry?', function(){
         
         $.post(baseUrl + 'ajaxpost/deleteMeasurementEntry', {id : id}, function(json){
@@ -227,7 +233,7 @@ function saveMeasurmentEntry(){
     var value = $('input[name="value"]', $(this).parent().parent()).val();
     var date = $('input[name="date"]', $(this).parent().parent()).val();
     var id = $(this).parent().parent().data('id');
-    
+
     if(value && date){
         $.post(baseUrl + 'ajaxpost/saveMeasurementEntry', 
                {id : id, value: value, date: date, type_id: measurementTypeId}, 
@@ -235,6 +241,9 @@ function saveMeasurmentEntry(){
                    
                    if(json.result == 'OK'){
                        fillMeasurementLog();
+
+                        // setting in-progress flag back to false;
+                        $(this).data('in-progress', false);
                    }
                },"json");
     }

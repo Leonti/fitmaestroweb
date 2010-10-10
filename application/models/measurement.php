@@ -89,7 +89,8 @@ class Measurement_Model extends Model {
         $result = $this->db->query(
             "SELECT *, DATE_FORMAT(`date`, '%Y-%m-%d') AS `date_formatted` 
                 FROM `measurements_log` 
-                    WHERE `measurement_type_id` = '$typeId' AND `date` 
+                    WHERE deleted = 0 
+                    AND `measurement_type_id` = '$typeId' AND `date`
                     BETWEEN '$startDateParsed' AND '$endDateParsed' AND `measurements_log`.`user_id` = {$this->userId}"
                                 );
 

@@ -52,7 +52,6 @@
     echo html::stylesheet(array
 	(
         'media/css/jScrollPane',
-        'media/css/sessions'
 	));
 
     echo html::script(array

@@ -35,11 +35,22 @@ class exports_Core{
         if($exportExercise[0]->import_id != 0){
             $exportedExerciseId = $exportExercise[0]->import_id;
         }else{
+
+            // copy exercise image files and assign them, to new exercise
+            $fileId = $exportExercise[0]->file_id;
+            $newFileId = 0;
+            if($fileId != 0){
+
+                // this file will belong to public exercise so we set userId to 0
+                $newFileId = files::copyFile(0, $fileId);
+            }
+
             // exporting exercise itself
             $exportedExerciseId = $exercises->addPublicItem(array(
                                                         'title' => $exportExercise[0]->title,
                                                         'desc' => $exportExercise[0]->desc,
                                                         'ex_type' => $exportExercise[0]->ex_type,
+                                                        'file_id' => $newFileId,
                                                         'group_id' => $exportGroupId,
                                                         ));
 

@@ -96,7 +96,7 @@ class Exercise_Model extends Model {
 
 	public function addItem($data){
 
-        $data['user_id'] = $this->userId;
+                $data['user_id'] = $this->userId;
 		$query = $this->db->insert('exercises', $data); 
 		return $query->insert_id(); 
 	}

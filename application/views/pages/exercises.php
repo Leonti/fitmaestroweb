@@ -1,12 +1,14 @@
 <div class = "list-container">
     <a id = "add-group" href = "#" class = "add-link">Add group</a><br />
     <div style = "clear:both;"></div>
-    <ul id = "group-list" class = "items-list" >
-        <li id = "all-groups" class = "list-title">All</li>
-        <?php foreach ($groups as $item){ ?>
-        <li><?php echo html::specialchars($item->title) ?></li>
-        <?php } ?>
-    </ul>
+    <div id = "group-list-wrapper">
+        <ul id = "group-list" class = "items-list" >
+            <li id = "all-groups" class = "list-title">All</li>
+            <?php foreach ($groups as $item){ ?>
+            <li><?php echo html::specialchars($item->title) ?></li>
+            <?php } ?>
+        </ul>
+    </div>
     <div id = "group-description" class = "desc-box">All groups</div>
     <div style = "clear:both;"></div>
 </div>
@@ -39,11 +41,20 @@
     </table>
 </div>
 
-<?php 
+<?php
+
+        echo html::stylesheet(array
+            (
+                'media/css/jScrollPane',
+                'media/css/sessions'
+            ));
+
 	echo html::script(array
 	      (
 		  'media/js/exercises.js',
                   'media/js/jquery.form.js',
+                  'media/js/jScrollPane.js',
+                  'media/js/jquery.mousewheel.js',
 	      ), FALSE);
 	$popup = new View('popups/exercise-popup'); 
 	$popup->groups = $groups;

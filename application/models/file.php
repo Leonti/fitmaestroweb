@@ -18,7 +18,7 @@ class File_Model extends Model {
 		return $this->db->select() // selects all fields by default
 			    ->where('deleted', 0)
 			    ->where('id', $id)
-                ->where('user_id', $this->userId)
+                            //->where('user_id', $this->userId)
 			    ->from('files')
 			    ->get();
 	}

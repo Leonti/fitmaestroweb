@@ -291,7 +291,10 @@ function fillGroups(){
 			}
 			$('#exercise-edit form select[name="group_id"]').append('<option value = "' + jsonrow.id + '">' + jsonrow.title + '</option>');
 		});
-        makeZebra($('ul#group-list'));
+
+                
+                makeZebra($('ul#group-list'));
+                $('#group-list-wrapper').jScrollPane();
 	});
 
 }
