@@ -11,8 +11,8 @@ class Website_Controller extends Template_Controller {
 		'Home' => 'home',
 		'Exercises' => 'exercises',
                 'Programs' => array(
-                            'My Programs' => 'programs',
-                            'Public Programs' => 'programs/publicPrograms',
+                'My Programs' => 'programs',
+                'Public Programs' => 'programs/publicPrograms',
                                     ),
 		'Workouts' => 'workouts',
                 'Sessions' => 'sessions',

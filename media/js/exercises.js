@@ -240,7 +240,7 @@ function fillExercises(){
             }
 
             makeZebra($('table#exercise-list tbody'));
-    });
+        });
 
 }
 

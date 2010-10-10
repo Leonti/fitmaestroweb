@@ -72,58 +72,63 @@ $content->multiplicator = $multiplicator;
 <link href='http://fonts.googleapis.com/css?family=Cantarell' rel='stylesheet' type='text/css' />
 
 <title><?php echo html::specialchars($title) ?></title>
+<meta name = "description"
+      content = "Fitmaestro is an online tool for managing and keeping track of you bodybuilding or fitness exercises, trainig programs and results." />
 </head>
 <body>
-<div id = "header">
-    <h1>FitMaestro</h1>
-    <h2>Where health meets technology</h2>
-    <div style = "clear: both;"></div>
-</div>
+    <div id="non-footer-wrap">
+        <div id ="non-footer">
+            <div id = "header">
+                <h1>FitMaestro</h1>
+                <h2>Where health meets technology</h2>
+                <div style = "clear: both;"></div>
+            </div>
 
-    <?php if($user){ ?>
-<div class="login-block">
-    <?php echo html::anchor('user/logout', 'Sign Off'); ?>
-</div>
-<div id="menu-holder" style ="clear:both;">
-    <div id="menu-wrapper">
-        <ul id="nav" class="dropdown dropdown-horizontal">
-            <?php 
-            
-            $count = 0;
-            $links_count = count($links);
-            foreach ($links as $link => $url){
+                <?php if($user){ ?>
+            <div class="login-block">
+                <?php echo html::anchor('user/logout', 'Sign Off'); ?>
+            </div>
+            <div id="menu-holder" style ="clear:both;">
+                <div id="menu-wrapper">
+                    <ul id="nav" class="dropdown dropdown-horizontal">
+                        <?php
 
-                $count++;
+                        $count = 0;
+                        $links_count = count($links);
+                        foreach ($links as $link => $url){
 
-                // we have submenus
-                if(is_array($url)){
-                    echo '<li><span class="dir">Programs</span><ul>';
-                        foreach ($url as $sub_link => $sub_url){
-                            echo '<li class = "submenu">' . html::anchor($sub_url, $sub_link) . '</li>';
-                        }
-                    echo '</ul></li>';
-                }else{
-                    $last_class = '';
-                    if($count == $links_count){
-                        $last_class = 'class = "last-menu-item"';
-                    }
-                    echo '<li ' . $last_class . '>' . html::anchor($url, $link) . '</li>';
-                }
-             } ?>
-        </ul>
+                            $count++;
+
+                            // we have submenus
+                            if(is_array($url)){
+                                echo '<li><span class="dir">Programs</span><ul>';
+                                    foreach ($url as $sub_link => $sub_url){
+                                        echo '<li class = "submenu">' . html::anchor($sub_url, $sub_link) . '</li>';
+                                    }
+                                echo '</ul></li>';
+                            }else{
+                                $last_class = '';
+                                if($count == $links_count){
+                                    $last_class = 'class = "last-menu-item"';
+                                }
+                                echo '<li ' . $last_class . '>' . html::anchor($url, $link) . '</li>';
+                            }
+                         } ?>
+                    </ul>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+                <?php } ?>
+
+            <?php echo $content ?>
+        </div>
     </div>
-    <div style="clear:both;"></div>
-</div>
-    <?php } ?>
-
-<?php echo $content ?>
-
-<div id = "footer">
-    <div id = "copyright">Copyright 2010 Leonty Belskiy</div>
-    <div id = "footer-links">
-        <a href = "http://fitmaestro.com/Privacy.html">Privacy Policy</a>
+    <div id = "footer">
+        <div id = "copyright">Copyright 2010 Leonty Belskiy</div>
+        <div id = "footer-links">
+            <a href = "http://fitmaestro.com/Privacy.html">Privacy Policy</a>
+        </div>
     </div>
-</div>
 <script type="text/javascript">
 
   var _gaq = _gaq || [];

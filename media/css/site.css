@@ -1,6 +1,6 @@
 body { 
   width: 800px; 
-  margin: 0.5em auto;
+  margin: 0 auto;
   font-family: Arial, 
   Verdana, sans-serif;
 }
@@ -293,9 +293,6 @@ div.form .label{
   border:2px solid #DCD998;
   padding: 0.5em;
 }
-#header{
-  margin-top: 0;
-}
 
 #header h1{
   font-family: 'Cantarell', arial, serif;
@@ -308,14 +305,24 @@ div.form .label{
   float: right;
 }
 
+#non-footer-wrap{
+    position:relative;
+    min-height: 100%;
+}
+html, body{
+    height: 100%;
+}
+
+#non-footer{
+    padding-top: 0.5em;
+    padding-bottom: 6em;
+}
 #footer{
-    /*
-  position: absolute;
-    bottom: 0.5em;
-    */
-  margin-top: 0.5em;
+    
+  position: relative;
+  margin: -5em auto 0;
+  top: 1em;
   height: 2em;
-  width: 780px;
 }
 
 #copyright, #footer-links{
