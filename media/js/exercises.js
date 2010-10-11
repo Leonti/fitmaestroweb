@@ -294,7 +294,7 @@ function fillGroups(){
 
                 
                 makeZebra($('ul#group-list'));
-                $('#group-list-wrapper').jScrollPane();
+                $('.scrollpane-wrapper').jScrollPane();
 	});
 
 }

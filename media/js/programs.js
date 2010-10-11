@@ -246,6 +246,7 @@ function fillPrograms(){
 		});
         
         makeZebra($('ul#program-list'));
+        $('.scrollpane-wrapper').jScrollPane();
         
         if(programId == 0){
             $('ul#program-list li:last').trigger('click');

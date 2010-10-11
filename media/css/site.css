@@ -97,7 +97,7 @@ div#session-list-container{
     -moz-border-radius:0px 6px 6px 6px;
 }
 
-div#session-list-wrapper, div#group-list-wrapper{
+div.scrollpane-wrapper{
     float: left;
     height: 20em;
     overflow: auto;

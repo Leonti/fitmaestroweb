@@ -13,6 +13,7 @@ echo html::stylesheet(array
         'media/css/print',
         'media/css/dropdown/dropdown',
         'media/css/dropdown/default/default',
+        'media/css/jScrollPane',
 	),
 	array
 	(
@@ -33,6 +34,8 @@ echo html::script(array
     'media/js/jquery.metadata.js',
     'media/js/jquery.jqprint.js',
     'media/js/jquery.dropdown.js',
+    'media/js/jScrollPane.js',
+    'media/js/jquery.mousewheel.js',
 ), FALSE);
 
 

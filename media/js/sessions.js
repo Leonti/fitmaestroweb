@@ -163,8 +163,6 @@ $(function() {
         return false;
     });
 
-   // $('#session-list-wrapper').jScrollPane();
-
 });
 
 function initialSetup(){
@@ -204,7 +202,7 @@ function fillSessions(select_last){
             $('ul#session-list').append('<li class="no-entries">No entries</li>');
         }
 
-        $('#session-list-wrapper').jScrollPane();
+        $('.scrollpane-wrapper').jScrollPane();
     });
 
 }

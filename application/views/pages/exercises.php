@@ -1,7 +1,7 @@
 <div class = "list-container">
     <a id = "add-group" href = "#" class = "add-link">Add group</a><br />
     <div style = "clear:both;"></div>
-    <div id = "group-list-wrapper">
+    <div class = "scrollpane-wrapper">
         <ul id = "group-list" class = "items-list" >
             <li id = "all-groups" class = "list-title">All</li>
             <?php foreach ($groups as $item){ ?>
@@ -43,18 +43,10 @@
 
 <?php
 
-        echo html::stylesheet(array
-            (
-                'media/css/jScrollPane',
-                'media/css/sessions'
-            ));
-
 	echo html::script(array
 	      (
 		  'media/js/exercises.js',
                   'media/js/jquery.form.js',
-                  'media/js/jScrollPane.js',
-                  'media/js/jquery.mousewheel.js',
 	      ), FALSE);
 	$popup = new View('popups/exercise-popup'); 
 	$popup->groups = $groups;

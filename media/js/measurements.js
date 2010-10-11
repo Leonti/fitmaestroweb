@@ -172,6 +172,7 @@ function fillMeasurementTypes(){
             }
         });
         makeZebra($('ul#measurement-types-list'));
+        $('.scrollpane-wrapper').jScrollPane();
         
         if(measurementTypeId == 0){
             $('ul#measurement-types-list li:first').trigger('click');

@@ -1,8 +1,10 @@
 <div class = "list-container">
     <a id = "add-measurement" href = "#" class = "add-link" >Add measurement</a>
     <div style = "clear:both;"></div>
-    <ul id = "measurement-types-list" class = "items-list">
-    </ul>
+    <div class = "scrollpane-wrapper">
+        <ul id = "measurement-types-list" class = "items-list">
+        </ul>
+    </div>
     <div id = "measurement-type-description" class = "desc-box"></div>
     <div style = "clear:both;"></div>
 </div>

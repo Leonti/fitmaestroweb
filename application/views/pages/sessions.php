@@ -7,7 +7,7 @@
 <div class = "list-container" id = "session-list-container">
     <a id = "start-session" href = "#" class = "add-link" >Start session</a>
     <div style = "clear:both;"></div>
-    <div id = "session-list-wrapper">
+    <div class = "scrollpane-wrapper">
         <ul id = "session-list" class = "items-list">
         </ul>
     </div>
@@ -46,20 +46,10 @@
         </script>
     ';
 
-
-    // jScrollPane.css
-
-    echo html::stylesheet(array
-	(
-        'media/css/jScrollPane',
-	));
-
     echo html::script(array
           (
           'media/js/sessions.js',
           'media/js/timepicker.js',
-          'media/js/jScrollPane.js',
-          'media/js/jquery.mousewheel.js',
           ), FALSE);
 
 

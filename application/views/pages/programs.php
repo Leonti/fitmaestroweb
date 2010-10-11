@@ -1,8 +1,9 @@
 <div class = "list-container">
     <a id = "add-program" href = "#" class = "add-link">Add program</a>
     <div style = "clear:both;"></div>
-    <ul id = "program-list" class = "items-list"></ul>
-
+    <div class = "scrollpane-wrapper">
+        <ul id = "program-list" class = "items-list"></ul>
+    </div>
     <div id = "program-description" class = "desc-box"></div>
     <div style = "clear:both;"></div>
 </div>

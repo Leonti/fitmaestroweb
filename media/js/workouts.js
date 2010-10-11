@@ -227,6 +227,7 @@ function fillSets(){
 		});
 
         makeZebra($('ul#set-list'));
+        $('.scrollpane-wrapper').jScrollPane();
         if(setId == 0){
             $('ul#set-list li:last').trigger('click');
         }

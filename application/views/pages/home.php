@@ -1,6 +1,6 @@
 <div class="details-container">
     <p>
-        Welcome to FitMaestro!<br />
+        Welcome to <span class="emp">FitMaestro!</span><br />
         Here is a short description of what is available for you:
     </p>
     <p>
