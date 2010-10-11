@@ -28,7 +28,7 @@
                 <th>Group</th>
                 <th>Reps</th>
                 <th>Done</th>
-                <th class = "image-column no-pad" ></th>
+                <th class = "image-column no-pad non-printable" ></th>
             </tr>
         </thead>
       <tbody>

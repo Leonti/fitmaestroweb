@@ -3,4 +3,9 @@
 }
 table, tr, td, th {
     border: solid;
+    border-collapse:collapse;
+}
+
+table{
+    width: 100%;
 }

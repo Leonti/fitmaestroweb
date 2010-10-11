@@ -239,10 +239,8 @@ function fillSessionExercises(){
 
                     $.each(jsonrow.details, function(i, detailrow){
 
-                        var done = 'not done';
-
                         var toAppend = '';
-                        var toAppendDone = 'not done';
+                        var toAppendDone = '<span class = "non-printable">not done</span>';
 
                         if(jsonrow.ex_type == 1){
                             toAppend = detailrow.reps + 'x' + detailrow.percentage + ' ' + weightUnits;

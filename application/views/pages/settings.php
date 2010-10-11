@@ -1,4 +1,4 @@
-<h2>Settings page</h2>
+<div class ="details-container">
 
 <?php
 
@@ -28,28 +28,32 @@
 
 
     echo '
-        Time format:<br />';
+        <p>
+            <span class="emp">Time format:</span><br />';
     echo form::open(null, array('id' => 'settings_form'));
     echo form::radio('time_format', 'ampm', $ampm) . 'AM/PM<br />';
-    echo form::radio('time_format', '24', $twentyFour) . '24 Hour<br /><br />';
+    echo form::radio('time_format', '24', $twentyFour) . '24 Hour</p>';
     echo '
-        Time zone:<br />';
-    echo form::dropdown('time_zone', $timeZones, $timeZone) . '<br /><br />';
+        <p>
+            <span class="emp">Time zone:</span><br />';
+    echo form::dropdown('time_zone', $timeZones, $timeZone) . '</p>';
 
     echo '
-        Weight units:<br />';
+        <p>
+        <span class="emp">Weight units:</span><br />';
     echo form::open(null, array('id' => 'settings_form'));
     echo form::radio('weight_units', 'kg', $kg) . 'kg<br />';
-    echo form::radio('weight_units', 'lb', $lb) . 'lb<br /><br />';
+    echo form::radio('weight_units', 'lb', $lb) . 'lb</p>';
 
     echo '
-        Weight calculation multiplicator:<br />';
+        <p>
+        <span class="emp">Weight calculation multiplicator:</span><br />';
     echo form::open(null, array('id' => 'settings_form'));
     foreach($multiplicators as $single_multiplicator){
         $checked = $single_multiplicator[0] == $multiplicator ? true : false;
         echo form::radio('multiplicator', $single_multiplicator[0], $checked) . $single_multiplicator[1]. '<br />';
     }
-    echo '<br />';
+    echo '</p>';
 
     echo form::submit('submit', 'Save');
 
@@ -59,19 +63,12 @@
         </script>
     ';
 ?>
+</div>
 <?php
     echo html::script(array
           (
           'media/js/settings.js',
           'media/js/jquery.populate.pack.js',
           ), FALSE);
-/*
-    echo View::factory('popups/reps-session-popup');
-    $selector = new View('popups/selector-popup'); 
-    $selector->exercisesArray = $exercisesArray;
-    $selector->groups = $groups;
-    $selector->render(TRUE);
-    echo View::factory('popups/session-popup');
-*/
 ?>
  
