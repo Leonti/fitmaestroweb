@@ -315,7 +315,7 @@ html, body{
 
 #non-footer{
     padding-top: 0.5em;
-    padding-bottom: 6em;
+    padding-bottom: 4.5em;
 }
 #footer{
     
@@ -449,4 +449,7 @@ div#errors{
 div#errors ul{
     margin-left: 2em;
     font-style: italic;
+}
+.emp{
+    font-weight: bold;
 }
