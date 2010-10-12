@@ -134,12 +134,22 @@ class Ajaxpost_Controller extends Controller {
                                     // we have file uploaded
                                     if(!$file_error){
                                         
-                                        error_log('File ID is: ' . $file_id);
+                                        //error_log('File ID is: ' . $file_id);
                                         // it has already uploaded file
                                         if($file_id){
                                             $old_file = $files->getItem($file_id);
                                             $old_filename = $old_file[0]->filename;
-                                            $files->updateItem(array('filename'=>$new_filename, 'frames' => $frames_count), $file_id);
+                                            $file_user_id = $old_file[0]->user_id;
+
+                                            // this file belongs to user - so we can safely update it
+                                            if($file_user_id != 0){
+                                                $files->updateItem(array('filename'=>$new_filename, 'frames' => $frames_count), $file_id);
+
+                                            // don't touch public item - instead create new file
+                                            }else{
+                                                $file_id = $files->addItem(array('filename'=>$new_filename, 'frames' => $frames_count));
+                                            }
+                                            
 
                                             //remove old file
                                             unlink($uploads_folder . $old_filename);
