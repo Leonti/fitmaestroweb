@@ -278,7 +278,7 @@ div.form{
   margin-top: 8em;
 }
 
-input{
+input, textarea, #exercise-image{
   border:2px solid #DCD998;
 }
 
@@ -411,12 +411,12 @@ input[type="text"].number{
     padding: 0.25em;
 }
 
-/* commented for now for clarity
+/* commented for now for clarity */
 .fileinput-wrapper{
     position: relative;
     overflow: hidden;
     border: solid;
-    width:10em;
+    height:1em;
     text-align: center;
     padding: 0.2em;
     background: #ccc;
@@ -429,12 +429,11 @@ input[type=file]{
     font-size: 500px;
     opacity: 0;
 }
-*/
 
 #exercise-image{
-    width: 170px;
-    height: 170px;
-    border: none;
+    width: 200px;
+    height: 200px;
+    margin-top: 1.5em;
 }
 
 div#errors{
@@ -452,4 +451,13 @@ div#errors ul{
 }
 .emp{
     font-weight: bold;
+}
+.column{
+    float: left;
+}
+.number, .units{
+    width: 4em;
+}
+textarea[name="desc"]{
+    height: 200px;
 }

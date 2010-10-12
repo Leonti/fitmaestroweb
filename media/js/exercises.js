@@ -2,9 +2,9 @@ var groupId = 0;
 
 $(function() {
 
-	$('#exercise-edit').dialog({autoOpen:false});
-	$('#group-edit').dialog({autoOpen:false});
-        $('#import-exercises').dialog({autoOpen:false});
+	$('#exercise-edit').dialog({autoOpen:false, width: 'auto', height: 'auto'});
+	$('#group-edit').dialog({autoOpen:false, width: 'auto', height: 'auto'});
+        $('#import-exercises').dialog({autoOpen:false, width: 'auto', height: 'auto'});
 
 	$('#add-exercise').click(function(){
 

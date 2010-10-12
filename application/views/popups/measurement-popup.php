@@ -5,8 +5,8 @@
         <input type="text" name = "title" />
     </p>
     <p>
-        Units:<br />
-        <input type="text" name = "units" />
+        Units:
+        <input type="text" name = "units" class="units" />
     </p>
     <p>
         Description:<br />

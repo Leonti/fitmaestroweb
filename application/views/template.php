@@ -9,7 +9,8 @@ echo html::stylesheet(array
 	(
         'media/css/reset',
         'media/css/site',
-        'media/css/ui-lightness/jquery-ui-1.8.custom',
+        'media/css/ui-custom/jquery-ui-1.8.custom',
+        'media/css/ui-custom/ui-fitmaestro',
         'media/css/print',
         'media/css/dropdown/dropdown',
         'media/css/dropdown/default/default',
@@ -18,6 +19,7 @@ echo html::stylesheet(array
 	array
 	(
         'screen, print',
+        'screen',
         'screen',
         'screen',
         'print',

@@ -50,6 +50,7 @@
 	      ), FALSE);
 	$popup = new View('popups/exercise-popup'); 
 	$popup->groups = $groups;
+        $popup->weightUnits = $weightUnits;
 	$popup->render(TRUE);
 
 	echo View::factory('popups/group-popup');
