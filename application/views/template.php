@@ -86,6 +86,7 @@ $content->multiplicator = $multiplicator;
                 <h1>FitMaestro</h1>
                 <h2>Where health meets technology</h2>
                 <div style = "clear: both;"></div>
+                <img src="beta.png" id="beta" />
             </div>
 
                 <?php if($user){ ?>

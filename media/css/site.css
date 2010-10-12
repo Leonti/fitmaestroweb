@@ -294,6 +294,10 @@ div.form .label{
   padding: 0.5em;
 }
 
+#header{
+    position: relative;
+}
+
 #header h1{
   font-family: 'Cantarell', arial, serif;
   font-size: 1.8em;
@@ -303,6 +307,13 @@ div.form .label{
   font-family: 'Cantarell', arial, serif;
   font-size: 1.5em;
   float: right;
+}
+
+#header #beta{
+    position: absolute;
+    top: 0;
+    right: 0;
+    
 }
 
 #non-footer-wrap{
