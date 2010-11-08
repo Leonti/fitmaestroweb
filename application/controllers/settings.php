@@ -18,8 +18,10 @@ class Settings_Controller extends Website_Controller {
 
 		$this->template->title = 'FitMaestro Settings';
 		$this->template->content = new View('pages/settings');
+                
 
         $settings = new Setting_Model($this->user->id);
+        $this->template->content->userSettings = $settings->getSettings();
 
         $this->template->content->formData = array();
         if(isset($_POST['submit'])){
@@ -30,11 +32,11 @@ class Settings_Controller extends Website_Controller {
             $post->add_rules('email', 'required', 'email'); */
 
             if($post->validate()){
-                echo 'No validation errors found ';
                 $postArray = $post->as_array();
                 unset($postArray['submit']);
                 $settings->saveSettings($postArray);
-
+                $this->template->content->userSettings = $settings->getSettings();
+                
                 // clear to prevent repopuplating
                 $this->template->content->formData = array();
             }else{
@@ -43,11 +45,7 @@ class Settings_Controller extends Website_Controller {
                 $this->template->content->formData = $post->as_array();
             }
         }
-/*
-        $userSettings = $settings->getSettings();
-        $this->template->content->timeFormat = $userSettings->time_format;
-        $this->template->content->timeZone = $userSettings->time_zone;
-*/
+
         $this->template->content->timeZones = timeConvert::getTimezones();
 
 

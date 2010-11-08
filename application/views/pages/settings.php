@@ -4,7 +4,7 @@
 
     $ampm = false;
     $twentyFour = false;
-    if($timeFormat == "ampm"){
+    if($userSettings->time_format == "ampm"){
         $ampm = true;
     }else{
         $twentyFour = true;
@@ -12,7 +12,7 @@
 
     $kg = false;
     $lb = false;
-    if($weightUnits == "kg"){
+    if($userSettings->weight_units == "kg"){
         $kg = true;
     }else{
         $lb = true;
@@ -36,7 +36,7 @@
     echo '
         <p>
             <span class="emp">Time zone:</span><br />';
-    echo form::dropdown('time_zone', $timeZones, $timeZone) . '</p>';
+    echo form::dropdown('time_zone', $timeZones, $userSettings->time_zone) . '</p>';
 
     echo '
         <p>
@@ -50,7 +50,7 @@
         <span class="emp">Weight calculation multiplicator:</span><br />';
     echo form::open(null, array('id' => 'settings_form'));
     foreach($multiplicators as $single_multiplicator){
-        $checked = $single_multiplicator[0] == $multiplicator ? true : false;
+        $checked = $single_multiplicator[0] == $userSettings->multiplicator ? true : false;
         echo form::radio('multiplicator', $single_multiplicator[0], $checked) . $single_multiplicator[1]. '<br />';
     }
     echo '</p>';
