@@ -24,6 +24,7 @@ class User_Controller extends Website_Controller {
             ),
             'password' => array(
                 'required' => 'Password is required.',
+                'length' => 'Invalid username and/or password.', // if password is too short - just display message that it is invalid
             ),
         );
 
@@ -95,15 +96,17 @@ class User_Controller extends Website_Controller {
 
         //Attempt login if form was submitted
         if ($post = $this->input->post()) {
+
             if (ORM::factory('user')->login($post)) {
 
                 url::redirect($this->session->get('requested_url'));
             } else {
+ 
                 $this->template->content->username = $post['username']; //Redisplay username (but not password) when form is redisplayed.
-                //$this->template->content->message = in_array('required', $post->errors()) ? 'Username and password are required.' : 'Invalid username and/or password.';
                 $this->template->content->errors = $post->errors();
                 $this->template->content->errors_mapping = $this->login_errors_mapping;
             }
+            
         }
     }
 

@@ -26,6 +26,7 @@
     echo '<span class = "label">Password: </span>'. form::password('password') . '<br /><br />';
     echo '<span class = "label">Repeat password: </span>'. form::password('repeat_password') . '<br /><br />';
     echo form::submit('submit', 'Register');
+    echo form::close();
 
     echo '
         <script type = "text/javascript">
@@ -40,13 +41,5 @@
           (
           'media/js/jquery.populate.pack.js',
           ), FALSE);
-/*
-    echo View::factory('popups/reps-session-popup');
-    $selector = new View('popups/selector-popup'); 
-    $selector->exercisesArray = $exercisesArray;
-    $selector->groups = $groups;
-    $selector->render(TRUE);
-    echo View::factory('popups/session-popup');
-*/
 ?>
  

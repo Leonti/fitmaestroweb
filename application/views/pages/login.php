@@ -26,6 +26,7 @@
     echo '<span class = "label" >Email: </span>' . form::input('username') . '<br /><br />';
     echo '<span class = "label" >Password: </span>' . form::password('password') . '<br /><br />';
     echo form::submit('submit', 'Login');
+    echo form::close();
 
 ?>
 </div>

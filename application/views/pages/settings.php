@@ -41,14 +41,12 @@
     echo '
         <p>
         <span class="emp">Weight units:</span><br />';
-    echo form::open(null, array('id' => 'settings_form'));
     echo form::radio('weight_units', 'kg', $kg) . 'kg<br />';
     echo form::radio('weight_units', 'lb', $lb) . 'lb</p>';
 
     echo '
         <p>
         <span class="emp">Weight calculation multiplicator:</span><br />';
-    echo form::open(null, array('id' => 'settings_form'));
     foreach($multiplicators as $single_multiplicator){
         $checked = $single_multiplicator[0] == $userSettings->multiplicator ? true : false;
         echo form::radio('multiplicator', $single_multiplicator[0], $checked) . $single_multiplicator[1]. '<br />';
@@ -56,6 +54,7 @@
     echo '</p>';
 
     echo form::submit('submit', 'Save');
+    echo form::close();
 
     echo '
         <script type = "text/javascript">
