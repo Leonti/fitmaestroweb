@@ -8,15 +8,15 @@ $(function() {
 
 	$('#add-exercise').click(function(){
 
-		$('#exercise-edit form')[0].reset();
-                $('#exercise-edit form #image-holder').empty();
+		$('#exercise-edit form#main')[0].reset();
+                $('#exercise-edit form#file #image-holder').empty();
 		if(groupId){
 
-			$('#exercise-edit form select[name="group_id"]').val(groupId);
+			$('#exercise-edit form#main select[name="group_id"]').val(groupId);
 		}
-		$('#exercise-edit form input[type="hidden"]').val('');
+		$('#exercise-edit form#main input[type="hidden"]').val('');
 		$('#exercise-edit').dialog('option','title', 'Add exercise');
-                $('#exercise-edit form select[name="ex_type"]').trigger('change');
+                $('#exercise-edit form#main select[name="ex_type"]').trigger('change');
 		$('#exercise-edit').dialog('open');
         return false;
 	});
@@ -27,12 +27,11 @@ $(function() {
         return false;
     });
 
-	$('#exercise-edit form input[type="submit"]').click(function(){
+	$('#exercise-edit form#main input[type="submit"]').click(function(){
 
-		if($.trim(($('#exercise-edit form input[name = "title"]').val())) != ''){
-			//var dataString = $('#exercise-edit form').serialize();
+		if($.trim(($('#exercise-edit form#main input[name = "title"]').val())) != ''){
 
-                        $('#exercise-edit form').ajaxSubmit(function(data){
+                        $('#exercise-edit form#main').ajaxSubmit(function(data){
                             var json = $.parseJSON($('<div>' + data + '</div>').html());
 
                             if(json.result == 'OK'){
@@ -52,13 +51,31 @@ $(function() {
 		return false;
 	});
 
-    $('#exercise-edit form select[name="ex_type"]').change(function(){
+       $('#exercise-edit form#file #image').change(function(){
+
+
+        $('#exercise-edit form#file').ajaxSubmit(function(data){
+                    var json = $.parseJSON($('<div>' + data + '</div>').html());
+
+                    if(json.result == 'OK'){
+                       changeImage(json.file);
+                       $('form#main input[name="file_name"]').val(json.file);
+                    }else{
+                        if(json.error == 'ext'){
+                            fancyAlert('Invalid image' , 'Only gif, png, jpg images are allowed');
+                        }
+                    }
+           });
+    });
+
+
+    $('#exercise-edit form#main select[name="ex_type"]').change(function(){
         if($(this).val() == 1){
-            $('#exercise-edit form p#max-weight').show();
-            $('#exercise-edit form p#max-reps').hide();
+            $('#exercise-edit form#main p#max-weight').show();
+            $('#exercise-edit form#main p#max-reps').hide();
         }else{
-            $('#exercise-edit form p#max-weight').hide();
-            $('#exercise-edit form p#max-reps').show();
+            $('#exercise-edit form#main p#max-weight').hide();
+            $('#exercise-edit form#main p#max-reps').show();
         }
     });
 
@@ -248,20 +265,24 @@ function fillExercises(){
 function showEditExercisePopup(id){
 
 	$.getJSON(baseUrl + 'json/exerciseinfo', {id : id}, function(json){
-            $('#exercise-edit form input[name="title"]').empty()
+            $('#exercise-edit form#main input[name="title"]').empty()
 		$('#exercise-edit form')[0].reset();
-		$('#exercise-edit form').populate(json[0]);
+		$('#exercise-edit form#main').populate(json[0]);
 
                if(typeof(json[0].filename) != 'undefined'){
-                    $('#image-holder').html('<img id = "exercise-image" src = "' + baseUrl + 'files/' + json[0].filename + '" />');
+                    changeImage(json[0].filename);
                 }else{
                     $('#image-holder').empty();
                 }
                 
 		$('#exercise-edit').dialog('option','title', 'Edit exercise');
-                $('#exercise-edit form select[name="ex_type"]').trigger('change');
+                $('#exercise-edit form#main select[name="ex_type"]').trigger('change');
 		$('#exercise-edit').dialog('open');
 	});
+}
+
+function changeImage(file_name){
+     $('#image-holder').html('<img id = "exercise-image" src = "' + baseUrl + 'files/' + file_name + '" />');
 }
 
 function fillGroups(){
@@ -289,7 +310,7 @@ function fillGroups(){
 				li.addClass('selected');
 				li.trigger('click');
 			}
-			$('#exercise-edit form select[name="group_id"]').append('<option value = "' + jsonrow.id + '">' + jsonrow.title + '</option>');
+			$('#exercise-edit form#main select[name="group_id"]').append('<option value = "' + jsonrow.id + '">' + jsonrow.title + '</option>');
 		});
 
                 

@@ -1,5 +1,5 @@
 <div id="exercise-edit" style="display:none;" title="Add exercise">
-    <form enctype="multipart/form-data" action ="ajaxpost/saveexercise" method="post">
+    <form id="main" action ="ajaxpost/saveexercise" method="post">
 
         <div class="column">
             <p>
@@ -39,6 +39,11 @@
                 <textarea rows="9" name = "desc" ></textarea>
             </p>
         </div>
+        <input type = "hidden" name = "id" value = "" />
+        <input type = "hidden" name ="file_name" value ="" />
+    </form>
+
+     <form id="file" enctype="multipart/form-data" action ="ajaxpost/loadimage" method="post">
         <div class="column">
             <div id="image-holder">
             </div>
@@ -47,6 +52,6 @@
                 <input type="file" id="image" name ="image" style ="font-size: 500px;" />
             </div>
         </div>
-	<input type = "hidden" name = "id" value = "" />
-    </form>
+     </form>
+
 </div> 

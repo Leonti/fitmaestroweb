@@ -76,36 +76,72 @@ class Ajaxpost_Controller extends Controller {
 		}
 	}
 
+
+        public function checkImage($file_name){
+            $allowed_extentions = array('jpg', 'jpeg', 'gif', 'png');
+            $ext = substr($file_name, strrpos($file_name, '.') + 1);
+            if(!in_array($ext, $allowed_extentions)){
+                return array('error' => 'ext');
+            };
+
+            return array('error' => '', 'extention' => $ext);
+        }
+
+        public function loadimage(){
+            $uploads_folder = Kohana::config('core.uploads_folder');
+            $file_error = intval($_FILES['image']['error']);
+
+            if(!$file_error){
+                $file_name = $_FILES['image']['name'];
+                $check_result = $this->checkImage($file_name);
+                $error_type = $check_result['error'];
+                if(!$error_type){
+                    $ext = $check_result['extention'];
+                    $new_filename = md5(uniqid()) . '.' . $ext;
+                    $uploaded_file = $uploads_folder . $new_filename;
+                    move_uploaded_file($_FILES['image']['tmp_name'], $uploaded_file);
+                    echo json_encode(array('result' => 'OK', 'file' => $new_filename));
+                    return;
+                }else{
+                    echo json_encode(array('result' => 'FAILED', 'error' => $error_type));
+                    return;
+                }
+            }
+            
+           echo json_encode(array('result' => 'FAILED', 'error' => 'upload error'));
+           return;
+
+        }
+
 	public function saveexercise(){
 
 		$post = $this->input->post();
                 $uploads_folder = Kohana::config('core.uploads_folder');
-                error_log('Savin\' exercise');
-                error_log('File is: ' . print_r($_FILES['image'], true));
-                $error_type = '';
-                $allowed_extentions = array('jpg', 'jpeg', 'gif', 'png');
+
 		if(isset($post['title']) && isset($post['desc'])){
-
-                    $file_error = intval($_FILES['image']['error']);
+                   
                     $frames_count = 1;
-                    if(!$file_error){
+                    $file_name = $post['file_name'];
 
-                        $file_name = $_FILES['image']['name'];
-                        $ext = substr($file_name, strrpos($file_name, '.') + 1);
-                        error_log($ext);
-                        if(in_array($ext, $allowed_extentions)){
-                            $new_filename = md5(uniqid()) . '.' . $ext;
-                            $uploaded_file = $uploads_folder . $new_filename;
-                            move_uploaded_file($_FILES['image']['tmp_name'], $uploaded_file);
-                            $image = new Imagick($uploaded_file);
+                    if($file_name){
+
+                        $full_filename = $uploads_folder . $file_name;
+                        // doing second check on provided filename in case someone messed with hidden file_name field
+                        $image_check_result = $this->checkImage($full_filename);
+                        
+                        if(!$image_check_result['error']){
+
+                            $image = new Imagick($full_filename);
                             $frames_count = $image->getNumberImages();
 
                             // create frame files from animated gif
                             if($frames_count > 1){
-                                animationWriteFrames($uploaded_file, $uploads_folder);
+                                animationWriteFrames($full_filename, $uploads_folder);
                             }
                         }else{
-                            $error_type = 'ext';
+
+                            // resseting file_name if it's not valid
+                            $file_name = '';
                         }
                     }
 
@@ -122,69 +158,65 @@ class Ajaxpost_Controller extends Controller {
                                   'group_id' => $post['group_id']);
 
 
-                        // only proceed if there is no file error (extention)
-                        if(!$error_type){
-                            error_log("no file error");
-                            // existing item
-                            if($post['id']){
+                        // existing item
+                        if($post['id']){
 
-                                    $exercise = $exercises->getItem($post['id']);
-                                    $file_id = $exercise[0]->file_id;
+                                $exercise = $exercises->getItem($post['id']);
+                                $file_id = $exercise[0]->file_id;
 
-                                    // we have file uploaded
-                                    if(!$file_error){
-                                        
-                                        //error_log('File ID is: ' . $file_id);
-                                        // it has already uploaded file
-                                        if($file_id){
-                                            $old_file = $files->getItem($file_id);
-                                            $old_filename = $old_file[0]->filename;
-                                            $file_user_id = $old_file[0]->user_id;
+                                // we have file uploaded
+                                if($file_name){
 
-                                            // this file belongs to user - so we can safely update it
-                                            if($file_user_id != 0){
-                                                $files->updateItem(array('filename'=>$new_filename, 'frames' => $frames_count), $file_id);
+                                    //error_log('File ID is: ' . $file_id);
+                                    // it has already uploaded file
+                                    if($file_id){
+                                        $old_file = $files->getItem($file_id);
+                                        $old_filename = $old_file[0]->filename;
+                                        $file_user_id = $old_file[0]->user_id;
 
-                                            // don't touch public item - instead create new file
-                                            }else{
-                                                $file_id = $files->addItem(array('filename'=>$new_filename, 'frames' => $frames_count));
-                                            }
-                                            
+                                        // this file belongs to user - so we can safely update it
+                                        if($file_user_id != 0){
+                                            $files->updateItem(array('filename'=>$file_name, 'frames' => $frames_count), $file_id);
 
-                                            //remove old file
-                                            unlink($uploads_folder . $old_filename);
+                                        // don't touch public item - instead create new file
                                         }else{
-
-                                            // this is new file - adding it to the database
-                                            $file_id = $files->addItem(array('filename'=>$new_filename, 'frames' => $frames_count));
+                                            $file_id = $files->addItem(array('filename'=>$file_name, 'frames' => $frames_count));
                                         }
-                                    }
-                                    $exerciseData['file_id'] = $file_id;
-                                    if($exercises -> updateItem($exerciseData, $post['id'])){
 
-                                            $result = true;
-                                    }
-                            }else{
-                                    if(!$file_error){
-                                        $file_id = $files->addItem(array('filename'=>$new_filename, 'frames' => $frames_count));
-                                    }
-                                    $exerciseData['file_id'] = $file_id;
 
-                                    if($exercises -> addItem($exerciseData)){
+                                        //remove old file
+                                        unlink($uploads_folder . $old_filename);
+                                    }else{
 
-                                            $result = true;
+                                        // this is new file - adding it to the database
+                                        $file_id = $files->addItem(array('filename'=>$file_name, 'frames' => $frames_count));
                                     }
-                            }
-                         }else{
-                            error_log("file error: " . $error_type);
+                                }
+
+                                $exerciseData['file_id'] = $file_id;
+                                if($exercises -> updateItem($exerciseData, $post['id'])){
+
+                                        $result = true;
+                                }
+                        }else{
+                                if($file_name){
+                                    $file_id = $files->addItem(array('filename'=>$file_name, 'frames' => $frames_count));
+                                }
+                                $exerciseData['file_id'] = $file_id;
+
+                                if($exercises -> addItem($exerciseData)){
+
+                                        $result = true;
+                                }
                         }
+
 
 			if($result){
 
 				echo json_encode(array('result' => 'OK'));
 			}else{
 
-				echo json_encode(array('result' => 'FAILED', 'error' => $error_type));
+				echo json_encode(array('result' => 'FAILED'));
 			}
 			//do adding stuff
 		}else{
