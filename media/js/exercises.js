@@ -9,6 +9,7 @@ $(function() {
 	$('#add-exercise').click(function(){
 
 		$('#exercise-edit form')[0].reset();
+                $('#exercise-edit form #image-holder').empty();
 		if(groupId){
 
 			$('#exercise-edit form select[name="group_id"]').val(groupId);
@@ -252,7 +253,6 @@ function showEditExercisePopup(id){
 		$('#exercise-edit form').populate(json[0]);
 
                if(typeof(json[0].filename) != 'undefined'){
-                    //alert('Have Image!');
                     $('#image-holder').html('<img id = "exercise-image" src = "' + baseUrl + 'files/' + json[0].filename + '" />');
                 }else{
                     $('#image-holder').empty();
@@ -307,7 +307,6 @@ function showEditGroupPopup(){
 		$('#group-edit form').populate(json[0]);
 		$('#group-edit').dialog('option','title', 'Edit group'); 
 		$('#group-edit').dialog('open');
-		//alert(json[0].title);
 	});
 }
 
