@@ -184,8 +184,8 @@ class Ajaxpost_Controller extends Controller {
                                         }
 
 
-                                        //remove old file
-                                        unlink($uploads_folder . $old_filename);
+                                        //remove old file - supress warnings if deleted
+                                        @unlink($uploads_folder . $old_filename);
                                     }else{
 
                                         // this is new file - adding it to the database
