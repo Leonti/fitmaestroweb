@@ -53,7 +53,6 @@ $(function() {
 
        $('#exercise-edit form#file #image').change(function(){
 
-
         $('#exercise-edit form#file').ajaxSubmit(function(data){
                     var json = $.parseJSON($('<div>' + data + '</div>').html());
 
@@ -267,6 +266,7 @@ function showEditExercisePopup(id){
 	$.getJSON(baseUrl + 'json/exerciseinfo', {id : id}, function(json){
             $('#exercise-edit form#main input[name="title"]').empty()
 		$('#exercise-edit form')[0].reset();
+                $('form#main input[name="file_name"]').val('');
 		$('#exercise-edit form#main').populate(json[0]);
 
                if(typeof(json[0].filename) != 'undefined'){
