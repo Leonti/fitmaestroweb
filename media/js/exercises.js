@@ -53,7 +53,13 @@ $(function() {
 
        $('#exercise-edit form#file #image').change(function(){
 
+       // disable submit while file is downloading
+        $('#exercise-edit form#main input[type="submit"]').attr('disabled', true);
+
         $('#exercise-edit form#file').ajaxSubmit(function(data){
+
+        // reenable when file is uploaded (any response received)
+        $('#exercise-edit form#main input[type="submit"]').attr('disabled', false);
                     var json = $.parseJSON($('<div>' + data + '</div>').html());
 
                     if(json.result == 'OK'){
