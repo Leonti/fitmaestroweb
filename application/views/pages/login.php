@@ -19,7 +19,7 @@
     }
 ?>
 
-<div class = "form">
+<div class = "form shadowed-box">
 <?php
 
     echo form::open(null, array('id' => 'login_form'));

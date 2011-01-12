@@ -82,7 +82,7 @@ $content->multiplicator = $multiplicator;
 <body>
     <div id="non-footer-wrap">
         <div id ="non-footer">
-            <div id = "header">
+            <div id = "header" class = "shadowed-box">
                 <h1>FitMaestro</h1>
                 <h2>Where health meets technology</h2>
                 <div style = "clear: both;"></div>
@@ -128,7 +128,7 @@ $content->multiplicator = $multiplicator;
             <?php echo $content ?>
         </div>
     </div>
-    <div id = "footer">
+    <div id = "footer" class = "shadowed-box">
         <div id = "copyright">Copyright 2010 <a href = "http://eleonti.com" >Leonty Belskiy</a></div>
         <div id = "footer-links">
             <a href = "http://fitmaestro.com/Privacy.html">Privacy Policy</a>

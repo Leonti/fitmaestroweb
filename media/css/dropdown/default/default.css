@@ -37,8 +37,8 @@ ul.dropdown {
 	 padding: 7px 10px;
 	 border-style: solid;
 	 border-width: 0 2px 0 0;
-	 border-color: #fff #DCD998 #DCD998;
-	 background-color: #FFFFDD;
+         background-color: #FEFEFE;
+         border-color: #DDDDDD #CCCCCC #BBBBBB;
 	 color: #000;
 	}
 

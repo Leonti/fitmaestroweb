@@ -1,6 +1,8 @@
 .ui-widget-content{
-    background: #FFFFDD;
-    border: 2px solid #DCD998;
+    background: #FEFEFE;
+    border-color: #DDDDDD #CCCCCC #BBBBBB;
+}
+.ui-dialog-titlebar{
 }
 
 /*Arial,Verdana,sans-serif*/
@@ -12,8 +14,8 @@
 
 .ui-widget-header {
     background: #CCCCCC;
-    border: 2px solid gray;
-    font-weight: bold;
+    border: 1px solid #CCCCCC;
+    font-weight: bold; 
     color: black;
 }
 
