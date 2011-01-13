@@ -46,6 +46,7 @@ div.public-program,
 div.desc-box,
 #menu-holder{
     box-shadow: 0 1px 3px #CCCCCC;
+    -webkit-box-shadow: 0 1px 3px #CCCCCC;
     background-color: #FEFEFE;
     border-color: #DDDDDD #CCCCCC #BBBBBB;
     border-style: solid;
@@ -97,6 +98,7 @@ ul li .edit-box{
 }
 ul.items-list, ul#sessions-filter{
     box-shadow: 0 1px 3px #CCCCCC;
+    -webkit-box-shadow: 0 1px 3px #CCCCCC;
     background-color: #FEFEFE;
     border-color: #DDDDDD #CCCCCC #BBBBBB;
     border-style: solid;
@@ -297,6 +299,7 @@ input, textarea, #exercise-image{
 }
 input[type=submit]{
     box-shadow: 0 1px 3px #CCCCCC;
+    -webkit-box-shadow: 0 1px 3px #CCCCCC;
 }
 
 div.form .label{
