@@ -296,6 +296,8 @@ input, textarea, #exercise-image{
     border-color: #DDDDDD #CCCCCC #BBBBBB;
     border-style: solid;
     border-width: 1px;
+    box-shadow:inset -1px -1px 1px #CCCCCC;
+    -webkit-box-shadow:inset -1px -1px 1px #CCCCCC;
 }
 input[type=submit]{
     box-shadow: 0 1px 3px #CCCCCC;
