@@ -8,7 +8,7 @@ body {
   Verdana, sans-serif;
 }
 
-a { text-decoration: none; }
+a, a:link, a:hover, a:visited, a:active {text-decoration: none; color: blue;}
 ul.navigation-menu, ul#sessions-filter { list-style: none;}
 ul.navigation-menu li, ul#sessions-filter li { display: inline; padding-right: 0.5em; }
 p { margin: 0.5em,0.5em,0,0; padding: 0.5em; } 
@@ -488,4 +488,14 @@ div#errors ul{
 }
 textarea[name="desc"]{
     height: 200px;
+}
+.indented{
+    margin-left: 2em;
+}
+#guest-details{
+    margin: 1.5em 0;
+}
+#guest-details ul{
+    list-style-type: circle;
+    list-style-position: inside;
 }

@@ -11,9 +11,11 @@
     <p>
         <span class="emp">Programs</span> are your long-term exercising plans.<br />
         You can decide what exercises at what days you want to do and then just follow the plan to achieve your goals!
-        <span class="emp">Public Programs</span> is a list of programs already designed for you to follow.
-        Every program has description so you decide if it's worth importing.<br />
-        As with exercises you can publish your program if you think it will be useful to other users.
+        <div class="indented">
+            <span class="emp">Public Programs</span> is a list of programs already designed for you to follow.
+            Every program has description so you decide if it's worth importing.<br />
+            As with exercises you can publish your program if you think it will be useful to other users.
+        </div>
     </p>
     <p>
         <span class="emp">Workouts</span> are sets of exercises/workout routines. <br />
@@ -31,7 +33,7 @@
         for example if you want to keep track of your blood pressure - just create new measurement called "Blood pressure" - and you are ready to go!
     </p>
     <p>
-        <span class="emp">Statistics</span> - numbers are important but sometimes there is a nedd to visualise exercising results or changes in measuremnts over time.
+        <span class="emp">Statistics</span> - numbers are important but sometimes there is a need to visualise exercising results or changes in measuremnts over time.
         Statistics is a tool to do it - select period you want to see and you get a chart to see how it as changing.
     </p>
 </div>
