@@ -499,3 +499,36 @@ textarea[name="desc"]{
     list-style-type: circle;
     list-style-position: inside;
 }
+
+/* reps details */
+
+.reps-row {
+    cursor: pointer;
+    padding: 0.2em;
+}
+
+.reps-row:hover {
+    background-color: gray;
+}
+
+.reps-count,
+.x {
+    display: inline-block;    
+}
+.reps-count {
+    min-width: 10%;
+}
+
+.x {
+    margin: 0 0.3em;
+}
+
+.calculated-weight {
+    float: right;
+}
+
+.reps-count,
+.x,
+.calculated-weight {
+    font-weight: bold;
+}

@@ -265,12 +265,12 @@ function fillSetExercises(){
                         var toAppend = '';
                         if(jsonrow.ex_type == 1){
                             var calculatedWeight = percentages.calculateWeight(percentage, parseFloat(jsonrow.max_weight));
-                            toAppend = detailrow.reps + 'x' + detailrow.percentage + '% ' + calculatedWeight + ' ' + weightUnits;
+                            toAppend = '<div class="reps-count">' + detailrow.reps + '</div><div class="x">x</div>' + detailrow.percentage + '% <div class="calculated-weight">' + calculatedWeight + ' ' + weightUnits + '</div>';
                         }else{
                             var calculatedReps = percentages.calculateReps(percentage, parseInt(jsonrow.max_reps));
                             toAppend = detailrow.percentage + '% ' + calculatedReps;
                         }
-                        repsTd.append('<div>' + toAppend + '</div>');
+                        repsTd.append('<div style="float: both;"></div><div class="reps-row">' + toAppend + '</div>');
                     });
                     tr.append(repsTd);
                     tr.append('<td class = "no-pad"><a href = "#" class = "remove-from-set delete"></a></td>');
