@@ -129,7 +129,7 @@ $content->multiplicator = $multiplicator;
         </div>
     </div>
     <div id = "footer" class = "shadowed-box">
-        <div id = "copyright">Copyright 2010 <a href = "http://eleonti.com" >Leonty Belskiy</a></div>
+        <div id = "copyright">Copyright 2011 <a href = "http://eleonti.com" >Leonty Belskiy</a></div>
         <div id = "footer-links">
             <a href = "http://fitmaestro.com/Privacy.html">Privacy Policy</a>
         </div>

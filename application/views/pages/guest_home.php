@@ -3,6 +3,7 @@
     <?php echo html::anchor('user/register', 'Register'); ?>
 </div>
 
+<br /><a href="FitMaestro.apk">Download Android FitMaestro(Alpha) application</a>
 <div class="details-container" id="guest-details">
     <p>
         Ever wondered how nice would it be to track your exercising progress online in one place?<br />
