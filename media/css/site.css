@@ -523,13 +523,14 @@ textarea[name="desc"]{
     margin: 0 0.3em;
 }
 
-.calculated-weight {
+.calculated-weight,
+.completed-weight {
     float: right;
 }
 
 .reps-count,
-.x,
-.calculated-weight {
+.calculated-weight,
+.completed-weight {
     font-weight: bold;
 }
 
@@ -543,4 +544,8 @@ textarea[name="desc"]{
 
 #reps-popup-button {
     margin-top: 0.5em;
+}
+
+td.reps {
+    cursor: pointer;
 }

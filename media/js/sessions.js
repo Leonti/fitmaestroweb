@@ -238,32 +238,32 @@ function fillSessionExercises(){
                     $.each(jsonrow.details, function(i, detailrow){
 
                         var toAppend = '';
-                        var toAppendDone = '<span class = "non-printable">not done</span>';
+                        var toAppendDone = '<span class = "non-printable">-----</span>';
 
                         if(jsonrow.ex_type == 1){
-                            toAppend = detailrow.reps + 'x' + detailrow.percentage + ' ' + weightUnits;
+                            toAppend = '<div class="reps-count">' + detailrow.reps + '</div><div class="x">x</div><div class="calculated-weight">' + detailrow.percentage + ' ' + weightUnits + '</div>';
 
                             if(detailrow.log_data){
-                                toAppendDone = detailrow.log_data.reps + 'x' + detailrow.log_data.weight + ' ' + weightUnits;
+                                toAppendDone = '<div class="reps-count">' + detailrow.log_data.reps + '</div><div class="x">x</div><div class="completed-weight">' + detailrow.log_data.weight + ' ' + weightUnits + '</div>';
                             }
                         }else{
-                            toAppend = detailrow.reps;
+                            toAppend = '<div class="reps-count">' + detailrow.reps + '</div>';
 
                             if(detailrow.log_data){
-                                toAppendDone = detailrow.log_data.reps;
+                                toAppendDone = '<div class="reps-count">' + detailrow.log_data.reps + '</div>';
                             }
                         }
 
                         if(detailrow.log_data){
-                            done = detailrow.log_data.reps + 'x' + detailrow.log_data.weight + ' ' + weightUnits;
+                            done = '<div class="reps-count">' + detailrow.log_data.reps + '</div><div class="x">x</div><div class="completed-weight">' + detailrow.log_data.weight + ' ' + weightUnits + '</div>';
                         }
                         if(detailrow.id != 0){
                             repsTd.append('<div>' + toAppend + '</div>');
                         }else{
-                            repsTd.append('<div>extra</div>');
+                            repsTd.append('<div>-----</div>');
                         }
 
-                        doneTd.append('<div>' + toAppendDone + '</div>');
+                        doneTd.append('<div>' + toAppendDone + '<div style="clear: both;"></div></div>');
 
                     });
                     tr.append(repsTd);
