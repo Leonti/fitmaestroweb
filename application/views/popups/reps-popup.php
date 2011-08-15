@@ -14,6 +14,6 @@
             </tbody>
         </table>
 	<input type = "hidden" name = "connector_id" value = "" />
-	<input type="submit" value="Save" />
+	<input id="reps-popup-button" type="submit" value="Save" />
     </form>
 </div> 

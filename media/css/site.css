@@ -532,3 +532,15 @@ textarea[name="desc"]{
 .calculated-weight {
     font-weight: bold;
 }
+
+.exercise-title {
+    cursor: pointer;
+}
+
+.exercise-title:hover {
+    text-decoration: underline;
+}
+
+#reps-popup-button {
+    margin-top: 0.5em;
+}

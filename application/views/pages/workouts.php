@@ -23,7 +23,17 @@
 	echo html::script(array
 	      (
 		  'media/js/workouts.js',
+                  'media/js/jquery.form.js', 
+                  'media/js/exercises.js',           
 	      ), FALSE);
+
+	$popup = new View('popups/exercise-popup'); 
+	$popup->groups = $groups;
+        $popup->weightUnits = $weightUnits;
+	$popup->render(TRUE);
+
+	echo View::factory('popups/group-popup');        
+        
 	$selector = new View('popups/selector-popup'); 
 	$selector->exercisesArray = $exercisesArray;
 	$selector->groups = $groups;

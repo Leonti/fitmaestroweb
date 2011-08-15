@@ -187,6 +187,14 @@ $(function() {
         addSession();
         return false;
     });
+    
+    $('.exercise-title').live('click', function() {
+        showEditExercisePopup($(this).parent().parent().data('id'));
+    });
+    
+    $('#exercise-edit').data('func', function() {
+        fillSetExercises();
+    });
 	
 }); 
 
@@ -250,7 +258,7 @@ function fillSetExercises(){
                     tr.data('maxReps', jsonrow.max_reps);
                     tr.data('connector_id', jsonrow.connector_id);
                     tr.data('ex_type', jsonrow.ex_type);
-                    tr.append('<td>' + jsonrow.title + '</td><td>' 
+                    tr.append('<td><span class="exercise-title">' + jsonrow.title + '</span></td><td>' 
                         + jsonrow.desc + '</td><td class = "center">'
                         + getExerciseTypeName(jsonrow.ex_type) + '</td><td>' 
                         + jsonrow.group_title + '</td>' );
@@ -265,10 +273,14 @@ function fillSetExercises(){
                         var toAppend = '';
                         if(jsonrow.ex_type == 1){
                             var calculatedWeight = percentages.calculateWeight(percentage, parseFloat(jsonrow.max_weight));
-                            toAppend = '<div class="reps-count">' + detailrow.reps + '</div><div class="x">x</div>' + detailrow.percentage + '% <div class="calculated-weight">' + calculatedWeight + ' ' + weightUnits + '</div>';
+                            var fullCalculatedWeight = calculatedWeight == 0 ? 'n/a' : calculatedWeight + ' ' + weightUnits;
+                            toAppend = '<div class="reps-count">' + detailrow.reps + '</div><div class="x">x</div>' + detailrow.percentage + '% <div class="calculated-weight">' + fullCalculatedWeight + '</div>';
                         }else{
                             var calculatedReps = percentages.calculateReps(percentage, parseInt(jsonrow.max_reps));
-                            toAppend = detailrow.percentage + '% ' + calculatedReps;
+                            if (calculatedReps == 0) {
+                                calculatedReps = 'n/a';
+                            }
+                            toAppend = detailrow.percentage + '% ' + '<div class="calculated-weight">' + calculatedReps + '</div>';
                         }
                         repsTd.append('<div style="float: both;"></div><div class="reps-row">' + toAppend + '</div>');
                     });

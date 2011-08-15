@@ -8,17 +8,17 @@ $(function() {
 
 	$('#add-exercise').click(function(){
 
-		$('#exercise-edit form#main')[0].reset();
-                $('#exercise-edit form#file #image-holder').empty();
-		if(groupId){
+            $('#exercise-edit form#main')[0].reset();
+            $('#exercise-edit form#file #image-holder').empty();
+            if(groupId){
 
-			$('#exercise-edit form#main select[name="group_id"]').val(groupId);
-		}
-		$('#exercise-edit form#main input[type="hidden"]').val('');
-		$('#exercise-edit').dialog('option','title', 'Add exercise');
-                $('#exercise-edit form#main select[name="ex_type"]').trigger('change');
-		$('#exercise-edit').dialog('open');
-        return false;
+                    $('#exercise-edit form#main select[name="group_id"]').val(groupId);
+            }
+            $('#exercise-edit form#main input[type="hidden"]').val('');
+            $('#exercise-edit').dialog('option','title', 'Add exercise');
+            $('#exercise-edit form#main select[name="ex_type"]').trigger('change');
+            $('#exercise-edit').dialog('open');
+            return false;
 	});
 
     $('#import-exercises-link').click(function(){
@@ -31,24 +31,25 @@ $(function() {
 
 		if($.trim(($('#exercise-edit form#main input[name = "title"]').val())) != ''){
 
-                        $('#exercise-edit form#main').ajaxSubmit(function(data){
-                            var json = $.parseJSON($('<div>' + data + '</div>').html());
+                    $('#exercise-edit form#main').ajaxSubmit(function(data){
+                        var json = $.parseJSON($('<div>' + data + '</div>').html());
 
-                            if(json.result == 'OK'){
-                               fillExercises();
-                               $('#exercise-edit').dialog('close');
-                            }else{
-                                if(json.error == 'ext'){
-                                    fancyAlert('Invalid image' , 'Only gif, png, jpg images are allowed');
-                                }
+                        if(json.result == 'OK'){
+                           fillExercises();
+                           var funcAfter = $('#exercise-edit').data('func');
+                           if (funcAfter) {
+                               funcAfter();
+                           }
+                           $('#exercise-edit').dialog('close');
+                        }else{
+                            if(json.error == 'ext'){
+                                fancyAlert('Invalid image' , 'Only gif, png, jpg images are allowed');
                             }
-                            
-                        });
+                        }
 
-			
+                    });			
 		}
-
-		return false;
+            return false;
 	});
 
        $('#exercise-edit form#file #image').change(function(){
@@ -187,7 +188,7 @@ $(function() {
             // disable no import checkbox if no group is selected
             $('div#import-exercises form input[name="noimport_id[]"]').attr('disabled', 'disabled');
 		}
-		if(groupId = $(this).data('id')){
+		if(groupId == $(this).data('id')){
 			$(this).addClass('selected');
 			$('div#group-description').html($(this).data('desc'));
 		}else{
