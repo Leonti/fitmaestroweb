@@ -2,8 +2,6 @@
 
 class User_Model extends Auth_User_Model {
 
-    const FB_NEW_LOGGEDIN = 1;
-    const FB_OLD_LOGGEDIN = 2;
 	// This class can be replaced or extended
 
     //redefines login method to allow short passwords
@@ -81,9 +79,9 @@ class User_Model extends Auth_User_Model {
             
             if (Auth::instance()->logged_in('login')) {
                 if ($new_user) {
-                    $status = self::FB_NEW_LOGGEDIN;
+                    $status = 1;
                 } else {
-                    $status = self::FB_OLD_LOGGEDIN;
+                    $status = 2;
                 }                
             } 
             return $status;

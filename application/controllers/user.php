@@ -116,7 +116,7 @@ class User_Controller extends Website_Controller {
             $fb_status = $user_model->fb_login($user_profile['id'], $user_profile['email']);
 
             if (Auth::instance()->logged_in('login')) {
-                if ($fb_status == $user_model->FB_NEW_LOGGEDIN) {
+                if ($fb_status == 1) {
                     $settings = new Setting_Model(Auth::instance()->get_user()->id);
                     $settings->addItem(array(
                                             'time_format' => 'ampm',
