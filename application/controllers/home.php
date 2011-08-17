@@ -4,7 +4,7 @@ class Home_Controller extends Website_Controller {
 
         function __construct(){
         parent::__construct();
-
+        
         $authentic = new Auth;
         $this->user = $authentic->get_user(); //now you have access to user information stored in the database
 

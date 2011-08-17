@@ -26,10 +26,10 @@ class Website_Controller extends Template_Controller {
 
         $authentic = new Auth;
 
-        $user = $authentic->get_user(); //now you have access to user information stored in the database
-        $this->template->user = $user;
-
-        if($user){
+        $user = $authentic->get_user(); //now you have access to user information stored in the database       
+        $this->template->user = $user;        
+        
+        if($user) {
             $settings = new Setting_Model($user->id);
             $userSettings = $settings->getSettings();
             $this->template->timeFormat = $userSettings->time_format;

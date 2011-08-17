@@ -80,6 +80,10 @@ class User_Controller extends Website_Controller {
     }
 
     public function login(){
+        
+        
+        
+        
         //Check if already logged in
         if (Auth::instance()->logged_in('login')) {
             url::redirect('exercises');
@@ -87,6 +91,45 @@ class User_Controller extends Website_Controller {
             url::redirect('accessdenied'); //User hasn't confirmed account yet
         }
 
+        // User is not logged in - let's see if he is logged in Facebook and we are connected
+        require_once('fbsdk/src/facebook.php');
+        $config = Kohana::config('config');
+        $facebook = new Facebook(array(
+          'appId' => $config['facebook']['appId'],
+          'secret' => $config['facebook']['secret'],
+        ));
+
+        $fb_user = $facebook->getUser();
+        if ($fb_user) {
+            try {
+            // Proceed knowing you have a logged in user who's authenticated.
+            $user_profile = $facebook->api('/me');
+            } catch (FacebookApiException $e) {
+                error_log($e);
+                $fb_user = null;
+            }
+        }
+
+        if (isset($user_profile)) {
+
+            $user_model = ORM::factory('user');
+            $fb_status = $user_model->fb_login($user_profile['id'], $user_profile['email']);
+
+            if (Auth::instance()->logged_in('login')) {
+                if ($fb_status == $user_model::FB_NEW_LOGGEDIN) {
+                    $settings = new Setting_Model(Auth::instance()->get_user()->id);
+                    $settings->addItem(array(
+                                            'time_format' => 'ampm',
+                                            'time_zone' => 'Europe/Warsaw',
+                                             ));
+                    // redirect to somewhere
+                    url::redirect('settings');                    
+                } else {
+                    url::redirect($this->session->get('requested_url'));                    
+                }
+            }
+        }       
+        
         $this->template->title = 'FitMaestro Login';
         $this->template->content = new View('pages/login');
 
@@ -117,7 +160,7 @@ class User_Controller extends Website_Controller {
         url::redirect('home');
     }
 
-	public function index(){
+    public function index() {
         url::redirect('user/login');
     }
 
