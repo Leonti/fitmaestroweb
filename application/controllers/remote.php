@@ -13,6 +13,11 @@ class Remote_Controller extends Controller {
 
     $data = json_decode($_POST['jsonString']);
 
+    /*    
+    $data = new stdClass;
+    $data->what = "FBLOGIN";    
+    $data->access_token = "124862400943074|2.AQDZTEQ0woOIrVDc.3600.1313697600.3-630824836|kFbb-w7bORGKXCPyiv4oboOWZq8";
+    */
 /*
     $data = new stdClass;
     $data->what = "PUBLICPROGRAMS";
@@ -44,6 +49,9 @@ class Remote_Controller extends Controller {
                     echo json_encode(remoteUser::loginUser($data -> email, $data -> password));
                 break;
 
+                case "FBLOGIN":
+                    echo json_encode(remoteUser::loginFBUser($data -> access_token));
+                break;
 
                 case "STARTUPDATE":
                         $userId = remoteUser::checkUserByKey($data -> authkey);

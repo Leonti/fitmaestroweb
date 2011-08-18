@@ -18,7 +18,7 @@
     }
 ?>
 
-<div class = "form">
+<div class = "form shadowed-box">
 <?php
 
     echo form::open(null, array('id' => 'register_form'));
@@ -34,12 +34,14 @@
         </script>
     ';
 ?>
+<br /><a href="#" id="fb-login">Login with Facebook</a>    
 </div>
 
 <?php
     echo html::script(array
           (
-          'media/js/jquery.populate.pack.js',
+            'media/js/jquery.populate.pack.js',
+            'media/js/facebook.js',
           ), FALSE);
 ?>
  

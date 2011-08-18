@@ -94,10 +94,7 @@ class User_Controller extends Website_Controller {
         // User is not logged in - let's see if he is logged in Facebook and we are connected
         require_once('fbsdk/src/facebook.php');
         $config = Kohana::config('config');
-        $facebook = new Facebook(array(
-          'appId' => $config['facebook']['appId'],
-          'secret' => $config['facebook']['secret'],
-        ));
+        $facebook = new Facebook($config['facebook']);
 
         $fb_user = $facebook->getUser();
         if ($fb_user) {
