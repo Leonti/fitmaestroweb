@@ -147,7 +147,8 @@ class Ajaxpost_Controller extends Controller {
 
 			$exercises = new Exercise_Model($this->user->id);
                         $files = new File_Model($this->user->id);
-
+                        $file_id = 0;
+                        
 			$result = null;
 
                         $exerciseData = array('title' => $post['title'],
