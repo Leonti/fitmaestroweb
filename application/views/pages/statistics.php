@@ -6,7 +6,7 @@
         <option value = "exercise_log">Exercise Progress</option>
     </select>
     <div id = "exercise-holder" style = "display: none;">
-        <span id = "exercise-label">Exercise: </span><span id = "exercise-name"></span>
+        <br /><span id = "exercise-label">Exercise: </span><span id = "exercise-name"></span>
         <a href = "#" id = "exercise-change">Click to change</a>
         <select id = "stats-subtype">
             <option value = "max">Max reps/weight</option>

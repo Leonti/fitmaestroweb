@@ -18,13 +18,14 @@ $(function() {
             $.each(json, function(i, jsonrow){
                 $('#exercise-select').append('<option value = "' + jsonrow.id + '">' + jsonrow.title + '</option>');
             });
-        })
+        });
     });
     
     $('#group-select').change();
     
     $('#select-exercise-button').click(function(){
-        addExCallback($('#exercise-select').val());
+    	
+        addExCallback($('#exercise-select').val(), $('#exercise-select option:selected').text());
         $('#select-exercise').dialog('close');
         return false;
     });

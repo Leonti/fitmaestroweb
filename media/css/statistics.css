@@ -7,10 +7,13 @@
 }
 
 .sums{
-    border: dashed;
     position: absolute;
     top: 0;
     right: 0;
+}
+
+#exercise-name {
+	font-weight: bold;
 }
 
 #statistics-list tbody tr,

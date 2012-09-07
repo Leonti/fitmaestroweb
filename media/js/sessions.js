@@ -340,10 +340,10 @@ function appendRepsRow(details){
 
         xPart = '<td>x</td>';
         weightDonePart = '<td><input type = "text" name = "weight[]" class = "number" value = "' + weight + '" /> ' + weightUnits + '</td>'
-         + '<td><input class = "time" type = "text" name = "done[]" value = "' + done + '" />'
+         + '<td><input class = "time" type = "text" name = "done[]" value = "' + done + '" />';
     }else{
         weightDonePart = '<td><input type = "hidden" name = "weight[]" class = "number" value = "' + weight + '" />'
-        + '<input class = "time" type = "text" name = "done[]" value = "' + done + '" />'
+        + '<input class = "time" type = "text" name = "done[]" value = "' + done + '" />';
     }
 
     $('#reps-table tbody').append('<tr ' + grayed + '><td><input type = "text" name = "reps[]" class = "number" value = "' + reps + '" /></td>'
@@ -408,8 +408,6 @@ function openRepsDialog(repsTd){
     $('#reps-table tbody tr').remove();
 
     exType = repsTd.parent().data('ex_type');
-    var maxWeight = parseFloat(repsTd.parent().data('maxWeight'));
-    var maxReps = parseFloat(repsTd.parent().data('maxReps'));
 
     var details = repsTd.parent().data('details');
 

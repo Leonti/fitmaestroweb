@@ -49,10 +49,10 @@ $(function () {
     getStats();
 });
 
-function changeExercise(exerciseId){
-
+function changeExercise(exerciseId, exerciseTitle){
+	
     $('#exercise-holder').data('id', exerciseId);
-    $('#exercise-name').text(exerciseId);
+    $('#exercise-name').text(exerciseTitle);
 }
 
 function getStats(){
@@ -90,9 +90,10 @@ function getExercisesChart(json, subType){
     $.each(json.stats, function(i, jsonrow){
         var date = new Date(Date.parse(jsonrow.date));
 
+        var statsRow = '';
         if(jsonrow.datas.length > 0){                
            
-           var statsRow = $('<tr>');
+           statsRow = $('<tr>');
            statsRow.append('<td>' + date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear() + '</td>');
 
            var sums = '<div class = "sums">Max value: ' + jsonrow.datas[0].max + '<br />Sum: ' + jsonrow.datas[0].sum + '</div>';
@@ -114,8 +115,6 @@ function getExercisesChart(json, subType){
         $('#statistics-list tbody').append(statsRow);
     });
     
-    var exercise;
-    exercise = json.exercise;
     if(json.exercise.ex_type == 1){
         $('.to-hide').show();
     }else{

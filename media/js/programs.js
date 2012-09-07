@@ -198,7 +198,7 @@ function makeDroppable(){
         accept: 'div.set-details',
         activeClass: 'ui-state-highlight',
         drop: function(ev, ui) {
-            moveSet(ui.draggable.parent().data('connector_id'), $(this).data('day_number'))
+            moveSet(ui.draggable.parent().data('connector_id'), $(this).data('day_number'));
         }
     });
 

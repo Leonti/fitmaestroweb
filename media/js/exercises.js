@@ -77,11 +77,11 @@ $(function() {
 
     $('#exercise-edit form#main select[name="ex_type"]').change(function(){
         if($(this).val() == 1){
-            $('#exercise-edit form#main p#max-weight').show();
-            $('#exercise-edit form#main p#max-reps').hide();
+            $('#max-weight').show();
+            $('#max-reps').hide();
         }else{
-            $('#exercise-edit form#main p#max-weight').hide();
-            $('#exercise-edit form#main p#max-reps').show();
+            $('#max-weight').hide();
+            $('#max-reps').show();
         }
     });
 
@@ -173,7 +173,6 @@ $(function() {
 
 		$('ul#group-list li div.edit-group-box').remove();	
 		groupId = $(this).data('id');
-//alert(groupId);
 
 		if(groupId){
 
@@ -271,7 +270,7 @@ function fillExercises(){
 function showEditExercisePopup(id){
 
 	$.getJSON(baseUrl + 'json/exerciseinfo', {id : id}, function(json){
-            $('#exercise-edit form#main input[name="title"]').empty()
+            $('#exercise-edit form#main input[name="title"]').empty();
 		$('#exercise-edit form')[0].reset();
                 $('form#main input[name="file_name"]').val('');
 		$('#exercise-edit form#main').populate(json[0]);

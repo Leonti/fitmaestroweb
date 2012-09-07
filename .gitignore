@@ -1,6 +1,10 @@
 *~
-application/config/config.php
 application/logs
 log
 php-errors.log
 files/*
+/nbproject
+.buildpath
+.project
+.settings
+
