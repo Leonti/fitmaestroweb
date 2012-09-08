@@ -29,12 +29,4 @@
     echo form::close();
 
 ?>
-<br /><a href="#" id="fb-login">Login with Facebook</a>
 </div>
-
-<?php
-    echo html::script(array
-          (
-            'media/js/facebook.js',
-          ), FALSE);
-?>

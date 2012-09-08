@@ -34,14 +34,12 @@
         </script>
     ';
 ?>
-<br /><a href="#" id="fb-login">Login with Facebook</a>    
 </div>
 
 <?php
     echo html::script(array
           (
-            'media/js/jquery.populate.pack.js',
-            'media/js/facebook.js',
+            'media/js/jquery.populate.pack.js'
           ), FALSE);
 ?>
  

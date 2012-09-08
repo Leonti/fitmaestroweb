@@ -31,45 +31,6 @@ class remoteUser_Core{
         return array('result' => $result, 'authkey' => $authKey);
     }
 
-    public static function loginFBUser($access_token) {
-
-        $result = 'FAILED';
-        $authKey = '';
-        
-        require_once('fbsdk/src/facebook.php');
-        $config = Kohana::config('config');
-        $facebook = new Facebook($config['facebook']);
-        $facebook->setAccessToken($access_token);
-               
-        if($facebook->getUser()) {
-            
-            try {            
-                $user_profile = $facebook->api('/me');
-                $fb_status = ORM::factory('user')->fb_login($user_profile['id'], $user_profile['email']);
-                if (Auth::instance()->logged_in('login')) {
-
-                    // new user
-                    // @TODO - maybe move it to one place - user model?
-                    if ($fb_status == 1) {
-                        $settings = new Setting_Model(Auth::instance()->get_user()->id);
-                        $settings->addItem(array(
-                                                'time_format' => 'ampm',
-                                                'time_zone' => 'Europe/Warsaw',
-                                                 ));                    
-                    }
-
-                    $result = 'LOGGEDIN';
-                    $user = ORM::factory('user')->where(array('email' => $user_profile['email']))->find();
-                    $user->auth_key = $authKey = self::generateAuthKey($user_profile['email']);
-                    $user->save();
-                }            
-            } catch (FacebookApiException $e) {
-                error_log($e);
-            }
-        }
-        return array('result' => $result, 'authkey' => $authKey);
-    }
-
     public static function createUser($email, $password){
 
 

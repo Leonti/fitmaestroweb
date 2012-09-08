@@ -5,41 +5,12 @@
         exit();
     }
 
-ini_set('error_log','php-errors.log'); // path to server-writable log file
-
 class Remote_Controller extends Controller {
 
     public function index(){
 
     $data = json_decode($_POST['jsonString']);
 
-    /*    
-    $data = new stdClass;
-    $data->what = "FBLOGIN";    
-    $data->access_token = "124862400943074|2.AQDZTEQ0woOIrVDc.3600.1313697600.3-630824836|kFbb-w7bORGKXCPyiv4oboOWZq8";
-    */
-/*
-    $data = new stdClass;
-    $data->what = "PUBLICPROGRAMS";
-    $data->authkey = "c77feca090963cf3aee40f9de859d0c7";
-*/
-
-    // logging
-    if($data -> what == "STARTUPDATE"){
-    $handle = fopen('log', 'w');
-    fwrite($handle, '');
-    fclose($handle);
-    }
-    // end of logging
-
-/*
-    if(isset($_POST['jsonString'])){
-        error_log(print_r("-----------FROM PHONE-------------" . "\n", true)."\n", 3, "log");
-        error_log(print_r(json_decode($_POST['jsonString']), true)."\n", 3, "log");
-    } */
-
-        error_log(print_r("-----------FROM PHONE-------------" . "\n", true)."\n", 3, "log");
-        error_log(print_r($data, true)."\n", 3, "log");
             switch ($data -> what){
                 case "REGISTER":
                     echo json_encode(remoteUser::createUser($data -> email, $data -> password));
@@ -49,18 +20,11 @@ class Remote_Controller extends Controller {
                     echo json_encode(remoteUser::loginUser($data -> email, $data -> password));
                 break;
 
-                case "FBLOGIN":
-                    echo json_encode(remoteUser::loginFBUser($data -> access_token));
-                break;
-
                 case "STARTUPDATE":
                         $userId = remoteUser::checkUserByKey($data -> authkey);
                     if($userId){
 
                         $toSend = json_encode(array("result" => "STARTUPDATED", "data" => prepareUpdate($userId, $data->data, $data->fresh)->tables));
-                        echo $toSend;
-        error_log(print_r("-----------TO PHONE-------------" . "\n", true)."\n", 3, "log");
-        error_log(print_r(json_decode($toSend), true)."\n", 3, "log");
                     }
                 break;
 
@@ -72,9 +36,6 @@ class Remote_Controller extends Controller {
 
                         // in future add a flag if this is last ids from phone - if so - don't send anything back
                         $toSend = json_encode(array("result" => "PHONEIDSUPDATED", "data" => $returnedData->tables, "new_ids" => $returnedData->new_ids));
-                        echo $toSend;
-        error_log(print_r("-----------TO PHONE-------------" . "\n", true)."\n", 3, "log");
-        error_log(print_r(json_decode($toSend), true)."\n", 3, "log");
                     }
                 break;
 
@@ -164,7 +125,6 @@ function prepareUpdate($userId, $phoneData = null, $fresh = 0){
 
     $exercisesObj = new exercises();
     $exercisesObj -> userId = $userId;
-error_log("User id is: " . $userId . "\n", 3, "log");
 
     $exercisesObj -> convertMap = $convertMap;
     $exercisesObj -> convertTimeMap = $convertTimeMap;
@@ -181,11 +141,6 @@ error_log("User id is: " . $userId . "\n", 3, "log");
         }
 
         $updatedItems = $exercisesObj -> getUpdatedItems($table, $lastUpdated);
-       // $requestedItems = $exercisesObj -> getRequestedItems($table);
-        //$allUpdatedItems = array_merge($updatedItems, $requestedItems);
-        error_log(print_r($updatedItems,true));
-        //error_log(print_r($requestedItems,true));
-       // error_log(print_r($allUpdatedItems,true));
 
         if($exercisesObj -> getRequestedItemsCount($table) > 0){
             error_log("We have some new requested ids!");
@@ -380,6 +335,3 @@ function jsonArray($array){
 
     return $noKeys;
 }
-
- 
- 

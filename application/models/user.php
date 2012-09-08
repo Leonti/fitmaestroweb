@@ -47,43 +47,4 @@ class User_Model extends Auth_User_Model {
 
 		return $status;
 	}
-        
-        public function fb_login($fb_id, $email) {
-
-            // Login starts out invalid
-            $status = 0;
-            $new_user = false;
-            $this->where('fb_id', $fb_id)->find();
-            
-            // this fb id is not in database - check if email is
-            if (!$this->loaded) {
-                $this->find($email);
-                if ($this->loaded) {
-                    $this->fb_id = $fb_id;
-                    $this->save();
-                } else {
-                    // create new user entry 
-                    $this->username = $email;
-                    $this->email = $email;
-                 //   $this->password = 'somepassword';
-                    $this->fb_id = $fb_id;
-                    $this->add(ORM::factory('role', 'login'));
-                    $this->save();
-                    $new_user = true;
-                }
-            }
-                      
-            if ($this->loaded) {
-                Auth::instance()->force_login($this);
-            }
-            
-            if (Auth::instance()->logged_in('login')) {
-                if ($new_user) {
-                    $status = 1;
-                } else {
-                    $status = 2;
-                }                
-            } 
-            return $status;
-        }
 } // End User Model
